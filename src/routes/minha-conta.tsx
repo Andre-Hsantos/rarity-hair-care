@@ -103,7 +103,7 @@ function Account() {
           )}
           {tab === "notificacoes" && (
             <div>
-              <h2 className="text-3xl">Central de notificações</h2>
+              <h2 className="text-3xl">Central de Notificações:</h2>
               <ul className="mt-6 space-y-3">
                 {["Seu pedido #R-1024 foi entregue.", "Novidades na linha de tratamentos (demonstrativo)."].map((n, i) => (
                   <li key={n} className="flex gap-3 rounded-lg border p-4 text-sm">
