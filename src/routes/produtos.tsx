@@ -9,13 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
-type S = { q?: string; categoria?: string; promo?: boolean };
+type S = { q?: string | undefined; categoria?: string | undefined; promo?: boolean | undefined };
 
 export const Route = createFileRoute("/produtos")({
   validateSearch: (s: Record<string, unknown>): S => ({
-    q: typeof s.q === "string" && s.q ? s.q : undefined,
-    categoria: typeof s.categoria === "string" ? s.categoria : undefined,
-    promo: s.promo === true || s.promo === "true" ? true : undefined,
+    q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
+    categoria: typeof s["categoria"] === "string" ? s["categoria"] : undefined,
+    promo: s["promo"] === true || s["promo"] === "true" ? true : undefined,
   }),
   head: () => ({
     meta: [
