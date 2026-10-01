@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Bell, ChevronDown, Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
 import { categories } from "@/lib/products";
 import { useStore } from "@/lib/store";
@@ -43,7 +43,7 @@ function SearchBar({ className = "" }: { className?: string }) {
   );
 }
 
-function IconLink({ to, label, children, badge }: { to: string; label: string; children: React.ReactNode; badge?: number }) {
+function IconLink({ to, label, children, badge }: { to: string; label: string; children: ReactNode; badge?: number }) {
   return (
     <Link
       to={to}

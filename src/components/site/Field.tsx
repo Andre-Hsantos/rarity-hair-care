@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
 export function Field({ label, id, hint, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; id: string; hint?: string }) {
   return (
@@ -14,7 +14,7 @@ export function Field({ label, id, hint, ...props }: InputHTMLAttributes<HTMLInp
   );
 }
 
-export function AuthShell({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+export function AuthShell({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
   return (
     <div className="container-site flex justify-center py-14 sm:py-20">
       <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-card sm:p-10">
