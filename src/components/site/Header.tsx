@@ -37,7 +37,7 @@ function SearchBar({ className = "" }: { className?: string }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Buscar shampoo, máscara, kits..."
         aria-label="Buscar produtos"
-        className="h-11 w-full rounded-full border border-input bg-surface pl-10 pr-4 text-sm outline-none transition focus:border-gold focus:bg-card focus:ring-2 focus:ring-gold/25"
+        className="h-11 w-full rounded-full border border-input bg-surface pl-10 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-gold focus:bg-card focus:ring-2 focus:ring-gold/25"
       />
     </form>
   );
@@ -104,7 +104,7 @@ export function Header() {
               </SheetContent>
             </Sheet>
             <Link to="/" aria-label="Rarity Hair Care — início" className="shrink-0">
-              <img src={logo.url} alt="Rarity Hair Care" className="h-9 w-auto sm:h-11" />
+              <img src={logo.url} alt="Rarity Hair Care" className="h-10 w-auto sm:h-12" />
             </Link>
           </div>
 
