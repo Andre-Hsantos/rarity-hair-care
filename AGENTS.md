@@ -11,3 +11,7 @@
 
 - Cart/favorites live in an in-memory React context (src/lib/store.tsx) with mock catalog in src/lib/products.ts — prototype phase, no backend yet.
 - Site chrome (Header/Footer) renders once in __root around <Outlet/> so every page shares navigation.
+
+- Data model lives in Lovable Cloud (migration drizzle/migrations/0000_rarity_core_schema.sql); roles in user_roles + has_role(); passwords only in the auth system. Why: secure, relational base for real features.
+- Order shipping NULL means "a combinar" (set by admin); no automatic freight. Why: MVP business rule.
+- Pro documents go in private bucket pro-documents under <user_id>/ ; only admins can read. Why: sensitive documents.
