@@ -16,6 +16,7 @@ import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
@@ -54,6 +55,11 @@ const ProdutosRoute = ProdutosRouteImport.update({
   path: '/produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/login'
     | '/produtos'
+    | '/redefinir-senha'
     | '/sobre'
     | '/minha-conta'
     | '/produto/$id'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/login'
     | '/produtos'
+    | '/redefinir-senha'
     | '/sobre'
     | '/minha-conta'
     | '/produto/$id'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/login'
     | '/produtos'
+    | '/redefinir-senha'
     | '/sobre'
     | '/_authenticated/minha-conta'
     | '/produto/$id'
@@ -150,6 +162,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   LoginRoute: typeof LoginRoute
   ProdutosRoute: typeof ProdutosRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SobreRoute: typeof SobreRoute
   ProdutoIdRoute: typeof ProdutoIdRoute
 }
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   LoginRoute: LoginRoute,
   ProdutosRoute: ProdutosRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
   SobreRoute: SobreRoute,
   ProdutoIdRoute: ProdutoIdRoute,
 }

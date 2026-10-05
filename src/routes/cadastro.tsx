@@ -4,6 +4,9 @@ import { ArrowLeft, Briefcase, User } from "lucide-react";
 import { toast } from "sonner";
 import { AuthShell, Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
+import { ProofFields } from "@/components/site/ProofFields";
+import { supabase } from "@/integrations/supabase/client";
+import { submitProRequest, validateDoc, type ProofType } from "@/lib/auth";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -19,6 +22,7 @@ export const Route = createFileRoute("/cadastro")({
 
 function Signup() {
   const [type, setType] = useState<null | "normal" | "pro">(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   if (!type)
@@ -48,28 +52,58 @@ function Signup() {
       </button>
       <form
         className="space-y-4"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
-          toast.success(type === "pro" ? "Solicitação enviada para análise (demonstrativo)." : "Conta criada! (demonstrativo)");
-          navigate({ to: "/minha-conta" });
+          const fd = new FormData(e.currentTarget);
+          const file = fd.get("doc_file") as File | null;
+          if (type === "pro") { const err = validateDoc(file); if (err) { toast.error(err); return; } }
+          const cpfDigits = String(fd.get("cpf") ?? "").replace(/\D/g, "");
+          setLoading(true);
+          const { data, error } = await supabase.auth.signUp({
+            email: String(fd.get("email")),
+            password: String(fd.get("pwd")),
+            options: {
+              emailRedirectTo: `${window.location.origin}/minha-conta`,
+              data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum" },
+            },
+          });
+          if (error) {
+            setLoading(false);
+            toast.error(error.message.toLowerCase().includes("registered") ? "Este e-mail já está cadastrado." : "Não foi possível criar a conta. Verifique os dados (CPF pode já estar em uso).");
+            return;
+          }
+          if (type === "pro" && data.session && data.user && file) {
+            try { await submitProRequest(data.user.id, file, String(fd.get("proof_type")) as ProofType); }
+            catch (err) { toast.error((err as Error).message); }
+          }
+          setLoading(false);
+          if (data.session) {
+            toast.success(type === "pro" ? "Conta criada e solicitação enviada para análise." : "Conta criada!");
+            navigate({ to: "/minha-conta" });
+          } else {
+            toast.success(type === "pro"
+              ? "Conta criada! Confirme seu e-mail e, ao entrar, envie o comprovante em Minha conta › Conta profissional."
+              : "Conta criada! Confirme seu e-mail para entrar.", { duration: 10000 });
+            navigate({ to: "/login" });
+          }
         }}
       >
-        <Field id="name" label="Nome completo" required />
-        <Field id="email" label="E-mail" type="email" required />
-        <Field id="phone" label="WhatsApp" type="tel" required placeholder="(00) 00000-0000" />
+        <Field id="name" name="name" label="Nome completo" required />
+        <Field id="email" name="email" label="E-mail" type="email" required autoComplete="email" />
+        <Field id="phone" name="phone" label="WhatsApp" type="tel" required placeholder="(00) 00000-0000" />
+        <Field id="cpf" name="cpf" label="CPF" inputMode="numeric" placeholder="000.000.000-00" />
         {type === "pro" && (
           <>
-            <Field id="doc" label="CPF ou CNPJ" required />
             <Field id="business" label="Salão / estabelecimento" />
-            <Field id="area" label="Área de atuação" placeholder="Ex.: cabeleireira, colorista" />
+            <ProofFields />
           </>
         )}
-        <Field id="pwd" label="Senha" type="password" required minLength={8} hint="Mínimo de 8 caracteres." />
+        <Field id="pwd" name="pwd" label="Senha" type="password" required minLength={8} hint="Mínimo de 8 caracteres." autoComplete="new-password" />
         <label className="flex items-start gap-2.5 pt-1 text-sm text-muted-foreground">
           <input type="checkbox" required className="mt-1 accent-[var(--gold-deep)]" />
           Li e aceito os Termos de Uso e a Política de Privacidade.
         </label>
-        <Button variant="dark" size="lg" className="w-full">{type === "pro" ? "Enviar solicitação" : "Criar conta"}</Button>
+        <Button variant="dark" size="lg" className="w-full" disabled={loading}>{loading ? "Enviando..." : type === "pro" ? "Enviar solicitação" : "Criar conta"}</Button>
       </form>
     </AuthShell>
   );
