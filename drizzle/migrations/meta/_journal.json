@@ -8,6 +8,13 @@
       "when": 1790961771211,
       "tag": "0000_rarity_core_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791220415702,
+      "tag": "0001_security_hardening_auth",
+      "breakpoints": true
     }
   ]
 }
