@@ -13,7 +13,7 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/minha-conta")({
+export const Route = createFileRoute("/_authenticated/minha-conta")({
   head: () => ({
     meta: [
       { title: "Minha conta — Rarity Hair Care" },
