@@ -8,12 +8,15 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
+import { ProofFields } from "@/components/site/ProofFields";
+import { supabase } from "@/integrations/supabase/client";
+import { submitProRequest, useAuth, type ProofType } from "@/lib/auth";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/minha-conta")({
+export const Route = createFileRoute("/_authenticated/minha-conta")({
   head: () => ({
     meta: [
       { title: "Minha conta — Rarity Hair Care" },
@@ -40,14 +43,23 @@ const orders = [
   { id: "#R-1019", date: "28/08", status: "Retirado na loja", total: 119.9 },
 ];
 
+const tierLabel = {
+  admin: "Administrador",
+  profissional_aprovado: "Profissional aprovado",
+  profissional_pendente: "Profissional em análise",
+  comum: "Cliente",
+} as const;
+
 function Account() {
   const [tab, setTab] = useState<Tab>("perfil");
   const { favorites } = useStore();
+  const { session, profile, tier, refresh, signOut } = useAuth();
   const navigate = useNavigate();
+  const firstName = profile?.name?.split(" ")[0] || "Cliente";
 
   return (
     <>
-      <PageHeader title="Minha conta" crumb="Minha conta" subtitle="Olá, Cliente. Dados demonstrativos." />
+      <PageHeader title="Minha conta" crumb="Minha conta" subtitle={`Olá, ${firstName}. Tipo de conta: ${tierLabel[tier]}.`} />
       <div className="container-site mt-10 grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
         <aside className="flex gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
           {tabs.map(({ id, label, icon: I }) => (
@@ -67,23 +79,40 @@ function Account() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={() => toast("Exclusão simulada (demonstrativo).")}>Excluir</AlertDialogAction>
+                <AlertDialogAction onClick={() => toast("Exclusão de conta ainda não disponível (próxima etapa).")}>Excluir</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <button onClick={() => { toast("Você saiu da conta."); navigate({ to: "/" }); }} className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm hover:bg-accent">
+          <button onClick={async () => { await signOut(); toast("Você saiu da conta."); navigate({ to: "/" }); }} className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm hover:bg-accent">
             <LogOut className="size-4" /> Sair
           </button>
         </aside>
 
         <section className="min-w-0 rounded-xl border bg-card p-6 sm:p-8">
           {tab === "perfil" && (
-            <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); toast.success("Perfil atualizado"); }}>
+            <form
+              key={profile?.updated_at ?? "p"}
+              className="grid gap-4 sm:grid-cols-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
+                const cpf = String(fd.get("cpf") ?? "").replace(/\D/g, "");
+                const birth = String(fd.get("birth") ?? "");
+                const { error } = await supabase.rpc("update_own_profile", {
+                  _name: String(fd.get("name")), _phone: String(fd.get("phone")),
+                  _birth_date: (birth || null) as string, _cpf: (cpf || null) as string,
+                });
+                if (error) { toast.error("Não foi possível salvar (CPF pode já estar em uso)."); return; }
+                await refresh();
+                toast.success("Perfil atualizado");
+              }}
+            >
               <h2 className="text-3xl sm:col-span-2">Meu perfil</h2>
-              <Field id="n" label="Nome" defaultValue="Cliente Demonstrativo" />
-              <Field id="e" label="E-mail" type="email" defaultValue="cliente@email.com" />
-              <Field id="t" label="WhatsApp" defaultValue="(00) 00000-0000" />
-              <Field id="c" label="Cidade" placeholder="Sua cidade" />
+              <Field id="name" name="name" label="Nome" required defaultValue={profile?.name ?? ""} />
+              <Field id="e" label="E-mail" type="email" disabled defaultValue={profile?.email ?? session?.user.email ?? ""} />
+              <Field id="phone" name="phone" label="WhatsApp" defaultValue={profile?.phone ?? ""} />
+              <Field id="cpf" name="cpf" label="CPF" inputMode="numeric" defaultValue={profile?.cpf ?? ""} />
+              <Field id="birth" name="birth" label="Data de nascimento" type="date" defaultValue={profile?.birth_date ?? ""} />
               <div className="sm:col-span-2"><Button variant="dark">Salvar alterações</Button></div>
             </form>
           )}
@@ -125,21 +154,55 @@ function Account() {
           )}
           {tab === "pro" && (
             <div className="max-w-lg">
-              <h2 className="text-3xl">Solicitar conta profissional</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Para profissionais da beleza. A solicitação passará por análise.</p>
-              <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); toast.success("Solicitação enviada (demonstrativo)."); }}>
-                <Field id="doc" label="CPF ou CNPJ" required />
-                <Field id="biz" label="Salão / estabelecimento" />
-                <Button variant="gold">Enviar solicitação</Button>
-              </form>
+              <h2 className="text-3xl">Conta profissional</h2>
+              {tier === "profissional_aprovado" || tier === "admin" ? (
+                <p className="mt-4 text-sm text-success">Sua conta profissional está aprovada.</p>
+              ) : tier === "profissional_pendente" ? (
+                <p className="mt-4 text-sm text-muted-foreground">Sua solicitação está em análise. Você será avisada quando houver uma decisão.</p>
+              ) : (
+                <>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {profile?.pro_status === "rejeitado" ? "Sua solicitação anterior não foi aprovada. Você pode enviar um novo comprovante." : "Para profissionais da beleza. A solicitação passará por análise."}
+                  </p>
+                  <form
+                    className="mt-6 space-y-4"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const fd = new FormData(e.currentTarget);
+                      try {
+                        await submitProRequest(session!.user.id, fd.get("doc_file") as File, String(fd.get("proof_type")) as ProofType);
+                        await refresh();
+                        toast.success("Solicitação enviada para análise.");
+                      } catch (err) { toast.error((err as Error).message); }
+                    }}
+                  >
+                    <ProofFields />
+                    <Button variant="gold">Enviar solicitação</Button>
+                  </form>
+                </>
+              )}
             </div>
           )}
           {tab === "senha" && (
             <div className="max-w-md">
               <h2 className="text-3xl">Alterar senha</h2>
-              <form className="mt-6 space-y-4" onSubmit={(e) => { e.preventDefault(); toast.success("Senha alterada (demonstrativo)."); }}>
-                <Field id="cur" label="Senha atual" type="password" required />
-                <Field id="new" label="Nova senha" type="password" required minLength={8} hint="Mínimo de 8 caracteres." />
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const form = e.currentTarget;
+                  const fd = new FormData(form);
+                  const email = session?.user.email ?? "";
+                  const check = await supabase.auth.signInWithPassword({ email, password: String(fd.get("cur")) });
+                  if (check.error) { toast.error("Senha atual incorreta."); return; }
+                  const { error } = await supabase.auth.updateUser({ password: String(fd.get("new")) });
+                  if (error) { toast.error("Não foi possível alterar a senha."); return; }
+                  form.reset();
+                  toast.success("Senha alterada.");
+                }}
+              >
+                <Field id="cur" name="cur" label="Senha atual" type="password" required autoComplete="current-password" />
+                <Field id="new" name="new" label="Nova senha" type="password" required minLength={8} hint="Mínimo de 8 caracteres." autoComplete="new-password" />
                 <Button variant="dark">Atualizar senha</Button>
               </form>
             </div>
