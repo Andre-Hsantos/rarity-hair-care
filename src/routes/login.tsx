@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { AuthShell, Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -19,24 +20,38 @@ export const Route = createFileRoute("/login")({
 
 function Login() {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+
+  async function forgot() {
+    if (!email) { toast.error("Digite seu e-mail acima para recuperar a senha."); return; }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/redefinir-senha` });
+    if (error) toast.error("Não foi possível enviar o link. Tente novamente.");
+    else toast.success("Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.");
+  }
+
   return (
     <AuthShell title="Entrar" subtitle="Acesse sua conta para acompanhar pedidos e favoritos.">
       <form
         className="space-y-5"
-        onSubmit={(e) => {
+        onSubmit={async (e) => {
           e.preventDefault();
+          const fd = new FormData(e.currentTarget);
           setLoading(true);
-          setTimeout(() => {
-            toast.success("Bem-vinda de volta! (demonstrativo)");
-            navigate({ to: "/minha-conta" });
-          }, 700);
+          const { error } = await supabase.auth.signInWithPassword({ email: String(fd.get("email")), password: String(fd.get("password")) });
+          setLoading(false);
+          if (error) {
+            toast.error(error.message.includes("Email not confirmed") ? "Confirme seu e-mail antes de entrar." : "E-mail ou senha incorretos.");
+            return;
+          }
+          toast.success("Bem-vinda de volta!");
+          navigate({ to: "/minha-conta" });
         }}
       >
-        <Field id="email" label="E-mail" type="email" required placeholder="voce@email.com" autoComplete="email" />
-        <Field id="password" label="Senha" type="password" required minLength={6} placeholder="••••••••" autoComplete="current-password" />
+        <Field id="email" name="email" label="E-mail" type="email" required placeholder="voce@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Field id="password" name="password" label="Senha" type="password" required minLength={6} placeholder="••••••••" autoComplete="current-password" />
         <div className="text-right">
-          <a href="#" onClick={(e) => { e.preventDefault(); toast("Enviaremos um link de recuperação (demonstrativo)."); }} className="text-sm text-gold-deep hover:underline">Esqueci minha senha</a>
+          <button type="button" onClick={forgot} className="text-sm text-gold-deep hover:underline">Esqueci minha senha</button>
         </div>
         <Button variant="dark" size="lg" className="w-full" disabled={loading}>
           {loading && <Loader2 className="animate-spin" />} {loading ? "Entrando..." : "Entrar"}
