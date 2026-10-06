@@ -12,7 +12,7 @@ async function count(table: "orders" | "products" | "pro_requests", pending = fa
   return c ?? 0;
 }
 
-function Stat({ label, value, to, loading }: { label: string; value?: number; to: string; loading: boolean }) {
+function Stat({ label, value, to, loading }: { label: string; value: number | undefined; to: string; loading: boolean }) {
   return (
     <Link to={to} className="rounded-lg border bg-card p-5 transition hover:border-gold">
       <p className="text-sm text-muted-foreground">{label}</p>
