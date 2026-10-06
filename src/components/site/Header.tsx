@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Bell, ChevronDown, Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Bell, ChevronDown, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
 import { categories } from "@/lib/products";
@@ -66,7 +66,7 @@ function IconLink({ to, label, children, badge }: { to: string; label: string; c
 
 export function Header() {
   const { count, favorites } = useStore();
-  const { session } = useAuth();
+  const { session, isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
 
   return (
@@ -118,6 +118,7 @@ export function Header() {
               <IconLink to="/minha-conta" label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
               <IconLink to="/minha-conta" label="Notificações" badge={2}><Bell className="size-5" /></IconLink>
             </span>
+            {isAdmin && <IconLink to="/admin" label="Painel"><LayoutDashboard className="size-5" /></IconLink>}
             <IconLink to={session ? "/minha-conta" : "/login"} label={session ? "Minha conta" : "Entrar"}><User className="size-5" /></IconLink>
             <IconLink to="/carrinho" label="Carrinho" badge={count}><ShoppingBag className="size-5" /></IconLink>
           </div>
