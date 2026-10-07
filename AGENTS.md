@@ -15,3 +15,4 @@
 - Data model lives in Lovable Cloud (migration drizzle/migrations/0000_rarity_core_schema.sql); roles in user_roles + has_role(); passwords only in the auth system. Why: secure, relational base for real features.
 - Order shipping NULL means "a combinar" (set by admin); no automatic freight. Why: MVP business rule.
 - Pro documents go in private bucket pro-documents under <user_id>/ ; only admins can read. Why: sensitive documents.
+- Public catalog reads via RPC catalog_products() (security definer, masks prices for non-approved-pros); Home sections from home_section_products (manual curation). Why: show pro-only items as "Sob consulta" without exposing prices.
