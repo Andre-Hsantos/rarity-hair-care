@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
-import { BarChart3, Bell, Boxes, ClipboardList, FolderTree, Settings, Tag, UserCheck, Users } from "lucide-react";
+import { BarChart3, Bell, Boxes, ClipboardList, FolderTree, Percent, Settings, Tag, UserCheck, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 // Admin gate: role is checked in the database (has_role on user_roles). RLS also enforces it on every admin read/write.
@@ -31,7 +31,8 @@ const items = [
   { to: "/admin/categorias", label: "Categorias", icon: FolderTree },
   { to: "/admin/pedidos", label: "Pedidos", icon: ClipboardList },
   { to: "/admin/profissionais", label: "Profissionais", icon: UserCheck },
-  { to: "/admin/cupons", label: "Cupons e promoções", icon: Tag },
+  { to: "/admin/cupons", label: "Cupons", icon: Tag },
+  { to: "/admin/promocoes", label: "Promoções", icon: Percent },
   { to: "/admin/clientes", label: "Clientes", icon: Users },
   { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
