@@ -39,7 +39,7 @@ export function Footer() {
         </div>
         <div>
           <p className="eyebrow text-gold">Atendimento</p>
-          <a href="#" className="mt-4 inline-flex items-center gap-2 rounded-md border border-gold/40 px-4 py-2.5 text-sm text-ink-foreground transition hover:bg-gold/10">
+          <a href="https://wa.me/5527997579959" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-md border border-gold/40 px-4 py-2.5 text-sm text-ink-foreground transition hover:bg-gold/10">
             <MessageCircle className="size-4 text-gold" /> Fale pelo WhatsApp
           </a>
           <p className="mt-4 text-xs">Contato e horários a definir.</p>
