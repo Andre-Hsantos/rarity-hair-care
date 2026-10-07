@@ -36,6 +36,20 @@
       "when": 1791398963557,
       "tag": "0004_home_sections_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791402539990,
+      "tag": "0005_phase3_orders_checkout",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791402717928,
+      "tag": "0006_orders_coupon_code_snapshot",
+      "breakpoints": true
     }
   ]
 }

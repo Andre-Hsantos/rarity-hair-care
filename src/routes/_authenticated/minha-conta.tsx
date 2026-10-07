@@ -3,6 +3,10 @@ import { useState } from "react";
 import { Bell, Briefcase, Heart, KeyRound, LogOut, Package, Trash2, User } from "lucide-react";
 import { toast } from "sonner";
 import { brl } from "@/lib/catalog";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOrder } from "@/lib/orderQueries";
+import { orderNumber } from "@/lib/orders";
+import { OrderDetail, StatusBadge } from "@/components/site/OrderDetail";
 import { useStore } from "@/lib/store";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -38,10 +42,6 @@ const tabs = [
 ] as const;
 type Tab = (typeof tabs)[number]["id"];
 
-const orders = [
-  { id: "#R-1024", date: "12/09", status: "Entregue", total: 209.8 },
-  { id: "#R-1019", date: "28/08", status: "Retirado na loja", total: 119.9 },
-];
 
 const tierLabel = {
   admin: "Administrador",
@@ -116,20 +116,7 @@ function Account() {
               <div className="sm:col-span-2"><Button variant="dark">Salvar alterações</Button></div>
             </form>
           )}
-          {tab === "pedidos" && (
-            <div>
-              <h2 className="text-3xl">Meus pedidos</h2>
-              <ul className="mt-6 divide-y rounded-lg border">
-                {orders.map((o) => (
-                  <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
-                    <div><p className="font-medium">{o.id}</p><p className="text-muted-foreground">{o.date}</p></div>
-                    <span className="rounded-full bg-success/10 px-3 py-1 text-xs text-success">{o.status}</span>
-                    <span className="font-medium">{brl(o.total)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {tab === "pedidos" && <MyOrders />}
           {tab === "notificacoes" && (
             <div>
               <h2 className="text-3xl">Central de Notificações:</h2>
@@ -210,5 +197,39 @@ function Account() {
         </section>
       </div>
     </>
+  );
+}
+
+function MyOrders() {
+  const { session } = useAuth();
+  const [open, setOpen] = useState<number | null>(null);
+  const list = useQuery({
+    queryKey: ["my-orders", session?.user.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("orders").select("id, created_at, status, total, delivery_method, shipping").eq("user_id", session!.user.id).order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+  const detail = useQuery({ queryKey: ["order", String(open)], enabled: open != null, queryFn: () => fetchOrder(open!) });
+  return (
+    <div>
+      <h2 className="text-3xl">Meus pedidos</h2>
+      {list.isLoading ? <p className="mt-4 text-muted-foreground">Carregando…</p> : !list.data?.length ? <p className="mt-4 text-muted-foreground">Você ainda não fez pedidos.</p> : (
+        <ul className="mt-6 divide-y rounded-lg border">
+          {list.data.map((o) => (
+            <li key={o.id}>
+              <button onClick={() => setOpen(open === o.id ? null : o.id)} className="flex w-full flex-wrap items-center justify-between gap-3 p-4 text-left text-sm hover:bg-accent/50">
+                <div><p className="font-medium">Pedido {orderNumber(o.id)}</p><p className="text-muted-foreground">{new Date(o.created_at).toLocaleDateString("pt-BR")} · {o.delivery_method === "entrega" ? "Entrega" : "Retirada"}</p></div>
+                <StatusBadge status={o.status} />
+                <span className="font-medium">{brl(Number(o.total))}</span>
+              </button>
+              {open === o.id && <div className="border-t bg-surface/50 p-4">{detail.data ? <OrderDetail o={detail.data} /> : <p className="text-muted-foreground">Carregando…</p>}</div>}
+            </li>
+          ))}
+        </ul>
+      )}
+      <p className="mt-4 text-xs text-muted-foreground">Para alterar ou cancelar um pedido, fale com a loja pelo WhatsApp.</p>
+    </div>
   );
 }

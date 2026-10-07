@@ -19,6 +19,7 @@ import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated/checkout'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -31,6 +32,7 @@ import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin/produtos'
 import { Route as AuthenticatedAdminProfissionaisRouteImport } from './routes/_authenticated/admin/profissionais'
 import { Route as AuthenticatedAdminPromocoesRouteImport } from './routes/_authenticated/admin/promocoes'
+import { Route as AuthenticatedPedidoIdRouteImport } from './routes/_authenticated/pedido.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -79,6 +81,11 @@ const SobreRoute = SobreRouteImport.update({
 const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCheckoutRoute = AuthenticatedCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
@@ -150,6 +157,11 @@ const AuthenticatedAdminPromocoesRoute =
     path: '/promocoes',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedPedidoIdRoute = AuthenticatedPedidoIdRouteImport.update({
+  id: '/pedido/$id',
+  path: '/pedido/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -172,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -183,6 +197,7 @@ export interface FileRoutesByTo {
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
+  '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -194,6 +209,7 @@ export interface FileRoutesByTo {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -208,6 +224,7 @@ export interface FileRoutesById {
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -219,6 +236,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/_authenticated/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/_authenticated/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -233,6 +251,7 @@ export interface FileRouteTypes {
     | '/redefinir-senha'
     | '/sobre'
     | '/admin'
+    | '/checkout'
     | '/minha-conta'
     | '/produto/$id'
     | '/admin/categorias'
@@ -244,6 +263,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/profissionais'
     | '/admin/promocoes'
+    | '/pedido/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -255,6 +275,7 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/redefinir-senha'
     | '/sobre'
+    | '/checkout'
     | '/minha-conta'
     | '/produto/$id'
     | '/admin/categorias'
@@ -266,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/profissionais'
     | '/admin/promocoes'
+    | '/pedido/$id'
     | '/admin'
   id:
     | '__root__'
@@ -279,6 +301,7 @@ export interface FileRouteTypes {
     | '/redefinir-senha'
     | '/sobre'
     | '/_authenticated/admin'
+    | '/_authenticated/checkout'
     | '/_authenticated/minha-conta'
     | '/produto/$id'
     | '/_authenticated/admin/categorias'
@@ -290,6 +313,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/profissionais'
     | '/_authenticated/admin/promocoes'
+    | '/_authenticated/pedido/$id'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -378,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/checkout': {
+      id: '/_authenticated/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof AuthenticatedCheckoutRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/minha-conta': {
       id: '/_authenticated/minha-conta'
       path: '/minha-conta'
@@ -462,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPromocoesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/pedido/$id': {
+      id: '/_authenticated/pedido/$id'
+      path: '/pedido/$id'
+      fullPath: '/pedido/$id'
+      preLoaderRoute: typeof AuthenticatedPedidoIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -499,12 +537,16 @@ const AuthenticatedAdminRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedCheckoutRoute: typeof AuthenticatedCheckoutRoute
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
+  AuthenticatedPedidoIdRoute: typeof AuthenticatedPedidoIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedCheckoutRoute: AuthenticatedCheckoutRoute,
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
+  AuthenticatedPedidoIdRoute: AuthenticatedPedidoIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

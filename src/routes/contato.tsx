@@ -18,7 +18,7 @@ export const Route = createFileRoute("/contato")({
 });
 
 const info = [
-  { icon: MessageCircle, label: "WhatsApp", value: "(00) 00000-0000" },
+  { icon: MessageCircle, label: "WhatsApp", value: "(27) 99757-9959" },
   { icon: Phone, label: "Telefone", value: "(00) 0000-0000" },
   { icon: MapPin, label: "Endereço", value: "Endereço da loja a definir" },
   { icon: Clock, label: "Horário", value: "Horário de atendimento a definir" },
