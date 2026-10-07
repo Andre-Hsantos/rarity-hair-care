@@ -16,8 +16,8 @@ type Search = { modo: "entrega" | "retirada"; cupom?: string | undefined };
 
 export const Route = createFileRoute("/_authenticated/checkout")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    modo: s.modo === "entrega" ? "entrega" : "retirada",
-    cupom: typeof s.cupom === "string" && s.cupom ? s.cupom : undefined,
+    modo: s['modo'] === "entrega" ? "entrega" : "retirada",
+    cupom: typeof s['cupom'] === "string" && s['cupom'] ? s['cupom'] : undefined,
   }),
   head: () => ({
     meta: [
