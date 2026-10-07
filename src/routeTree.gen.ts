@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_au
 import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authenticated/admin/pedidos'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin/produtos'
 import { Route as AuthenticatedAdminProfissionaisRouteImport } from './routes/_authenticated/admin/profissionais'
+import { Route as AuthenticatedAdminPromocoesRouteImport } from './routes/_authenticated/admin/promocoes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -143,6 +144,12 @@ const AuthenticatedAdminProfissionaisRoute =
     path: '/profissionais',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminPromocoesRoute =
+  AuthenticatedAdminPromocoesRouteImport.update({
+    id: '/promocoes',
+    path: '/promocoes',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
+  '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -185,6 +193,7 @@ export interface FileRoutesByTo {
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
+  '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -209,6 +218,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
+  '/_authenticated/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/profissionais'
+    | '/admin/promocoes'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/profissionais'
+    | '/admin/promocoes'
     | '/admin'
   id:
     | '__root__'
@@ -277,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/pedidos'
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/profissionais'
+    | '/_authenticated/admin/promocoes'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -442,6 +455,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProfissionaisRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/promocoes': {
+      id: '/_authenticated/admin/promocoes'
+      path: '/promocoes'
+      fullPath: '/admin/promocoes'
+      preLoaderRoute: typeof AuthenticatedAdminPromocoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
   }
 }
 
@@ -454,6 +474,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminPedidosRoute: typeof AuthenticatedAdminPedidosRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminProfissionaisRoute: typeof AuthenticatedAdminProfissionaisRoute
+  AuthenticatedAdminPromocoesRoute: typeof AuthenticatedAdminPromocoesRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -467,6 +488,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminPedidosRoute: AuthenticatedAdminPedidosRoute,
     AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
     AuthenticatedAdminProfissionaisRoute: AuthenticatedAdminProfissionaisRoute,
+    AuthenticatedAdminPromocoesRoute: AuthenticatedAdminPromocoesRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   }
 

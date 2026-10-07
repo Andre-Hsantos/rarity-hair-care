@@ -46,7 +46,7 @@ export function Empty({ children }: { children: ReactNode }) {
 }
 
 const tones: Record<string, string> = {
-  ok: "bg-emerald-600/10 text-emerald-800 border-emerald-700/20",
+  ok: "bg-ink/10 text-foreground border-ink/25",
   warn: "bg-gold/15 text-gold-deep border-gold/30",
   off: "bg-muted text-muted-foreground border-border",
   bad: "bg-destructive/10 text-destructive border-destructive/20",
