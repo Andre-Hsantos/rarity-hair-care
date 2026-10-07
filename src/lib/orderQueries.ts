@@ -4,7 +4,7 @@ import type { AddressSnap } from "@/lib/orders";
 export async function fetchOrder(id: number) {
   const { data, error } = await supabase
     .from("orders")
-    .select("*, order_items(*), order_history(*), coupons(code)")
+    .select("*, order_items(*), order_history(*)")
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
@@ -14,7 +14,7 @@ export async function fetchOrder(id: number) {
     delivery: data.delivery_method,
     address: (data.delivery_address as AddressSnap | null) ?? null,
     items: data.order_items,
-    coupon: (data.coupons as { code: string } | null)?.code ?? null,
+    coupon: data.coupon_code,
     history: [...data.order_history].sort((a, b) => a.created_at.localeCompare(b.created_at)),
   };
 }
