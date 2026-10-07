@@ -77,6 +77,20 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
   const isKit = !!prod.is_kit;
   const [items, setItems] = useState<{ product_id: string; quantity: number }[] | null>(isNew ? [] : null);
   const [pick, setPick] = useState("");
+  const [img, setImg] = useState(prod.image_url ?? "");
+  const [uploading, setUploading] = useState(false);
+  const upload = async (f: File) => {
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
+    if (!["jpg", "jpeg", "png", "webp"].includes(ext)) return toast.error("Use JPG, PNG ou WebP.");
+    if (f.size > 5 * 1024 * 1024) return toast.error("A foto deve ter até 5 MB.");
+    setUploading(true);
+    const path = `produtos/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, f, { contentType: f.type });
+    setUploading(false);
+    if (error) return toast.error("Não foi possível enviar a foto.");
+    setImg(supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl);
+    toast.success("Foto enviada. Clique em salvar para confirmar.");
+  };
 
   useQuery({
     queryKey: ["kit-items", prod.id],
@@ -140,7 +154,18 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
         <FieldRow label="Categoria">
           <select name="category_id" className={inputCls} defaultValue={prod.category_id ?? ""}><option value="">Sem categoria</option>{cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
         </FieldRow>
-        <FieldRow label="URL da imagem" hint="Imagem quadrada, 1000×1000 px recomendado."><input name="image_url" type="url" className={inputCls} defaultValue={prod.image_url ?? ""} /></FieldRow>
+        <FieldRow label="Foto do produto" hint="JPG, PNG ou WebP até 5 MB. Quadrada, 1000×1000 px recomendado.">
+          <div className="flex items-center gap-3">
+            <span className="size-16 shrink-0 overflow-hidden rounded border bg-surface">{img && <img src={img} alt="" className="size-full object-cover" />}</span>
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+              <label className={`${inputCls} cursor-pointer text-center`}>
+                {uploading ? "Enviando..." : img ? "Trocar foto" : "Enviar foto"}
+                <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ""; }} />
+              </label>
+              <input name="image_url" type="url" placeholder="ou cole um link" className={inputCls} value={img} onChange={(e) => setImg(e.target.value)} />
+            </div>
+          </div>
+        </FieldRow>
         <FieldRow label="Descrição" className="sm:col-span-2"><textarea name="description" className={areaCls} defaultValue={prod.description ?? ""} /></FieldRow>
         <FieldRow label={isKit ? "Preço do kit (R$, manual)" : "Preço normal (R$)"}><input name="price" inputMode="decimal" className={inputCls} defaultValue={prod.price ?? ""} required /></FieldRow>
         <FieldRow label="Preço profissional (R$)" hint="Vazio = mesmo preço normal."><input name="pro_price" inputMode="decimal" className={inputCls} defaultValue={prod.pro_price ?? ""} /></FieldRow>
