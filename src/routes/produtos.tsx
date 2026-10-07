@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { categories, products } from "@/lib/products";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useCatalog, usePublicCategories } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -9,13 +11,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
-type S = { q?: string | undefined; categoria?: string | undefined; promo?: boolean | undefined };
+type S = { q?: string | undefined; categoria?: string | undefined; promo?: boolean | undefined; tipo?: "kit" | undefined };
 
 export const Route = createFileRoute("/produtos")({
   validateSearch: (s: Record<string, unknown>): S => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     categoria: typeof s["categoria"] === "string" ? s["categoria"] : undefined,
     promo: s["promo"] === true || s["promo"] === "true" ? true : undefined,
+    tipo: s["tipo"] === "kit" ? "kit" : undefined,
   }),
   head: () => ({
     meta: [
@@ -23,6 +26,8 @@ export const Route = createFileRoute("/produtos")({
       { name: "description", content: "Catálogo Rarity: shampoos, condicionadores, máscaras, finalizadores, tratamentos e kits." },
       { property: "og:title", content: "Produtos — Rarity Hair Care" },
       { property: "og:description", content: "Explore o catálogo completo da Rarity." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Produtos,
@@ -44,21 +49,40 @@ function Produtos() {
   const [sort, setSort] = useState("relevance");
   const cat = search.categoria;
   const promo = !!search.promo;
+  const kitOnly = search.tipo === "kit";
+  const catalog = useCatalog();
+  const products = catalog.data ?? [];
+  const categories = usePublicCategories().data ?? [];
+  const promoIds = useQuery({
+    queryKey: ["promo-products"],
+    enabled: promo,
+    queryFn: async () => {
+      const now = new Date().toISOString();
+      const { data, error } = await supabase.from("promotion_products").select("product_id, promotions!inner(status, starts_at, ends_at)").eq("promotions.status", "ativo");
+      if (error) throw error;
+      return new Set(data.filter((d) => {
+        const pr = d.promotions as { starts_at: string | null; ends_at: string | null };
+        return (!pr.starts_at || pr.starts_at <= now) && (!pr.ends_at || pr.ends_at >= now);
+      }).map((d) => d.product_id));
+    },
+  }).data;
 
   const list = useMemo(() => {
     const pt = prices.find((p) => p.id === price)!.test;
     let r = products.filter(
       (p) =>
-        (!cat || p.category === cat) &&
-        (!promo || p.oldPrice) &&
+        (!cat || p.categoryId === cat) &&
+        (!kitOnly || p.isKit) &&
+        (!promo || !!promoIds?.has(p.id)) &&
         (!onlyStock || p.inStock) &&
-        pt(p.price) &&
+        (price === "all" || (p.price != null && pt(p.price))) &&
         (!q || p.name.toLowerCase().includes(q.toLowerCase())),
     );
-    if (sort === "asc") r = [...r].sort((a, b) => a.price - b.price);
-    if (sort === "desc") r = [...r].sort((a, b) => b.price - a.price);
+    const val = (n: number | null, d: number) => n ?? d;
+    if (sort === "asc") r = [...r].sort((a, b) => val(a.price, Infinity) - val(b.price, Infinity));
+    if (sort === "desc") r = [...r].sort((a, b) => val(b.price, -Infinity) - val(a.price, -Infinity));
     return r;
-  }, [cat, promo, onlyStock, price, q, sort]);
+  }, [products, promoIds, kitOnly, cat, promo, onlyStock, price, q, sort]);
 
   const setCat = (c?: string) => navigate({ search: (s) => ({ ...s, categoria: c }) });
   const clear = () => {
@@ -71,9 +95,9 @@ function Produtos() {
       <div>
         <p className="eyebrow text-muted-foreground">Categoria</p>
         <div className="mt-3 flex flex-col gap-1">
-          {[undefined, ...categories].map((c) => (
-            <button key={c ?? "all"} onClick={() => setCat(c)} className={`rounded-md px-3 py-2 text-left text-sm transition ${cat === c ? "bg-ink text-ink-foreground" : "hover:bg-accent"}`}>
-              {c ?? "Todas"}
+          {[{ id: undefined, name: "Todas" }, ...categories].map((c) => (
+            <button key={c.id ?? "all"} onClick={() => setCat(c.id)} className={`rounded-md px-3 py-2 text-left text-sm transition ${cat === c.id ? "bg-ink text-ink-foreground" : "hover:bg-accent"}`}>
+              {c.name}
             </button>
           ))}
         </div>
@@ -92,6 +116,10 @@ function Produtos() {
       <div className="space-y-3">
         <p className="eyebrow text-muted-foreground">Outros</p>
         <div className="flex items-center gap-2.5">
+          <Checkbox id="kit" checked={kitOnly} onCheckedChange={(v) => navigate({ search: (s) => ({ ...s, tipo: v ? "kit" : undefined }) })} />
+          <Label htmlFor="kit" className="font-normal">Somente kits</Label>
+        </div>
+        <div className="flex items-center gap-2.5">
           <Checkbox id="stock" checked={onlyStock} onCheckedChange={(v) => setOnlyStock(!!v)} />
           <Label htmlFor="stock" className="font-normal">Somente disponíveis</Label>
         </div>
@@ -105,7 +133,7 @@ function Produtos() {
 
   return (
     <>
-      <PageHeader title={cat ?? "Produtos"} crumb="Produtos" subtitle="Encontre o cuidado ideal para o seu cabelo." />
+      <PageHeader title={categories.find((c) => c.id === cat)?.name ?? (kitOnly ? "Kits" : "Produtos")} crumb="Produtos" subtitle="Encontre o cuidado ideal para o seu cabelo." />
       <div className="container-site mt-10 grid gap-10 lg:grid-cols-[240px_minmax(0,1fr)]">
         <aside className="hidden lg:block">{filters}</aside>
         <div className="min-w-0">
@@ -133,13 +161,15 @@ function Produtos() {
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             <span>{list.length} {list.length === 1 ? "produto" : "produtos"}</span>
-            {(cat || promo || q || onlyStock || price !== "all") && (
+            {(cat || promo || kitOnly || q || onlyStock || price !== "all") && (
               <button onClick={clear} className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs hover:bg-accent">
                 <X className="size-3" /> Limpar filtros
               </button>
             )}
           </div>
-          {list.length ? (
+          {catalog.isLoading ? (
+            <p className="mt-6 text-sm text-muted-foreground">Carregando produtos…</p>
+          ) : list.length ? (
             <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-6 xl:grid-cols-3">
               {list.map((p) => <ProductCard key={p.id} p={p} />)}
             </div>

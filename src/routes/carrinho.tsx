@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Minus, Plus, Store, Trash2, Truck } from "lucide-react";
 import { toast } from "sonner";
-import { brl, getProduct } from "@/lib/products";
+import { brl } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -24,8 +24,8 @@ function Cart() {
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [mode, setMode] = useState<"entrega" | "retirada">("entrega");
-  const lines = cart.map((l) => ({ ...l, p: getProduct(l.id)! }));
-  const subtotal = lines.reduce((s, l) => s + l.p.price * l.qty, 0);
+  const lines = cart;
+  const subtotal = lines.reduce((s, l) => s + (l.p.price ?? 0) * l.qty, 0);
   const shipping = mode === "entrega" ? 15 : 0;
   const total = subtotal - discount + shipping;
 
@@ -53,10 +53,10 @@ function Cart() {
             <ul className="divide-y rounded-xl border bg-card">
               {lines.map(({ p, qty }) => (
                 <li key={p.id} className="grid grid-cols-[80px_minmax(0,1fr)] gap-4 p-4 sm:grid-cols-[96px_minmax(0,1fr)_auto] sm:items-center sm:p-5">
-                  <img src={p.image} alt={p.name} loading="lazy" className="aspect-square w-full rounded-lg bg-surface object-cover" />
+                  <img src={p.image ?? undefined} alt={p.name} loading="lazy" className="aspect-square w-full rounded-lg bg-surface object-cover" />
                   <div className="min-w-0">
                     <Link to="/produto/$id" params={{ id: p.id }} className="font-display text-xl hover:text-gold-deep">{p.name}</Link>
-                    <p className="text-sm text-muted-foreground">{p.size} · {brl(p.price)}</p>
+                    <p className="text-sm text-muted-foreground">{p.size ? `${p.size} · ` : ""}{brl(p.price ?? 0)}</p>
                     <div className="mt-3 flex items-center gap-3">
                       <div className="flex h-9 items-center rounded-md border">
                         <button aria-label="Diminuir" disabled={qty <= 1} onClick={() => setQty(p.id, qty - 1)} className="grid h-full w-9 place-items-center hover:bg-accent disabled:opacity-40"><Minus className="size-3.5" /></button>
@@ -66,7 +66,7 @@ function Cart() {
                       <button onClick={() => remove(p.id)} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-destructive"><Trash2 className="size-4" /> Remover</button>
                     </div>
                   </div>
-                  <p className="col-start-2 font-medium sm:col-start-auto">{brl(p.price * qty)}</p>
+                  <p className="col-start-2 font-medium sm:col-start-auto">{brl((p.price ?? 0) * qty)}</p>
                 </li>
               ))}
             </ul>

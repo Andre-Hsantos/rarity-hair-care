@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Bell, ChevronDown, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
-import { categories } from "@/lib/products";
+import { usePublicCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -66,6 +66,7 @@ function IconLink({ to, label, children, badge }: { to: string; label: string; c
 
 export function Header() {
   const { count, favorites } = useStore();
+  const categories = usePublicCategories().data ?? [];
   const { session, isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
 
@@ -94,8 +95,8 @@ export function Header() {
                   ))}
                   <p className="eyebrow mt-6 px-3 text-muted-foreground">Categorias</p>
                   {categories.map((c) => (
-                    <Link key={c} to="/produtos" search={{ categoria: c }} onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground">
-                      {c}
+                    <Link key={c.id} to="/produtos" search={{ categoria: c.id }} onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground">
+                      {c.name}
                     </Link>
                   ))}
                   <div className="mt-6 border-t pt-4">
@@ -141,8 +142,8 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
               {categories.map((c) => (
-                <DropdownMenuItem key={c} asChild>
-                  <Link to="/produtos" search={{ categoria: c }}>{c}</Link>
+                <DropdownMenuItem key={c.id} asChild>
+                  <Link to="/produtos" search={{ categoria: c.id }}>{c.name}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>

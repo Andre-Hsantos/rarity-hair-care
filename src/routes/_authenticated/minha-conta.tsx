@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Briefcase, Heart, KeyRound, LogOut, Package, Trash2, User } from "lucide-react";
 import { toast } from "sonner";
-import { brl, getProduct } from "@/lib/products";
+import { brl } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -52,7 +52,7 @@ const tierLabel = {
 
 function Account() {
   const [tab, setTab] = useState<Tab>("perfil");
-  const { favorites } = useStore();
+  const { favItems: favorites } = useStore();
   const { session, profile, tier, refresh, signOut } = useAuth();
   const navigate = useNavigate();
   const firstName = profile?.name?.split(" ")[0] || "Cliente";
@@ -147,7 +147,7 @@ function Account() {
               <h2 className="text-3xl">Favoritos</h2>
               {favorites.length ? (
                 <div className="mt-6 grid grid-cols-2 gap-4 xl:grid-cols-3">
-                  {favorites.map((id) => <ProductCard key={id} p={getProduct(id)!} />)}
+                  {favorites.map((p) => <ProductCard key={p.id} p={p} />)}
                 </div>
               ) : <p className="mt-4 text-muted-foreground">Você ainda não favoritou produtos.</p>}
             </div>

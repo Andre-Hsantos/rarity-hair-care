@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Headphones, MessageCircle, Sparkles, Truck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import kit from "@/assets/kit.jpg";
-import { products } from "@/lib/products";
+import { useHomeSection, type Product } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -13,6 +13,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Shampoos, máscaras, finalizadores e kits Rarity Hair Care. Compra pelo WhatsApp, entrega ou retirada." },
       { property: "og:title", content: "Rarity Hair Care — Cuidados capilares premium" },
       { property: "og:description", content: "Conheça a linha Rarity de cuidados capilares." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -26,6 +28,8 @@ const benefits = [
 ];
 
 function Index() {
+  const featured = useHomeSection("featured");
+  const bestSellers = useHomeSection("best_sellers");
   return (
     <>
       <section className="container-site pt-6 sm:pt-10">
@@ -54,20 +58,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="container-site mt-20">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow text-gold-deep">Seleção Rarity</p>
-            <h2 className="mt-2 text-4xl">Produtos em destaque</h2>
-          </div>
-          <Link to="/produtos" className="hidden shrink-0 items-center gap-1 text-sm text-foreground/75 hover:text-foreground sm:inline-flex">
-            Ver todos <ArrowRight className="size-4" />
-          </Link>
-        </div>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-          {products.slice(0, 4).map((p) => <ProductCard key={p.id} p={p} />)}
-        </div>
-      </section>
+      <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
       <section className="container-site mt-20">
         <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
@@ -78,7 +69,7 @@ function Index() {
               Conteúdo demonstrativo para campanhas, ofertas e seleções especiais da marca.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/produtos" search={{ categoria: "Kits" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
+              <Link to="/produtos" search={{ tipo: "kit" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
                 Ver kits
               </Link>
               <Link to="/produtos" search={{ promo: true }} className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
@@ -89,6 +80,8 @@ function Index() {
           <img src={kit} alt="Kit Rarity em caixa preta com detalhes dourados" loading="lazy" width={1200} height={912} className="h-full min-h-72 w-full object-cover" />
         </div>
       </section>
+
+      <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -102,5 +95,25 @@ function Index() {
         </div>
       </section>
     </>
+  );
+}
+
+function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: string; items: Product[] }) {
+  if (!items.length) return null;
+  return (
+    <section className="container-site mt-20">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow text-gold-deep">{eyebrow}</p>
+          <h2 className="mt-2 text-4xl">{title}</h2>
+        </div>
+        <Link to="/produtos" className="hidden shrink-0 items-center gap-1 text-sm text-foreground/75 hover:text-foreground sm:inline-flex">
+          Ver todos <ArrowRight className="size-4" />
+        </Link>
+      </div>
+      <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        {items.map((p) => <ProductCard key={p.id} p={p} />)}
+      </div>
+    </section>
   );
 }
