@@ -16,3 +16,5 @@
 - Order shipping NULL means "a combinar" (set by admin); no automatic freight. Why: MVP business rule.
 - Pro documents go in private bucket pro-documents under <user_id>/ ; only admins can read. Why: sensitive documents.
 - Public catalog reads via RPC catalog_products() (security definer, masks prices for non-approved-pros); Home sections from home_section_products (manual curation). Why: show pro-only items as "Sob consulta" without exposing prices.
+- Order pricing, coupon validation and order creation run only in DB RPCs (_quote_cart / quote_cart / create_order); admin order edits only via admin_update_order* RPCs that write order_history. Why: the browser is never trusted with prices and every change is logged.
+- Cart persists in cart_items for signed-in users (guest cart in localStorage, merged on sign-in); lines store only product id + qty. Why: prices always come from the live catalog.
