@@ -79,15 +79,15 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
   const [pick, setPick] = useState("");
   const [img, setImg] = useState(prod.image_url ?? "");
   const [uploading, setUploading] = useState(false);
-  const upload = async (f: File) => {
+  const upload = async (f: File): Promise<void> => {
     const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
-    if (!["jpg", "jpeg", "png", "webp"].includes(ext)) return toast.error("Use JPG, PNG ou WebP.");
-    if (f.size > 5 * 1024 * 1024) return toast.error("A foto deve ter até 5 MB.");
+    if (!["jpg", "jpeg", "png", "webp"].includes(ext)) { toast.error("Use JPG, PNG ou WebP."); return; }
+    if (f.size > 5 * 1024 * 1024) { toast.error("A foto deve ter até 5 MB."); return; }
     setUploading(true);
     const path = `produtos/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("product-images").upload(path, f, { contentType: f.type });
     setUploading(false);
-    if (error) return toast.error("Não foi possível enviar a foto.");
+    if (error) { toast.error("Não foi possível enviar a foto."); return; }
     setImg(supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl);
     toast.success("Foto enviada. Clique em salvar para confirmar.");
   };
