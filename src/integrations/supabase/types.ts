@@ -547,9 +547,11 @@ export type Database = {
       orders: {
         Row: {
           address_id: string | null
+          client_request_id: string | null
           coupon_id: string | null
           created_at: string
           customer_type: Database["public"]["Enums"]["account_type"]
+          delivery_address: Json | null
           delivery_method: Database["public"]["Enums"]["delivery_method"]
           discount: number
           id: number
@@ -564,9 +566,11 @@ export type Database = {
         }
         Insert: {
           address_id?: string | null
+          client_request_id?: string | null
           coupon_id?: string | null
           created_at?: string
           customer_type: Database["public"]["Enums"]["account_type"]
+          delivery_address?: Json | null
           delivery_method: Database["public"]["Enums"]["delivery_method"]
           discount?: number
           id?: never
@@ -581,9 +585,11 @@ export type Database = {
         }
         Update: {
           address_id?: string | null
+          client_request_id?: string | null
           coupon_id?: string | null
           created_at?: string
           customer_type?: Database["public"]["Enums"]["account_type"]
+          delivery_address?: Json | null
           delivery_method?: Database["public"]["Enums"]["delivery_method"]
           discount?: number
           id?: never
@@ -1014,6 +1020,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _quote_cart: {
+        Args: {
+          _coupon: string
+          _delivery: Database["public"]["Enums"]["delivery_method"]
+          _uid: string
+        }
+        Returns: Json
+      }
+      admin_update_order: {
+        Args: {
+          _note: string
+          _order_id: number
+          _shipping: number
+          _status: string
+          _tecnobyte: boolean
+        }
+        Returns: undefined
+      }
+      admin_update_order_item: {
+        Args: {
+          _discount: number
+          _item_id: number
+          _note: string
+          _quantity: number
+          _unit_price: number
+        }
+        Returns: undefined
+      }
       catalog_products: {
         Args: never
         Returns: {
@@ -1033,6 +1067,16 @@ export type Database = {
           size_label: string
         }[]
       }
+      create_order: {
+        Args: {
+          _address: Json
+          _coupon: string
+          _delivery: Database["public"]["Enums"]["delivery_method"]
+          _note: string
+          _request_id: string
+        }
+        Returns: number
+      }
       decide_pro_request: {
         Args: { _approve: boolean; _note: string; _request_id: string }
         Returns: undefined
@@ -1043,6 +1087,13 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      quote_cart: {
+        Args: {
+          _coupon: string
+          _delivery: Database["public"]["Enums"]["delivery_method"]
+        }
+        Returns: Json
       }
       update_own_profile: {
         Args: {
@@ -1069,6 +1120,9 @@ export type Database = {
         | "enviado"
         | "concluido"
         | "cancelado"
+        | "aguardando_confirmacao"
+        | "aguardando_pagamento"
+        | "pagamento_confirmado"
       pro_status: "nao_solicitado" | "em_analise" | "aprovado" | "rejeitado"
       product_audience: "todos" | "profissionais"
       proof_type: "cnpj" | "mei" | "certificado"
@@ -1216,6 +1270,9 @@ export const Constants = {
         "enviado",
         "concluido",
         "cancelado",
+        "aguardando_confirmacao",
+        "aguardando_pagamento",
+        "pagamento_confirmado",
       ],
       pro_status: ["nao_solicitado", "em_analise", "aprovado", "rejeitado"],
       product_audience: ["todos", "profissionais"],
