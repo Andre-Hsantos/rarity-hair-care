@@ -70,8 +70,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const write = useCallback(async (id: string, qty: number | null) => {
     if (!uid) {
-      const g = readGuest().filter((l) => l.id !== id);
-      saveGuest(qty == null ? g : [...readGuest().map((l) => (l.id === id ? { id, qty } : l)), ...(readGuest().some((l) => l.id === id) ? [] : [{ id, qty }])]);
+      const g = readGuest();
+      saveGuest(qty == null ? g.filter((l) => l.id !== id) : g.some((l) => l.id === id) ? g.map((l) => (l.id === id ? { id, qty } : l)) : [...g, { id, qty }]);
       return;
     }
     const q = qc.getQueryData<Raw[]>(["cart", uid]) ?? [];
