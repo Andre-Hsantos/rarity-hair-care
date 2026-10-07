@@ -214,8 +214,69 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_categories: {
+        Row: {
+          category_id: string
+          coupon_id: string
+        }
+        Insert: {
+          category_id: string
+          coupon_id: string
+        }
+        Update: {
+          category_id?: string
+          coupon_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_categories_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_products: {
+        Row: {
+          coupon_id: string
+          product_id: string
+        }
+        Insert: {
+          coupon_id: string
+          product_id: string
+        }
+        Update: {
+          coupon_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_products_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupons: {
         Row: {
+          audience: Database["public"]["Enums"]["target_audience"]
           code: string
           created_at: string
           discount_type: Database["public"]["Enums"]["discount_type"]
@@ -230,6 +291,7 @@ export type Database = {
           uses_count: number
         }
         Insert: {
+          audience?: Database["public"]["Enums"]["target_audience"]
           code: string
           created_at?: string
           discount_type: Database["public"]["Enums"]["discount_type"]
@@ -244,6 +306,7 @@ export type Database = {
           uses_count?: number
         }
         Update: {
+          audience?: Database["public"]["Enums"]["target_audience"]
           code?: string
           created_at?: string
           discount_type?: Database["public"]["Enums"]["discount_type"]
@@ -721,6 +784,7 @@ export type Database = {
       }
       promotions: {
         Row: {
+          audience: Database["public"]["Enums"]["target_audience"]
           created_at: string
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
@@ -732,6 +796,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          audience?: Database["public"]["Enums"]["target_audience"]
           created_at?: string
           discount_type: Database["public"]["Enums"]["discount_type"]
           discount_value: number
@@ -743,6 +808,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          audience?: Database["public"]["Enums"]["target_audience"]
           created_at?: string
           discount_type?: Database["public"]["Enums"]["discount_type"]
           discount_value?: number
@@ -919,6 +985,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      decide_pro_request: {
+        Args: { _approve: boolean; _note: string; _request_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -956,6 +1026,7 @@ export type Database = {
       proof_type: "cnpj" | "mei" | "certificado"
       record_status: "ativo" | "inativo"
       request_status: "em_analise" | "aprovado" | "rejeitado"
+      target_audience: "todos" | "comuns" | "profissionais"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1103,6 +1174,7 @@ export const Constants = {
       proof_type: ["cnpj", "mei", "certificado"],
       record_status: ["ativo", "inativo"],
       request_status: ["em_analise", "aprovado", "rejeitado"],
+      target_audience: ["todos", "comuns", "profissionais"],
     },
   },
 } as const
