@@ -355,6 +355,35 @@ export type Database = {
           },
         ]
       }
+      home_section_products: {
+        Row: {
+          created_at: string
+          position: number
+          product_id: string
+          section: string
+        }
+        Insert: {
+          created_at?: string
+          position?: number
+          product_id: string
+          section: string
+        }
+        Update: {
+          created_at?: string
+          position?: number
+          product_id?: string
+          section?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_section_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kit_items: {
         Row: {
           kit_id: string
@@ -985,6 +1014,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      catalog_products: {
+        Args: never
+        Returns: {
+          audience: Database["public"]["Enums"]["product_audience"]
+          availability: Database["public"]["Enums"]["availability"]
+          category_id: string
+          category_name: string
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          is_kit: boolean
+          name: string
+          price: number
+          pro_price: number
+          size_group: string
+          size_label: string
+        }[]
+      }
       decide_pro_request: {
         Args: { _approve: boolean; _note: string; _request_id: string }
         Returns: undefined
