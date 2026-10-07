@@ -19,6 +19,7 @@ import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated/checkout'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -79,6 +80,11 @@ const SobreRoute = SobreRouteImport.update({
 const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCheckoutRoute = AuthenticatedCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
+  '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/redefinir-senha'
     | '/sobre'
     | '/admin'
+    | '/checkout'
     | '/minha-conta'
     | '/produto/$id'
     | '/admin/categorias'
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/redefinir-senha'
     | '/sobre'
+    | '/checkout'
     | '/minha-conta'
     | '/produto/$id'
     | '/admin/categorias'
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/redefinir-senha'
     | '/sobre'
     | '/_authenticated/admin'
+    | '/_authenticated/checkout'
     | '/_authenticated/minha-conta'
     | '/produto/$id'
     | '/_authenticated/admin/categorias'
@@ -376,6 +388,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/checkout': {
+      id: '/_authenticated/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof AuthenticatedCheckoutRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/minha-conta': {
@@ -499,11 +518,13 @@ const AuthenticatedAdminRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedCheckoutRoute: typeof AuthenticatedCheckoutRoute
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedCheckoutRoute: AuthenticatedCheckoutRoute,
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
 }
 

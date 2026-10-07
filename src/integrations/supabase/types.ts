@@ -548,6 +548,7 @@ export type Database = {
         Row: {
           address_id: string | null
           client_request_id: string | null
+          coupon_code: string | null
           coupon_id: string | null
           created_at: string
           customer_type: Database["public"]["Enums"]["account_type"]
@@ -567,6 +568,7 @@ export type Database = {
         Insert: {
           address_id?: string | null
           client_request_id?: string | null
+          coupon_code?: string | null
           coupon_id?: string | null
           created_at?: string
           customer_type: Database["public"]["Enums"]["account_type"]
@@ -586,6 +588,7 @@ export type Database = {
         Update: {
           address_id?: string | null
           client_request_id?: string | null
+          coupon_code?: string | null
           coupon_id?: string | null
           created_at?: string
           customer_type?: Database["public"]["Enums"]["account_type"]
