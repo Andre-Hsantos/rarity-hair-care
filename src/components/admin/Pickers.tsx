@@ -25,7 +25,7 @@ export function useAllCategories() {
 }
 
 export function CheckList({ items, selected, onChange, placeholder = "Buscar…" }: {
-  items: { id: string; label: string; sub?: string }[];
+  items: { id: string; label: string; sub?: string | undefined }[];
   selected: string[];
   onChange: (ids: string[]) => void;
   placeholder?: string;

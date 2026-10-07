@@ -19,7 +19,7 @@ export function PageHead({ title, description, action }: { title: string; descri
   );
 }
 
-export function FieldRow({ label, children, hint, className }: { label: string; children: ReactNode; hint?: string; className?: string }) {
+export function FieldRow({ label, children, hint, className }: { label: string; children: ReactNode; hint?: string | undefined; className?: string }) {
   return (
     <label className={cn("block space-y-1.5", className)}>
       <span className="text-sm font-medium">{label}</span>

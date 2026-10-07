@@ -83,7 +83,7 @@ function RequestDetail({ req, onDone }: { req: Req; onDone: () => void }) {
 
   const openDoc = async () => {
     const { data, error } = await supabase.storage.from("pro-documents").createSignedUrl(req.document_path, 120);
-    if (error || !data) return toast.error("Não foi possível abrir o documento.");
+    if (error || !data) { toast.error("Não foi possível abrir o documento."); return; }
     window.open(data.signedUrl, "_blank", "noopener");
   };
 
