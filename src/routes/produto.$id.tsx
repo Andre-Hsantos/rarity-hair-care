@@ -1,39 +1,58 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Check, ChevronRight, Heart, Minus, Plus, Star } from "lucide-react";
-import { brl, getProduct, products } from "@/lib/products";
+import { useQuery } from "@tanstack/react-query";
+import { Check, ChevronRight, Heart, ImageOff, MessageCircle, Minus, Plus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { brl, useCatalog } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/site/ProductCard";
 
 export const Route = createFileRoute("/produto/$id")({
-  loader: ({ params }) => {
-    const p = getProduct(params.id);
-    if (!p) throw notFound();
-    return p;
-  },
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
-      { title: `${loaderData?.name ?? "Produto"} — Rarity Hair Care` },
-      { name: "description", content: loaderData?.short ?? "Produto Rarity Hair Care" },
-      { property: "og:title", content: `${loaderData?.name ?? "Produto"} — Rarity` },
-      { property: "og:description", content: loaderData?.short ?? "" },
+      { title: "Produto — Rarity Hair Care" },
+      { name: "description", content: "Detalhes do produto Rarity Hair Care: descrição, tamanhos e preço." },
+      { property: "og:title", content: "Produto — Rarity Hair Care" },
+      { property: "og:description", content: "Conheça este cuidado capilar da linha Rarity." },
+      { property: "og:type", content: "product" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProductPage,
 });
 
-const reviews = [
-  { name: "Cliente A.", stars: 5, text: "Avaliação demonstrativa: deixou meus fios macios e com brilho." },
-  { name: "Cliente M.", stars: 4, text: "Avaliação demonstrativa: textura agradável e perfume suave." },
-];
-
 function ProductPage() {
-  const p = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const catalog = useCatalog();
   const { add, toggleFav, favorites } = useStore();
   const [qty, setQty] = useState(1);
+  const all = catalog.data ?? [];
+  const p = all.find((x) => x.id === id);
+  const kit = useQuery({
+    queryKey: ["kit-items", id],
+    enabled: !!p?.isKit,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("kit_items").select("product_id, quantity").eq("kit_id", id);
+      if (error) throw error;
+      return data;
+    },
+  }).data;
+
+  if (catalog.isLoading || !catalog.data) return <div className="container-site py-20 text-sm text-muted-foreground">Carregando…</div>;
+  if (!p)
+    return (
+      <div className="container-site py-24 text-center">
+        <p className="font-display text-4xl">Produto não encontrado</p>
+        <p className="mt-2 text-sm text-muted-foreground">Ele pode ter sido removido ou estar indisponível.</p>
+        <Link to="/produtos" className={buttonVariants({ variant: "gold", className: "mt-6" })}>Ver produtos</Link>
+      </div>
+    );
+
   const fav = favorites.includes(p.id);
-  const related = products.filter((x) => x.id !== p.id).slice(0, 4);
+  const sizes = p.sizeGroup ? all.filter((x) => x.sizeGroup === p.sizeGroup) : [];
+  const related = all.filter((x) => x.id !== p.id && x.categoryId === p.categoryId).slice(0, 4);
+  const nameOf = (pid: string) => all.find((x) => x.id === pid)?.name ?? pid;
 
   return (
     <div className="container-site">
@@ -44,39 +63,63 @@ function ProductPage() {
       </nav>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="overflow-hidden rounded-2xl border bg-surface">
-          <img src={p.image} alt={p.name} width={816} height={816} className="aspect-square w-full object-cover" />
+          {p.image ? (
+            <img src={p.image} alt={p.name} width={816} height={816} className="aspect-square w-full object-cover" />
+          ) : (
+            <div className="grid aspect-square place-items-center text-muted-foreground"><ImageOff className="size-10" strokeWidth={1.25} /></div>
+          )}
         </div>
         <div className="lg:py-6">
-          <p className="eyebrow text-gold-deep">{p.category}</p>
+          <p className="eyebrow text-gold-deep">{p.category ?? (p.isKit ? "Kit" : "Rarity")}{p.proOnly && " · Profissional"}</p>
           <h1 className="mt-3 text-4xl sm:text-5xl">{p.name}</h1>
-          <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="flex">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`size-4 ${i < Math.round(p.rating) ? "fill-gold text-gold" : "text-border"}`} />)}</span>
-            {p.rating} · {reviews.length} avaliações
-          </div>
-          <p className="mt-6 leading-relaxed text-muted-foreground">{p.description}</p>
+          {p.description && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{p.description}</p>}
           <div className="mt-6 flex items-baseline gap-3">
-            <span className="text-3xl font-medium">{brl(p.price)}</span>
-            {p.oldPrice && <span className="text-muted-foreground line-through">{brl(p.oldPrice)}</span>}
+            <span className="text-3xl font-medium">{p.price == null ? "Sob consulta" : brl(p.price)}</span>
           </div>
           <p className={`mt-2 flex items-center gap-1.5 text-sm ${p.inStock ? "text-success" : "text-destructive"}`}>
-            {p.inStock ? <><Check className="size-4" /> Em estoque</> : "Indisponível no momento"}
+            {p.inStock ? <><Check className="size-4" /> Disponível</> : "Esgotado no momento"}
           </p>
 
-          <div className="mt-8">
-            <p className="eyebrow text-muted-foreground">Tamanho</p>
-            <div className="mt-3 flex gap-2">
-              <span className="rounded-md border-2 border-gold px-4 py-2 text-sm">{p.size}</span>
-              <span className="rounded-md border px-4 py-2 text-sm text-muted-foreground">Refil (em breve)</span>
+          {sizes.length > 1 ? (
+            <div className="mt-8">
+              <p className="eyebrow text-muted-foreground">Tamanho</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {sizes.map((s) => (
+                  <Link key={s.id} to="/produto/$id" params={{ id: s.id }} className={`rounded-md px-4 py-2 text-sm ${s.id === p.id ? "border-2 border-gold" : "border text-muted-foreground hover:bg-accent"}`}>
+                    {s.size ?? s.name}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : p.size ? (
+            <div className="mt-8">
+              <p className="eyebrow text-muted-foreground">Tamanho</p>
+              <span className="mt-3 inline-block rounded-md border-2 border-gold px-4 py-2 text-sm">{p.size}</span>
+            </div>
+          ) : null}
+
+          {p.isKit && !!kit?.length && (
+            <div className="mt-8">
+              <p className="eyebrow text-muted-foreground">Itens do kit</p>
+              <ul className="mt-3 space-y-1.5 text-sm">
+                {kit.map((k) => <li key={k.product_id}>{k.quantity}× {nameOf(k.product_id)}</li>)}
+              </ul>
+            </div>
+          )}
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <div className="flex h-12 items-center rounded-md border">
-              <button aria-label="Diminuir" onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-full w-11 place-items-center hover:bg-accent disabled:opacity-40" disabled={qty <= 1}><Minus className="size-4" /></button>
-              <span className="w-8 text-center text-sm" aria-live="polite">{qty}</span>
-              <button aria-label="Aumentar" onClick={() => setQty((q) => q + 1)} className="grid h-full w-11 place-items-center hover:bg-accent"><Plus className="size-4" /></button>
-            </div>
-            <Button variant="gold" size="lg" className="flex-1" disabled={!p.inStock} onClick={() => add(p, qty)}>Adicionar ao carrinho</Button>
+            {p.price == null ? (
+              <Link to="/contato" className={buttonVariants({ variant: "gold", size: "lg", className: "flex-1" })}><MessageCircle /> Consultar preço</Link>
+            ) : (
+              <>
+                <div className="flex h-12 items-center rounded-md border">
+                  <button aria-label="Diminuir" onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-full w-11 place-items-center hover:bg-accent disabled:opacity-40" disabled={qty <= 1}><Minus className="size-4" /></button>
+                  <span className="w-8 text-center text-sm" aria-live="polite">{qty}</span>
+                  <button aria-label="Aumentar" onClick={() => setQty((q) => q + 1)} className="grid h-full w-11 place-items-center hover:bg-accent"><Plus className="size-4" /></button>
+                </div>
+                <Button variant="gold" size="lg" className="flex-1" disabled={!p.inStock} onClick={() => add(p, qty)}>Adicionar ao carrinho</Button>
+              </>
+            )}
             <Button variant="outline" size="lg" className="px-4" aria-pressed={fav} aria-label="Favoritar" onClick={() => toggleFav(p)}>
               <Heart className={fav ? "fill-gold text-gold" : ""} />
             </Button>
@@ -84,31 +127,14 @@ function ProductPage() {
         </div>
       </div>
 
-      <section className="mt-20 grid gap-10 lg:grid-cols-[1fr_2fr]">
-        <div>
-          <h2 className="text-3xl">Avaliações</h2>
-          <p className="mt-2 text-5xl font-display">{p.rating}</p>
-          <p className="text-sm text-muted-foreground">média de avaliações (demonstrativo)</p>
-        </div>
-        <div className="space-y-4">
-          {reviews.map((r) => (
-            <div key={r.name} className="rounded-xl border bg-card p-5">
-              <div className="flex items-center justify-between">
-                <p className="font-medium">{r.name}</p>
-                <span className="flex">{Array.from({ length: 5 }).map((_, i) => <Star key={i} className={`size-3.5 ${i < r.stars ? "fill-gold text-gold" : "text-border"}`} />)}</span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">{r.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-20">
-        <h2 className="text-3xl">Você também pode gostar</h2>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-          {related.map((x) => <ProductCard key={x.id} p={x} />)}
-        </div>
-      </section>
+      {!!related.length && (
+        <section className="mt-20">
+          <h2 className="text-3xl">Você também pode gostar</h2>
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+            {related.map((x) => <ProductCard key={x.id} p={x} />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

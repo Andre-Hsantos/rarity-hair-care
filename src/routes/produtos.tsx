@@ -116,6 +116,10 @@ function Produtos() {
       <div className="space-y-3">
         <p className="eyebrow text-muted-foreground">Outros</p>
         <div className="flex items-center gap-2.5">
+          <Checkbox id="kit" checked={kitOnly} onCheckedChange={(v) => navigate({ search: (s) => ({ ...s, tipo: v ? "kit" : undefined }) })} />
+          <Label htmlFor="kit" className="font-normal">Somente kits</Label>
+        </div>
+        <div className="flex items-center gap-2.5">
           <Checkbox id="stock" checked={onlyStock} onCheckedChange={(v) => setOnlyStock(!!v)} />
           <Label htmlFor="stock" className="font-normal">Somente disponíveis</Label>
         </div>
