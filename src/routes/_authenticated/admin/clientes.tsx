@@ -8,6 +8,8 @@ import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Empty, ErrorBox, FieldRow, fmtDate, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
+import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
+import { deleteClient } from "@/lib/adminDelete.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/clientes")({ component: Clients });
 
@@ -77,6 +79,11 @@ function ClientDetail({ p, onDone }: { p: Profile; onDone: () => void }) {
     onSuccess: () => { toast.success("Desconto individual salvo."); qc.invalidateQueries({ queryKey: ["admin-clients"] }); onDone(); },
     onError: (e) => toast.error((e as Error).message),
   });
+  const remove = useMutation({
+    mutationFn: () => deleteClient({ data: { userId: p.id } }),
+    onSuccess: () => { toast.success("Cliente excluído definitivamente."); qc.invalidateQueries(); onDone(); },
+    onError: (e) => toast.error((e as Error).message || "Não foi possível excluir o cliente."),
+  });
   const isPro = p.account_type === "profissional" && p.pro_status === "aprovado";
   return (
     <>
@@ -105,6 +112,11 @@ function ClientDetail({ p, onDone }: { p: Profile; onDone: () => void }) {
           <Button variant="dark" className="w-full" disabled={save.isPending} onClick={() => save.mutate()}>Salvar desconto</Button>
         </div>
       ) : <p className="border-t pt-4 text-xs text-muted-foreground">Desconto individual disponível apenas para profissionais aprovados.</p>}
+      <div className="border-t pt-4">
+        <DeleteConfirm label="Excluir cliente" title={`Excluir “${p.name || p.email}”`} pending={remove.isPending} onConfirm={() => remove.mutate()}
+          items={["A conta de acesso (login) e o perfil", "Endereços, carrinho, favoritos, avisos de disponibilidade e avaliações",
+            "Notificações, solicitações e documentos profissionais", "Todos os pedidos do cliente, com itens e histórico"]} />
+      </div>
     </>
   );
 }

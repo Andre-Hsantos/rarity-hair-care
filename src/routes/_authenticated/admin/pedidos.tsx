@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,20 +68,28 @@ function Orders() {
       <Dialog open={open != null} onOpenChange={(v) => !v && setOpen(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader><DialogTitle>Detalhes do pedido</DialogTitle></DialogHeader>
-          {open != null && <AdminOrder id={open} />}
+          {open != null && <AdminOrder id={open} onDeleted={() => setOpen(null)} />}
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-function AdminOrder({ id }: { id: number }) {
+function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin-order", id], queryFn: () => fetchOrder(id) });
   const client = useQuery({
     queryKey: ["admin-order-client", id, q.data?.user_id],
     enabled: !!q.data,
     queryFn: async () => (await supabase.from("profiles").select("name, email, phone, account_type").eq("id", q.data!.user_id).maybeSingle()).data,
+  });
+  const del = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.rpc("admin_delete_order", { _order_id: id });
+      if (error) throw new Error(error.message || "Não foi possível excluir o pedido.");
+    },
+    onSuccess: () => { toast.success(`Pedido ${orderNumber(id)} excluído definitivamente.`); onDeleted(); qc.removeQueries({ queryKey: ["admin-order", id] }); qc.invalidateQueries(); },
+    onError: (e) => toast.error((e as Error).message),
   });
   if (q.isLoading) return <Loading />;
   if (!q.data) return <ErrorBox message="Pedido não encontrado." />;
@@ -92,6 +101,10 @@ function AdminOrder({ id }: { id: number }) {
       <OrderDetail o={q.data} />
       <EditOrder o={q.data} onDone={refresh} />
       <EditItems o={q.data} onDone={refresh} />
+      <div className="border-t pt-4">
+        <DeleteConfirm label="Excluir pedido" title={`Excluir pedido ${orderNumber(id)}`} pending={del.isPending} onConfirm={() => del.mutate()}
+          items={["O pedido e todos os seus itens", "Todo o histórico de alterações do pedido", "O cliente e os produtos NÃO são excluídos"]} />
+      </div>
     </div>
   );
 }
