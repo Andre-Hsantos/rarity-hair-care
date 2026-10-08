@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAllProducts } from "@/components/admin/Pickers";
 import { Empty, ErrorBox, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
+import { BannersEditor } from "@/components/admin/BannersEditor";
 
 export const Route = createFileRoute("/_authenticated/admin/configuracoes")({ component: Settings });
 
@@ -19,6 +20,7 @@ function Settings() {
       <div className="space-y-10">
         <SectionEditor section="featured" title="Produtos em destaque" />
         <SectionEditor section="best_sellers" title="Produtos mais vendidos" hint="Curadoria manual — não é calculado pelas vendas." />
+        <BannersEditor />
       </div>
     </>
   );
