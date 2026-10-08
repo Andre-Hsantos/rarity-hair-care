@@ -64,6 +64,13 @@
       "when": 1791482771823,
       "tag": "0008_admin_hard_delete",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791483623678,
+      "tag": "0009_notifications_and_account_deletion",
+      "breakpoints": true
     }
   ]
 }
