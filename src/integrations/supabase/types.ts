@@ -636,6 +636,7 @@ export type Database = {
           decision_note: string | null
           document_path: string
           id: string
+          proof_number: string | null
           proof_type: Database["public"]["Enums"]["proof_type"]
           requested_at: string
           status: Database["public"]["Enums"]["request_status"]
@@ -647,6 +648,7 @@ export type Database = {
           decision_note?: string | null
           document_path: string
           id?: string
+          proof_number?: string | null
           proof_type: Database["public"]["Enums"]["proof_type"]
           requested_at?: string
           status?: Database["public"]["Enums"]["request_status"]
@@ -658,6 +660,7 @@ export type Database = {
           decision_note?: string | null
           document_path?: string
           id?: string
+          proof_number?: string | null
           proof_type?: Database["public"]["Enums"]["proof_type"]
           requested_at?: string
           status?: Database["public"]["Enums"]["request_status"]
@@ -1047,6 +1050,7 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_delete_category: { Args: { _id: string }; Returns: undefined }
       admin_delete_client_data: {
         Args: { _user_id: string }
         Returns: undefined
@@ -1055,6 +1059,14 @@ export type Database = {
       admin_delete_product: { Args: { _product_id: string }; Returns: Json }
       admin_send_notification: {
         Args: { _body: string; _title: string; _user_ids: string[] }
+        Returns: number
+      }
+      admin_send_notification_audience: {
+        Args: {
+          _audience: Database["public"]["Enums"]["target_audience"]
+          _body: string
+          _title: string
+        }
         Returns: number
       }
       admin_update_order: {
