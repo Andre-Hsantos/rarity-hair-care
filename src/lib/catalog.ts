@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { finalPrice } from "@/lib/pricing";
 
 /** Public catalog product, already priced for the current visitor. price null = "Sob consulta". */
 export type Product = {
@@ -12,6 +11,9 @@ export type Product = {
   description: string;
   image: string | null;
   price: number | null;
+  /** Price before promotion (only meaningful when inPromotion). */
+  originalPrice: number | null;
+  inPromotion: boolean;
   inStock: boolean;
   size: string | null;
   sizeGroup: string | null;
@@ -37,7 +39,10 @@ export function useCatalog() {
           categoryId: r.category_id,
           description: r.description ?? "",
           image: r.image_url,
-          price: r.price == null ? null : finalPrice({ price: Number(r.price), pro_price: r.pro_price == null ? null : Number(r.pro_price) }, profile),
+          // Final price comes from the database (same rule as the cart); never recomputed here.
+          price: r.final_price == null ? null : Number(r.final_price),
+          originalPrice: r.original_price == null ? null : Number(r.original_price),
+          inPromotion: r.final_price != null && r.in_promotion && Number(r.final_price) < Number(r.original_price),
           inStock: r.availability === "disponivel",
           size: r.size_label,
           sizeGroup: r.size_group,
