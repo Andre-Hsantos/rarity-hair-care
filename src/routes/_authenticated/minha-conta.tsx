@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/minha-conta")({
       { property: "og:description", content: "Área do cliente Rarity." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>): { tab?: Tab } => ({ tab: tabs.some((t) => t.id === s.tab) ? (s.tab as Tab) : undefined }),
+  validateSearch: (s: Record<string, unknown>): { tab?: Tab | undefined } => ({ tab: tabs.some((t) => t.id === s["tab"]) ? (s["tab"] as Tab) : undefined }),
   component: Account,
 });
 

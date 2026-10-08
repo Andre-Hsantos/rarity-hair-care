@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
@@ -56,6 +57,11 @@ const CarrinhoRoute = CarrinhoRouteImport.update({
 const ContatoRoute = ContatoRouteImport.update({
   id: '/contato',
   path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/contato': typeof ContatoRoute
+  '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/contato': typeof ContatoRoute
+  '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/cadastro': typeof CadastroRoute
   '/carrinho': typeof CarrinhoRoute
   '/contato': typeof ContatoRoute
+  '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/carrinho'
     | '/contato'
+    | '/favoritos'
     | '/login'
     | '/produtos'
     | '/redefinir-senha'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/carrinho'
     | '/contato'
+    | '/favoritos'
     | '/login'
     | '/produtos'
     | '/redefinir-senha'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/carrinho'
     | '/contato'
+    | '/favoritos'
     | '/login'
     | '/produtos'
     | '/redefinir-senha'
@@ -323,6 +335,7 @@ export interface RootRouteChildren {
   CadastroRoute: typeof CadastroRoute
   CarrinhoRoute: typeof CarrinhoRoute
   ContatoRoute: typeof ContatoRoute
+  FavoritosRoute: typeof FavoritosRoute
   LoginRoute: typeof LoginRoute
   ProdutosRoute: typeof ProdutosRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       path: '/contato'
       fullPath: '/contato'
       preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -558,6 +578,7 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroRoute: CadastroRoute,
   CarrinhoRoute: CarrinhoRoute,
   ContatoRoute: ContatoRoute,
+  FavoritosRoute: FavoritosRoute,
   LoginRoute: LoginRoute,
   ProdutosRoute: ProdutosRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,

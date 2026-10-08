@@ -45,7 +45,7 @@ function SearchBar({ className = "" }: { className?: string }) {
   );
 }
 
-function IconLink({ to, label, children, badge, search }: { to: string; label: string; children: ReactNode; badge?: number; search?: Record<string, string> }) {
+function IconLink({ to, label, children, badge, search }: { to: string; label: string; children: ReactNode; badge?: number; search?: Record<string, string> | undefined }) {
   return (
     <Link
       to={to}
@@ -72,7 +72,7 @@ export function Header() {
   const { session, isAdmin } = useAuth();
   const unread = useUnreadCount();
   const [open, setOpen] = useState(false);
-  const favTo = session ? "/minha-conta" : "/favoritos";
+  const favTo = (session ? "/minha-conta" : "/favoritos") as "/minha-conta";
   const favSearch = session ? { tab: "favoritos" } : undefined;
 
   return (
