@@ -22,7 +22,7 @@ const info = [
   {
     icon: MapPin,
     label: "Endereço",
-    value: "R. São Paulo, 43 - LOJA 368 - Jockey de Itaparica, Vila Velha - ES, 29103-875",
+    value: "R. São Paulo, 43 - Jockey de Itaparica, Vila Velha - ES",
   },
   { icon: Clock, label: "Horário", value: "Segunda a Sexta\n08:00 às 17:00" },
   { icon: Instagram, label: "Redes sociais", value: "@rarityprofissionaloficial" },
