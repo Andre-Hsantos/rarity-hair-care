@@ -1023,6 +1023,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _has_promo: {
+        Args: { _is_pro: boolean; _product_id: string }
+        Returns: boolean
+      }
+      _promo_apply: {
+        Args: {
+          _base: number
+          _type: Database["public"]["Enums"]["discount_type"]
+          _value: number
+        }
+        Returns: number
+      }
+      _promo_price: {
+        Args: { _base: number; _is_pro: boolean; _product_id: string }
+        Returns: number
+      }
       _quote_cart: {
         Args: {
           _coupon: string
@@ -1060,10 +1076,13 @@ export type Database = {
           category_name: string
           created_at: string
           description: string
+          final_price: number
           id: string
           image_url: string
+          in_promotion: boolean
           is_kit: boolean
           name: string
+          original_price: number
           price: number
           pro_price: number
           size_group: string
