@@ -86,7 +86,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const { data } = await supabase.from("cart_items").select("product_id, quantity").eq("user_id", uid);
       const cur = new Map((data ?? []).map((d) => [d.product_id, d.quantity]));
       const rows = g.map((l) => ({ user_id: uid, product_id: l.id, quantity: Math.min(99, (cur.get(l.id) ?? 0) + l.qty) }));
-      await supabase.from("cart_items").upsert(rows, { onConflict: "user_id,product_id" });
+      // Row by row so one deleted product never discards the rest of the guest cart.
+      await Promise.all(rows.map((r) => supabase.from("cart_items").upsert(r, { onConflict: "user_id,product_id" })));
       saveGuest([]);
       qc.invalidateQueries({ queryKey: ["cart", uid] });
     })();
