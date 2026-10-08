@@ -19,9 +19,13 @@ export const Route = createFileRoute("/contato")({
 
 const info = [
   { icon: MessageCircle, label: "WhatsApp", value: "(27) 99757-9959" },
-  { icon: MapPin, label: "Endereço", value: "Endereço da loja a definir" },
+  {
+    icon: MapPin,
+    label: "Endereço",
+    value: "R. São Paulo, 43 - LOJA 368 - Jockey de Itaparica, Vila Velha - ES, 29103-875",
+  },
   { icon: Clock, label: "Horário", value: "Sengunda a Sexta <br> 08:00 às 17:00" },
-  { icon: Instagram, label: "Redes sociais", value: "@rarity (placeholder)" },
+  { icon: Instagram, label: "Redes sociais", value: "rarityprofissionaloficial" },
 ];
 
 function Contact() {
