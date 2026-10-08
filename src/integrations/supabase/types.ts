@@ -1047,6 +1047,12 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_delete_client_data: {
+        Args: { _user_id: string }
+        Returns: undefined
+      }
+      admin_delete_order: { Args: { _order_id: number }; Returns: undefined }
+      admin_delete_product: { Args: { _product_id: string }; Returns: Json }
       admin_update_order: {
         Args: {
           _note: string
