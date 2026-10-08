@@ -1,3 +1,4 @@
+import { isValidProductId } from "@/lib/productId";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -121,11 +122,21 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
         size_group: String(fd.get("size_group") || "").trim() || null,
         size_label: String(fd.get("size_label") || "").trim() || null,
       };
-      if (!row.id || !row.name) throw new Error("ID e nome são obrigatórios.");
+      if (!isNew) row.id = String(prod.id ?? "");
+      if (!isValidProductId(row.id) || !row.name) throw new Error("ID e nome são obrigatórios.");
       if (!(row.price >= 0)) throw new Error("Informe um preço válido.");
       if (row.pro_price != null && row.pro_price < 0) throw new Error("Preço profissional inválido.");
       if (isKit && !items?.length) throw new Error("Adicione ao menos um produto ao kit.");
-      const { error } = isNew ? await supabase.from("products").insert(row) : await supabase.from("products").update(row).eq("id", prod.id!);
+      let error;
+      if (isNew) {
+        ({ error } = await supabase.from("products").insert(row));
+      } else {
+        // Never change the primary key on edit; update only the existing row.
+        const { id: _id, ...fields } = row;
+        const res = await supabase.from("products").update(fields).eq("id", row.id).select("id");
+        error = res.error;
+        if (!error && !res.data?.length) throw new Error("Produto não encontrado para atualizar.");
+      }
       if (error) throw new Error(error.code === "23505" ? "Já existe um produto com este ID." : "Não foi possível salvar o produto.");
       if (isKit && items) {
         const del = await supabase.from("kit_items").delete().eq("kit_id", row.id);
@@ -149,7 +160,7 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
     <>
       <DialogHeader><DialogTitle className="font-display text-2xl">{isNew ? (isKit ? "Novo kit" : "Novo produto") : prod.name}</DialogTitle></DialogHeader>
       <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }}>
-        <FieldRow label="ID / código (único)" hint={isNew ? "Não pode ser alterado depois." : undefined}><input name="id" className={inputCls} defaultValue={prod.id} required disabled={!isNew} /></FieldRow>
+        <FieldRow label="ID / código (único)" hint={isNew ? "Não pode ser alterado depois." : undefined}><input name="id" className={`${inputCls} ${isNew ? "" : "cursor-not-allowed bg-muted text-muted-foreground"}`} defaultValue={prod.id} required readOnly={!isNew} aria-readonly={!isNew} /></FieldRow>
         <FieldRow label="Nome"><input name="name" className={inputCls} defaultValue={prod.name} required /></FieldRow>
         <FieldRow label="Categoria">
           <select name="category_id" className={inputCls} defaultValue={prod.category_id ?? ""}><option value="">Sem categoria</option>{cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
