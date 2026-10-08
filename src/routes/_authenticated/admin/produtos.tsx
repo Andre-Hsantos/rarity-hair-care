@@ -1,4 +1,5 @@
 import { isValidProductId } from "@/lib/productId";
+import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -157,6 +158,25 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
     onError: (e) => toast.error((e as Error).message),
   });
 
+  const del = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.rpc("admin_delete_product", { _product_id: String(prod.id) });
+      if (error) throw new Error(error.message || "Não foi possível excluir o produto.");
+      const r = data as { image_url: string | null; image_shared: boolean; orders_changed: number };
+      const marker = "/storage/v1/object/public/product-images/";
+      if (r.image_url?.includes(marker) && !r.image_shared) {
+        await supabase.storage.from("product-images").remove([decodeURIComponent(r.image_url.split(marker)[1] ?? "")]);
+      }
+      return r;
+    },
+    onSuccess: (r) => {
+      toast.success(`Produto excluído definitivamente.${r.orders_changed ? ` ${r.orders_changed} pedido(s) atualizado(s).` : ""}`);
+      qc.invalidateQueries();
+      onDone();
+    },
+    onError: (e) => toast.error((e as Error).message),
+  });
+
   const candidates = all.filter((p) => !p.is_kit && !items?.some((i) => i.product_id === p.id));
   const nameOf = (id: string) => all.find((p) => p.id === id)?.name ?? id;
 
@@ -220,6 +240,14 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
         )}
         <Button variant="dark" className="sm:col-span-2" disabled={save.isPending}>{save.isPending ? "Salvando…" : "Salvar"}</Button>
       </form>
+      {!isNew && (
+        <div className="border-t pt-4">
+          <p className="mb-2 text-xs text-muted-foreground">Para apenas tirar da loja, use “Situação: Inativo”. A exclusão abaixo é permanente.</p>
+          <DeleteConfirm label={isKit ? "Excluir kit" : "Excluir produto"} title={`Excluir “${prod.name}”`} pending={del.isPending} onConfirm={() => del.mutate()}
+            items={["O cadastro do produto e sua foto (se não for usada por outro item)", "Vínculos com kits, promoções, cupons e seções da página inicial",
+              "Favoritos, avisos de disponibilidade, avaliações e carrinhos", "Os itens deste produto em pedidos (os totais são recalculados; pedidos que ficarem vazios são excluídos)"]} />
+        </div>
+      )}
     </>
   );
 }

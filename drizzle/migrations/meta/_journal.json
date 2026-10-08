@@ -57,6 +57,13 @@
       "when": 1791478206942,
       "tag": "0007_promotion_pricing_engine",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791482771823,
+      "tag": "0008_admin_hard_delete",
+      "breakpoints": true
     }
   ]
 }
