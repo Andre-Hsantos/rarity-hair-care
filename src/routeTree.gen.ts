@@ -22,6 +22,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated/checkout'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
+import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated/notificacoes'
 import { Route as ProdutoIdRouteImport } from './routes/produto.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin/categorias'
@@ -99,6 +100,12 @@ const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
   path: '/minha-conta',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificacoesRoute =
+  AuthenticatedNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ProdutoIdRoute = ProdutoIdRouteImport.update({
   id: '/produto/$id',
   path: '/produto/$id',
@@ -182,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
@@ -207,6 +215,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
@@ -235,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/produto/$id': typeof ProdutoIdRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/checkout'
     | '/minha-conta'
+    | '/notificacoes'
     | '/produto/$id'
     | '/admin/categorias'
     | '/admin/clientes'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/checkout'
     | '/minha-conta'
+    | '/notificacoes'
     | '/produto/$id'
     | '/admin/categorias'
     | '/admin/clientes'
@@ -315,6 +327,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/checkout'
     | '/_authenticated/minha-conta'
+    | '/_authenticated/notificacoes'
     | '/produto/$id'
     | '/_authenticated/admin/categorias'
     | '/_authenticated/admin/clientes'
@@ -434,6 +447,13 @@ declare module '@tanstack/react-router' {
       path: '/minha-conta'
       fullPath: '/minha-conta'
       preLoaderRoute: typeof AuthenticatedMinhaContaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notificacoes': {
+      id: '/_authenticated/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/produto/$id': {
@@ -559,6 +579,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedCheckoutRoute: typeof AuthenticatedCheckoutRoute
   AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
+  AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPedidoIdRoute: typeof AuthenticatedPedidoIdRoute
 }
 
@@ -566,6 +587,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedCheckoutRoute: AuthenticatedCheckoutRoute,
   AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
+  AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPedidoIdRoute: AuthenticatedPedidoIdRoute,
 }
 

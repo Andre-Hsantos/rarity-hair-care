@@ -34,7 +34,7 @@ function Contact() {
       <PageHeader
         title="Contato"
         crumb="Contato"
-        subtitle="Estamos à disposição para ajudar. Dados abaixo são demonstrativos."
+        subtitle="Estamos à disposição para ajudar."
       />
       <div className="container-site mt-12 grid gap-10 lg:grid-cols-2">
         <div className="space-y-6">
@@ -49,36 +49,41 @@ function Contact() {
               </li>
             ))}
           </ul>
-          <div className="grid aspect-[16/9] place-items-center rounded-xl border border-dashed bg-surface text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <MapPin className="size-4" /> Mapa (placeholder)
-            </span>
-          </div>
+          <iframe
+            title="Mapa da loja"
+            src="https://www.google.com/maps?q=R.+S%C3%A3o+Paulo,+43+-+Jockey+de+Itaparica,+Vila+Velha+-+ES&output=embed"
+            className="aspect-[16/9] w-full rounded-xl border"
+            loading="lazy"
+          />
         </div>
         <form
           className="space-y-4 rounded-xl border bg-card p-6 sm:p-8"
           onSubmit={(e) => {
             e.preventDefault();
-            toast.success("Mensagem enviada (demonstrativo).");
+            const f = new FormData(e.target as HTMLFormElement);
+            const text = `Olá! Sou ${f.get("cn")} (${f.get("ce")}).\n\n${f.get("cm")}`;
+            window.open(`https://wa.me/5527997579959?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+            toast.success("Abrindo o WhatsApp para enviar sua mensagem.");
             (e.target as HTMLFormElement).reset();
           }}
         >
           <h2 className="text-3xl">Envie uma mensagem</h2>
-          <Field id="cn" label="Nome" required />
-          <Field id="ce" label="E-mail" type="email" required />
+          <Field id="cn" name="cn" label="Nome" required />
+          <Field id="ce" name="ce" label="E-mail" type="email" required />
           <div className="space-y-1.5">
             <label htmlFor="cm" className="text-sm font-medium">
               Mensagem
             </label>
             <textarea
               id="cm"
+              name="cm"
               required
               rows={5}
               className="w-full rounded-md border border-input bg-card p-3.5 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-gold/25"
             />
           </div>
           <Button variant="dark" size="lg">
-            Enviar mensagem
+            Enviar pelo WhatsApp
           </Button>
         </form>
       </div>

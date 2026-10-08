@@ -72,8 +72,6 @@ export function Header() {
   const { session, isAdmin } = useAuth();
   const unread = useUnreadCount();
   const [open, setOpen] = useState(false);
-  const favTo = (session ? "/minha-conta" : "/favoritos") as "/minha-conta";
-  const favSearch = session ? { tab: "favoritos" } : undefined;
 
   return (
     <header className="sticky top-0 z-40">
@@ -106,8 +104,8 @@ export function Header() {
                   ))}
                   <div className="mt-6 border-t pt-4">
                     <Link to="/minha-conta" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><User className="size-4" /> Minha conta</Link>
-                    <Link to={favTo} search={favSearch as never} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Heart className="size-4" /> Favoritos</Link>
-                    {session && <Link to="/minha-conta" search={{ tab: "notificacoes" } as never} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Bell className="size-4" /> Notificações{unread > 0 ? ` (${unread})` : ""}</Link>}
+                    <Link to="/favoritos" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Heart className="size-4" /> Favoritos</Link>
+                    {session && <Link to="/notificacoes" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Bell className="size-4" /> Notificações{unread > 0 ? ` (${unread})` : ""}</Link>}
                   </div>
                 </nav>
               </SheetContent>
@@ -122,8 +120,8 @@ export function Header() {
 
           <div className="flex items-center gap-1 sm:gap-2">
             <span className="hidden lg:contents">
-              <IconLink to={favTo} search={favSearch} label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
-              <IconLink to={session ? "/minha-conta" : "/login"} search={session ? { tab: "notificacoes" } : undefined} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
+              <IconLink to="/favoritos" label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
+              <IconLink to={session ? "/notificacoes" : "/login"} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
             </span>
             {isAdmin && <IconLink to="/admin" label="Painel"><LayoutDashboard className="size-5" /></IconLink>}
             <IconLink to={session ? "/minha-conta" : "/login"} label={session ? "Minha conta" : "Entrar"}><User className="size-5" /></IconLink>

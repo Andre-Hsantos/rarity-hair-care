@@ -60,8 +60,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const f = readGuestFavs();
     if (!f.length) return;
     (async () => {
-      const { error } = await supabase.from("favorites").upsert(f.map((product_id) => ({ user_id: uid, product_id })), { onConflict: "user_id,product_id", ignoreDuplicates: true });
-      if (!error) saveGuestFavs([]);
+      // Row by row so one deleted product never blocks merging the others.
+      await Promise.all(f.map((product_id) => supabase.from("favorites").upsert({ user_id: uid, product_id }, { onConflict: "user_id,product_id", ignoreDuplicates: true })));
+      saveGuestFavs([]);
       qc.invalidateQueries({ queryKey: ["favorites", uid] });
     })();
   }, [uid, qc]);
@@ -86,7 +87,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const { data } = await supabase.from("cart_items").select("product_id, quantity").eq("user_id", uid);
       const cur = new Map((data ?? []).map((d) => [d.product_id, d.quantity]));
       const rows = g.map((l) => ({ user_id: uid, product_id: l.id, quantity: Math.min(99, (cur.get(l.id) ?? 0) + l.qty) }));
-      await supabase.from("cart_items").upsert(rows, { onConflict: "user_id,product_id" });
+      // Row by row so one deleted product never discards the rest of the guest cart.
+      await Promise.all(rows.map((r) => supabase.from("cart_items").upsert(r, { onConflict: "user_id,product_id" })));
       saveGuest([]);
       qc.invalidateQueries({ queryKey: ["cart", uid] });
     })();
@@ -94,6 +96,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const raw = uid ? dbCart.data ?? [] : guest;
   const byId = useMemo(() => new Map((catalog.data ?? []).map((p) => [p.id, p])), [catalog.data]);
+  // Guest cart/favorites: drop products that no longer exist in the live catalog (deleted/inactive).
+  useEffect(() => {
+    if (uid || !catalog.isSuccess) return;
+    const g = readGuest();
+    const keep = g.filter((l) => byId.has(l.id));
+    if (keep.length !== g.length) saveGuest(keep);
+    const f = readGuestFavs();
+    const keepF = f.filter((id) => byId.has(id));
+    if (keepF.length !== f.length) saveGuestFavs(keepF);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uid, catalog.isSuccess, byId]);
   const cart: CartLine[] = raw.map((l) => ({ id: l.id, qty: l.qty, p: byId.get(l.id) ?? null }));
 
   const write = useCallback(async (id: string, qty: number | null) => {
