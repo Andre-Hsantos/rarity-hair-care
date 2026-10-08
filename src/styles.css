@@ -10,7 +10,7 @@
  */
 
 @theme inline {
-  --font-display: "Manrope", sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
   --font-sans: "Jost", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
