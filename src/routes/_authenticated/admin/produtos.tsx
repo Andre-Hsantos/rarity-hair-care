@@ -123,12 +123,16 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
         size_label: String(fd.get("size_label") || "").trim() || null,
       };
       if (!isNew) row.id = String(prod.id ?? "");
-      if (!isValidProductId(row.id) || !row.name) throw new Error("ID e nome são obrigatórios.");
+      if (!row.id) throw new Error("Informe o ID do produto.");
+      if (isNew && !isValidProductId(row.id)) throw new Error("O ID deve ser um número inteiro (ex.: 21919).");
+      if (!row.name) throw new Error("Informe o nome do produto.");
       if (!(row.price >= 0)) throw new Error("Informe um preço válido.");
       if (row.pro_price != null && row.pro_price < 0) throw new Error("Preço profissional inválido.");
       if (isKit && !items?.length) throw new Error("Adicione ao menos um produto ao kit.");
       let error;
       if (isNew) {
+        const dup = await supabase.from("products").select("id").eq("id", row.id).maybeSingle();
+        if (dup.data) throw new Error(`O ID ${row.id} já está em uso por outro produto.`);
         ({ error } = await supabase.from("products").insert(row));
       } else {
         // Never change the primary key on edit; update only the existing row.
