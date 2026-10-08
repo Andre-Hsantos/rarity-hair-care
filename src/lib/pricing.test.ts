@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { finalPrice } from "./pricing";
+import { finalPrice, promoActive } from "./pricing";
 
 const prod = { price: 100, pro_price: 80 };
 const pro = (d: number) => ({ account_type: "profissional", pro_status: "aprovado", individual_discount_percent: d });
