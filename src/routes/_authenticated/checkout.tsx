@@ -101,7 +101,7 @@ function Checkout() {
                   <li key={i.product_id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
                     <div className="min-w-0">
                       <p className="font-medium">{i.name}{i.size_label ? ` — ${i.size_label}` : ""}</p>
-                      <p className="text-muted-foreground">{i.quantity} × {brl(Number(i.unit_price))}</p>
+                      <p className="text-muted-foreground">{i.quantity} × {i.in_promotion && Number(i.original_price) > Number(i.unit_price) && <s className="mr-1">{brl(Number(i.original_price))}</s>}{brl(Number(i.unit_price))}{i.in_promotion && <span className="ml-1.5 text-gold-deep">Promoção</span>}</p>
                       {i.issue && <p className="text-destructive">{i.issue}</p>}
                       {Number(i.coupon_discount) > 0 && <p className="text-success">Cupom: - {brl(Number(i.coupon_discount))}</p>}
                       {!i.issue && i.coupon_note && <p className="text-xs text-muted-foreground">{i.coupon_note}</p>}

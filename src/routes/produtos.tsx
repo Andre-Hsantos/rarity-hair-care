@@ -73,7 +73,7 @@ function Produtos() {
       (p) =>
         (!cat || p.categoryId === cat) &&
         (!kitOnly || p.isKit) &&
-        (!promo || !!promoIds?.has(p.id)) &&
+        (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&
         (price === "all" || (p.price != null && pt(p.price))) &&
         (!q || p.name.toLowerCase().includes(q.toLowerCase())),

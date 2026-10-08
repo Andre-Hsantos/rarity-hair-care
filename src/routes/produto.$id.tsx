@@ -74,7 +74,9 @@ function ProductPage() {
           <h1 className="mt-3 text-4xl sm:text-5xl">{p.name}</h1>
           {p.description && <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{p.description}</p>}
           <div className="mt-6 flex items-baseline gap-3">
-            <span className="text-3xl font-medium">{p.price == null ? "Sob consulta" : brl(p.price)}</span>
+            {p.inPromotion && p.originalPrice != null && <span className="text-lg text-muted-foreground">De <s>{brl(p.originalPrice)}</s></span>}
+            <span className="text-3xl font-medium">{p.price == null ? "Sob consulta" : <>{p.inPromotion && <span className="text-lg font-normal text-gold-deep">Por </span>}{brl(p.price)}</>}</span>
+            {p.inPromotion && <span className="rounded-full bg-gold px-2.5 py-1 text-xs font-medium text-ink">Promoção</span>}
           </div>
           <p className={`mt-2 flex items-center gap-1.5 text-sm ${p.inStock ? "text-success" : "text-destructive"}`}>
             {p.inStock ? <><Check className="size-4" /> Disponível</> : "Esgotado no momento"}

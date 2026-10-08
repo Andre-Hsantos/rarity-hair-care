@@ -60,7 +60,7 @@ function Cart() {
                     <img src={p?.image ?? info?.image_url ?? undefined} alt={p?.name ?? ""} loading="lazy" className="aspect-square w-full rounded-lg bg-surface object-cover" />
                     <div className="min-w-0">
                       {p ? <Link to="/produto/$id" params={{ id }} className="font-display text-xl hover:text-gold-deep">{p.name}</Link> : <p className="font-display text-xl">{info?.name ?? "Produto indisponível"}</p>}
-                      <p className="text-sm text-muted-foreground">{p?.size ? `${p.size} · ` : ""}{brl(unit)}</p>
+                      <p className="text-sm text-muted-foreground">{p?.size ? `${p.size} · ` : ""}{(info ? info.in_promotion && Number(info.original_price) > unit : p?.inPromotion) && <s className="mr-1">{brl(info ? Number(info.original_price) : p?.originalPrice ?? 0)}</s>}{brl(unit)}{(info ? info.in_promotion : p?.inPromotion) && <span className="ml-1.5 text-gold-deep">Promoção</span>}</p>
                       {issue && <p className="mt-1 flex items-center gap-1.5 text-sm text-destructive"><AlertTriangle className="size-3.5" /> {issue}</p>}
                       {!issue && info?.coupon_note && <p className="mt-1 text-xs text-muted-foreground">{info.coupon_note}</p>}
                       <div className="mt-3 flex items-center gap-3">
