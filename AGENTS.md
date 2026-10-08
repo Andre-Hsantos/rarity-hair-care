@@ -20,3 +20,6 @@
 - Order pricing, coupon validation and order creation run only in DB RPCs (_quote_cart / quote_cart / create_order); admin order edits only via admin_update_order* RPCs that write order_history. Why: the browser is never trusted with prices and every change is logged.
 - Cart persists in cart_items for signed-in users (guest cart in localStorage, merged on sign-in); lines store only product id + qty. Why: prices always come from the live catalog.
 - Permanent admin deletions go only through admin-checked RPCs (admin_delete_product/order/client_data) plus the deleteClient server function for storage and login removal. Why: atomic, no orphans, never trusts the browser.
+- Favorites persist in favorites for signed-in users (guest favorites in localStorage, merged on sign-in). Why: same pattern as the cart; RLS keeps them per user.
+- Admin→client notifications are created only via admin_send_notification RPC; clients may update only read_at. Why: one-way communication, no tampering.
+- Self account deletion (delete_own_account_data + deleteOwnAccount server fn) anonymizes the profile and bans the login instead of deleting it. Why: orders reference the profile and must stay intact.
