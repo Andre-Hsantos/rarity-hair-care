@@ -6,7 +6,7 @@ import { AuthShell, Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
 import { ProofFields } from "@/components/site/ProofFields";
 import { supabase } from "@/integrations/supabase/client";
-import { submitProRequest, validateDoc, type ProofType } from "@/lib/auth";
+import { cleanCnpj, submitProRequest, validateDoc, type ProofType } from "@/lib/auth";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -56,7 +56,14 @@ function Signup() {
           e.preventDefault();
           const fd = new FormData(e.currentTarget);
           const file = fd.get("doc_file") as File | null;
-          if (type === "pro") { const err = validateDoc(file); if (err) { toast.error(err); return; } }
+          const proofType = String(fd.get("proof_type") ?? "") as ProofType;
+          const proofNumber = cleanCnpj(fd.get("proof_number"));
+          if (type === "pro") {
+            if (proofType === "certificado") { const err = validateDoc(file); if (err) { toast.error(err); return; } }
+            else if (!proofNumber) { toast.error("CNPJ inválido. Informe os 14 dígitos."); return; }
+          }
+          const birth = String(fd.get("birth") ?? "");
+          if (!birth || new Date(birth + "T12:00") > new Date()) { toast.error("Informe uma data de nascimento válida."); return; }
           const cpfDigits = String(fd.get("cpf") ?? "").replace(/\D/g, "");
           setLoading(true);
           const { data, error } = await supabase.auth.signUp({
@@ -64,7 +71,8 @@ function Signup() {
             password: String(fd.get("pwd")),
             options: {
               emailRedirectTo: `${window.location.origin}/minha-conta`,
-              data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum" },
+              data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum", birth_date: birth,
+                ...(type === "pro" && proofType !== "certificado" ? { proof_type: proofType, proof_number: proofNumber } : {}) },
             },
           });
           if (error) {
@@ -72,8 +80,9 @@ function Signup() {
             toast.error(error.message.toLowerCase().includes("registered") ? "Este e-mail já está cadastrado." : "Não foi possível criar a conta. Verifique os dados (CPF pode já estar em uso).");
             return;
           }
-          if (type === "pro" && data.session && data.user && file) {
-            try { await submitProRequest(data.user.id, file, String(fd.get("proof_type")) as ProofType); }
+          // CNPJ/MEI requests are opened by the signup itself; only the certificate needs an upload (requires session).
+          if (type === "pro" && proofType === "certificado" && data.session && data.user && file) {
+            try { await submitProRequest(data.user.id, "certificado", file, null); }
             catch (err) { toast.error((err as Error).message); }
           }
           setLoading(false);
@@ -81,8 +90,9 @@ function Signup() {
             toast.success(type === "pro" ? "Conta criada e solicitação enviada para análise." : "Conta criada!");
             navigate({ to: "/minha-conta" });
           } else {
-            toast.success(type === "pro"
-              ? "Conta criada! Confirme seu e-mail e, ao entrar, envie o comprovante em Minha conta › Conta profissional."
+            toast.success(type === "pro" && proofType === "certificado"
+              ? "Conta criada! Confirme seu e-mail e, ao entrar, envie o certificado em Minha conta › Conta profissional."
+              : type === "pro" ? "Conta criada e solicitação enviada para análise! Confirme seu e-mail para entrar."
               : "Conta criada! Confirme seu e-mail para entrar.", { duration: 10000 });
             navigate({ to: "/login" });
           }
@@ -91,6 +101,7 @@ function Signup() {
         <Field id="name" name="name" label="Nome completo" required />
         <Field id="email" name="email" label="E-mail" type="email" required autoComplete="email" />
         <Field id="phone" name="phone" label="WhatsApp" type="tel" required placeholder="(00) 00000-0000" />
+        <Field id="birth" name="birth" label="Data de nascimento" type="date" required max={new Date().toISOString().slice(0, 10)} />
         <Field id="cpf" name="cpf" label="CPF" inputMode="numeric" placeholder="000.000.000-00" />
         {type === "pro" && (
           <>
