@@ -1,8 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useCatalog, usePublicCategories } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PageHeader } from "@/components/site/PageHeader";
@@ -53,19 +51,6 @@ function Produtos() {
   const catalog = useCatalog();
   const products = catalog.data ?? [];
   const categories = usePublicCategories().data ?? [];
-  const promoIds = useQuery({
-    queryKey: ["promo-products"],
-    enabled: promo,
-    queryFn: async () => {
-      const now = new Date().toISOString();
-      const { data, error } = await supabase.from("promotion_products").select("product_id, promotions!inner(status, starts_at, ends_at)").eq("promotions.status", "ativo");
-      if (error) throw error;
-      return new Set(data.filter((d) => {
-        const pr = d.promotions as { starts_at: string | null; ends_at: string | null };
-        return (!pr.starts_at || pr.starts_at <= now) && (!pr.ends_at || pr.ends_at >= now);
-      }).map((d) => d.product_id));
-    },
-  }).data;
 
   const list = useMemo(() => {
     const pt = prices.find((p) => p.id === price)!.test;
@@ -73,7 +58,7 @@ function Produtos() {
       (p) =>
         (!cat || p.categoryId === cat) &&
         (!kitOnly || p.isKit) &&
-        (!promo || !!promoIds?.has(p.id)) &&
+        (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&
         (price === "all" || (p.price != null && pt(p.price))) &&
         (!q || p.name.toLowerCase().includes(q.toLowerCase())),
@@ -82,7 +67,7 @@ function Produtos() {
     if (sort === "asc") r = [...r].sort((a, b) => val(a.price, Infinity) - val(b.price, Infinity));
     if (sort === "desc") r = [...r].sort((a, b) => val(b.price, -Infinity) - val(a.price, -Infinity));
     return r;
-  }, [products, promoIds, kitOnly, cat, promo, onlyStock, price, q, sort]);
+  }, [products, kitOnly, cat, promo, onlyStock, price, q, sort]);
 
   const setCat = (c?: string) => navigate({ search: (s) => ({ ...s, categoria: c }) });
   const clear = () => {
