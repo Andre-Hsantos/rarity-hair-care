@@ -44,13 +44,13 @@ export function BannersEditor() {
     <section className="rounded-lg border p-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-2xl">Banners — Kits Rarity</h2>
-          <p className="text-sm text-muted-foreground">Exibidos na página inicial, entre “Produtos em destaque” e “Mais vendidos”. Sem banner ativo, o site mostra o banner padrão de kits.</p>
+          <h2 className="text-2xl">Carrossel de banners da Home</h2>
+          <p className="text-sm text-muted-foreground">Cada item é um slide do carrossel no topo da página inicial, exibido na ordem abaixo. Slides inativos não aparecem. Sem slide ativo, o site mostra o banner padrão de Kits Rarity.</p>
         </div>
-        <Button variant="dark" onClick={() => setEdit({ status: "ativo", display_order: data.length + 1, placement: KITS_PLACEMENT })}><Plus className="size-4" /> Novo banner</Button>
+        <Button variant="dark" onClick={() => setEdit({ status: "ativo", display_order: data.length + 1, placement: KITS_PLACEMENT })}><Plus className="size-4" /> Adicionar slide</Button>
       </div>
       <div className="mt-4">
-        {list.isLoading ? <Loading /> : list.isError ? <ErrorBox /> : !data.length ? <Empty>Nenhum banner cadastrado — o banner padrão está sendo exibido.</Empty> : (
+        {list.isLoading ? <Loading /> : list.isError ? <ErrorBox /> : !data.length ? <Empty>Nenhum slide cadastrado — o banner padrão de Kits Rarity está sendo exibido.</Empty> : (
           <div className="divide-y rounded-lg border">
             {data.map((b, i) => (
               <div key={b.id} className="flex flex-wrap items-center gap-3 p-3">
@@ -58,7 +58,7 @@ export function BannersEditor() {
                   {b.image_url ? <img src={b.image_url} alt="" className="h-full w-full object-cover" /> : <ImageOff className="size-5 text-muted-foreground" />}
                 </span>
                 <button className="min-w-0 flex-1 text-left" onClick={() => setEdit(b)}>
-                  <span className="block font-medium">{b.title || "Sem título"}</span>
+                  <span className="block font-medium">{i + 1}. {b.title || "Sem título"}</span>
                   <span className="block truncate text-xs text-muted-foreground">{b.subtitle || "—"}</span>
                 </button>
                 <Pill tone={b.status === "ativo" ? "ok" : "off"}>{b.status === "ativo" ? "Ativo" : "Inativo"}</Pill>
@@ -103,19 +103,19 @@ function BannerForm({ b, onDone }: { b: Partial<Banner>; onDone: () => void }) {
         status: fd.get("status") as Banner["status"], placement: KITS_PLACEMENT, display_order: b.display_order ?? 1,
       };
       const { error } = isNew ? await supabase.from("banners").insert(row) : await supabase.from("banners").update(row).eq("id", b.id!);
-      if (error) throw new Error("Não foi possível salvar o banner.");
+      if (error) throw new Error("Não foi possível salvar o slide.");
     },
-    onSuccess: () => { toast.success("Banner salvo."); onDone(); },
+    onSuccess: () => { toast.success("Slide salvo."); onDone(); },
     onError: (e) => toast.error((e as Error).message),
   });
   const del = useMutation({
     mutationFn: async () => { const { error } = await supabase.from("banners").delete().eq("id", b.id!); if (error) throw error; },
-    onSuccess: () => { toast.success("Banner excluído."); onDone(); },
+    onSuccess: () => { toast.success("Slide excluído."); onDone(); },
     onError: () => toast.error("Não foi possível excluir."),
   });
   return (
     <>
-      <DialogHeader><DialogTitle className="font-display text-2xl">{isNew ? "Novo banner" : "Editar banner"}</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle className="font-display text-2xl">{isNew ? "Novo slide" : "Editar slide"}</DialogTitle></DialogHeader>
       <form className="grid gap-3" onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }}>
         <FieldRow label="Imagem">
           <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ function BannerForm({ b, onDone }: { b: Partial<Banner>; onDone: () => void }) {
         </FieldRow>
         <Button variant="dark" disabled={save.isPending || uploading}>{save.isPending ? "Salvando…" : "Salvar"}</Button>
       </form>
-      {!isNew && <div className="border-t pt-4"><DeleteConfirm label="Excluir banner" title="Excluir banner" pending={del.isPending} onConfirm={() => del.mutate()} items={["Este banner (a imagem enviada permanece no armazenamento)"]} /></div>}
+      {!isNew && <div className="border-t pt-4"><DeleteConfirm label="Excluir slide" title="Excluir slide" pending={del.isPending} onConfirm={() => del.mutate()} items={["Este slide (a imagem enviada permanece no armazenamento)"]} /></div>}
     </>
   );
 }
