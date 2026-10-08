@@ -165,7 +165,7 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
       const r = data as { image_url: string | null; image_shared: boolean; orders_changed: number };
       const marker = "/storage/v1/object/public/product-images/";
       if (r.image_url?.includes(marker) && !r.image_shared) {
-        await supabase.storage.from("product-images").remove([decodeURIComponent(r.image_url.split(marker)[1])]);
+        await supabase.storage.from("product-images").remove([decodeURIComponent(r.image_url.split(marker)[1] ?? "")]);
       }
       return r;
     },
