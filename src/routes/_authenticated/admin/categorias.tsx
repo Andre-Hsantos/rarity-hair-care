@@ -8,6 +8,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAllCategories } from "@/components/admin/Pickers";
+import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
 import { areaCls, Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/_authenticated/admin/categorias")({ component: Categories });
@@ -60,6 +61,14 @@ function CatForm({ cat, onDone }: { cat: Partial<Cat>; onDone: () => void }) {
     onSuccess: () => { toast.success("Categoria salva."); qc.invalidateQueries({ queryKey: ["admin-categories"] }); onDone(); },
     onError: (e) => toast.error((e as Error).message),
   });
+  const del = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.rpc("admin_delete_category", { _id: cat.id! });
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => { toast.success("Categoria excluída."); qc.invalidateQueries({ queryKey: ["admin-categories"] }); qc.invalidateQueries({ queryKey: ["public-categories"] }); onDone(); },
+    onError: (e) => toast.error((e as Error).message, { duration: 10000 }),
+  });
   return (
     <>
       <DialogHeader><DialogTitle className="font-display text-2xl">{isNew ? "Nova categoria" : "Editar categoria"}</DialogTitle></DialogHeader>
@@ -76,6 +85,12 @@ function CatForm({ cat, onDone }: { cat: Partial<Cat>; onDone: () => void }) {
         </FieldRow>
         <Button variant="dark" className="sm:col-span-2" disabled={save.isPending}>{save.isPending ? "Salvando…" : "Salvar"}</Button>
       </form>
+      {!isNew && (
+        <div className="border-t pt-4">
+          <DeleteConfirm label="Excluir categoria" title={`Excluir "${cat.name}"`} pending={del.isPending} onConfirm={() => del.mutate()}
+            items={["A categoria e sua descrição/imagem", "Não será excluída se houver produtos ou cupons vinculados — você verá o motivo"]} />
+        </div>
+      )}
     </>
   );
 }

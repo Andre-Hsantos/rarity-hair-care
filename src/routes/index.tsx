@@ -5,6 +5,8 @@ import kit from "@/assets/kit.jpg";
 import { useHomeSection, type Product } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { buttonVariants } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -60,26 +62,7 @@ function Index() {
 
       <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
-      <section className="container-site mt-20">
-        <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
-          <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
-            <p className="eyebrow text-gold">Kits Rarity</p>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">Rotina completa, <span className="text-gold-metal">em um só presente</span>.</h2>
-            <p className="mt-4 max-w-md text-ink-foreground/70">
-              Conteúdo demonstrativo para campanhas, ofertas e seleções especiais da marca.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/produtos" search={{ tipo: "kit" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
-                Ver kits
-              </Link>
-              <Link to="/produtos" search={{ promo: true }} className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
-                Ofertas selecionadas
-              </Link>
-            </div>
-          </div>
-          <img src={kit} alt="Kit Rarity em caixa preta com detalhes dourados" loading="lazy" width={1200} height={912} className="h-full min-h-72 w-full object-cover" />
-        </div>
-      </section>
+      <KitsBanners />
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
@@ -115,5 +98,66 @@ function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: str
         {items.map((p) => <ProductCard key={p.id} p={p} />)}
       </div>
     </section>
+  );
+}
+
+/** Admin-managed banners (Configurações); falls back to the built-in kits banner when none is active. */
+function KitsBanners() {
+  const q = useQuery({
+    queryKey: ["home-banners"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("banners").select("id, title, subtitle, image_url, link, button_label")
+        .eq("placement", "home_kits").eq("status", "ativo").order("display_order").order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+  if (!q.isFetched) return null;
+  if (!q.data?.length) return <DefaultKitsBanner />;
+  return (
+    <>
+      {q.data.map((b) => (
+        <section key={b.id} className="container-site mt-20">
+          <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
+            <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+              <p className="eyebrow text-gold">Kits Rarity</p>
+              {b.title && <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">{b.title}</h2>}
+              {b.subtitle && <p className="mt-4 max-w-md whitespace-pre-line text-ink-foreground/70">{b.subtitle}</p>}
+              {b.link && (
+                <div className="mt-8">
+                  <a href={b.link} {...(b.link.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})} className={buttonVariants({ variant: "gold", size: "lg" })}>{b.button_label || "Ver mais"}</a>
+                </div>
+              )}
+            </div>
+            <img src={b.image_url || kit} alt={b.title || "Kits Rarity"} loading="lazy" className="h-full min-h-72 w-full object-cover" />
+          </div>
+        </section>
+      ))}
+    </>
+  );
+}
+
+function DefaultKitsBanner() {
+  return (
+      <section className="container-site mt-20">
+        <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
+          <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+            <p className="eyebrow text-gold">Kits Rarity</p>
+            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">Rotina completa, <span className="text-gold-metal">em um só presente</span>.</h2>
+            <p className="mt-4 max-w-md text-ink-foreground/70">
+              Conteúdo demonstrativo para campanhas, ofertas e seleções especiais da marca.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/produtos" search={{ tipo: "kit" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
+                Ver kits
+              </Link>
+              <Link to="/produtos" search={{ promo: true }} className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
+                Ofertas selecionadas
+              </Link>
+            </div>
+          </div>
+          <img src={kit} alt="Kit Rarity em caixa preta com detalhes dourados" loading="lazy" width={1200} height={912} className="h-full min-h-72 w-full object-cover" />
+        </div>
+      </section>
   );
 }

@@ -92,7 +92,7 @@ export function Header() {
                 <SheetTitle className="font-display text-2xl">Menu</SheetTitle>
                 <nav className="mt-6 flex flex-col gap-1">
                   {nav.map((n) => (
-                    <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="rounded-md px-3 py-3 text-base hover:bg-accent" activeProps={{ className: "text-gold-deep font-medium" }} activeOptions={{ exact: true }}>
+                    <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="flex items-center justify-between rounded-md border-l-2 border-transparent px-3 py-3 text-sm font-medium uppercase tracking-[0.14em] hover:bg-accent" activeProps={{ className: "!border-gold text-gold-deep bg-gold/5" }} activeOptions={{ exact: true }}>
                       {n.label}
                     </Link>
                   ))}
@@ -133,27 +133,28 @@ export function Header() {
         </div>
       </div>
 
-      <nav aria-label="Principal" className="hidden border-b bg-card lg:block">
-        <div className="container-site flex h-12 items-center gap-8 text-sm">
+      <nav aria-label="Principal" className="hidden border-b border-gold/15 bg-card lg:block">
+        <div className="container-site flex items-center justify-center gap-10">
           {nav.slice(0, 2).map((n) => (
-            <Link key={n.to} to={n.to} className="relative py-3 text-foreground/75 transition hover:text-foreground" activeProps={{ className: "!text-foreground after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-gold" }} activeOptions={{ exact: true }}>
+            <Link key={n.to} to={n.to} className="group relative px-1 py-4 text-[13px] font-medium uppercase tracking-[0.18em] text-foreground/70 transition-colors hover:text-foreground after:absolute after:inset-x-1 after:bottom-2.5 after:h-px after:origin-center after:scale-x-0 after:bg-gold-metal after:transition-transform after:duration-300 hover:after:scale-x-100" activeProps={{ className: "!text-foreground after:!scale-x-100" }} activeOptions={{ exact: true }}>
               {n.label}
             </Link>
           ))}
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 py-3 text-foreground/75 outline-none transition hover:text-foreground">
-              Categorias <ChevronDown className="size-3.5" />
+            <DropdownMenuTrigger className="group relative px-1 py-4 text-[13px] font-medium uppercase tracking-[0.18em] text-foreground/70 transition-colors hover:text-foreground after:absolute after:inset-x-1 after:bottom-2.5 after:h-px after:origin-center after:scale-x-0 after:bg-gold-metal after:transition-transform after:duration-300 hover:after:scale-x-100 flex items-center gap-1.5 outline-none data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
+              Categorias <ChevronDown className="size-3.5 text-gold-deep transition-transform group-data-[state=open]:rotate-180" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56">
+            <DropdownMenuContent align="center" sideOffset={0} className="w-60 rounded-none rounded-b-lg border-gold/20 p-2">
               {categories.map((c) => (
-                <DropdownMenuItem key={c.id} asChild>
+                <DropdownMenuItem key={c.id} asChild className="cursor-pointer rounded-md px-3 py-2.5 text-sm focus:bg-gold/10 focus:text-foreground">
                   <Link to="/produtos" search={{ categoria: c.id }}>{c.name}</Link>
                 </DropdownMenuItem>
               ))}
+              {!categories.length && <p className="px-3 py-2 text-sm text-muted-foreground">Nenhuma categoria.</p>}
             </DropdownMenuContent>
           </DropdownMenu>
           {nav.slice(2).map((n) => (
-            <Link key={n.to} to={n.to} className="relative py-3 text-foreground/75 transition hover:text-foreground" activeProps={{ className: "!text-foreground after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-gold" }}>
+            <Link key={n.to} to={n.to} className="group relative px-1 py-4 text-[13px] font-medium uppercase tracking-[0.18em] text-foreground/70 transition-colors hover:text-foreground after:absolute after:inset-x-1 after:bottom-2.5 after:h-px after:origin-center after:scale-x-0 after:bg-gold-metal after:transition-transform after:duration-300 hover:after:scale-x-100" activeProps={{ className: "!text-foreground after:!scale-x-100" }}>
               {n.label}
             </Link>
           ))}

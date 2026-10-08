@@ -111,14 +111,14 @@ function RequestDetail({ req, onDone }: { req: Req; onDone: () => void }) {
         <dt className="text-muted-foreground">Telefone</dt><dd>{c?.phone || "—"}</dd>
         <dt className="text-muted-foreground">CPF</dt><dd>{c?.cpf || "—"}</dd>
         <dt className="text-muted-foreground">Cliente desde</dt><dd>{fmtDate(c?.created_at ?? null)}</dd>
-        <dt className="text-muted-foreground">Comprovante</dt><dd>{proofLabel[req.proof_type]}</dd>
+        <dt className="text-muted-foreground">Comprovante</dt><dd>{proofLabel[req.proof_type]}{req.proof_number ? ` · ${req.proof_number.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")}` : ""}</dd>
         <dt className="text-muted-foreground">Enviada em</dt><dd>{fmtDate(req.requested_at)}</dd>
         <dt className="text-muted-foreground">Situação</dt>
         <dd><Pill tone={req.status === "aprovado" ? "ok" : req.status === "rejeitado" ? "bad" : "warn"}>{statusLabel[req.status]}</Pill></dd>
         {req.decided_at && (<><dt className="text-muted-foreground">Decidida em</dt><dd>{fmtDate(req.decided_at)}</dd></>)}
         {req.decision_note && (<><dt className="text-muted-foreground">Observação</dt><dd>{req.decision_note}</dd></>)}
       </dl>
-      <Button variant="outline" onClick={openDoc} className="mt-2 w-full"><FileText className="size-4" /> Ver documento (link temporário)</Button>
+      {!req.proof_number && <Button variant="outline" onClick={openDoc} className="mt-2 w-full"><FileText className="size-4" /> Ver documento (link temporário)</Button>}
       {req.status === "em_analise" && (
         <div className="mt-2 space-y-3 border-t pt-4">
           <label className="block space-y-1.5">

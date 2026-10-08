@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="mt-24 bg-ink text-ink-foreground/75">
       <div className="h-px bg-gold-metal opacity-60" />
-      <div className="container-site grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="container-site grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <img src={logo.url} alt="Rarity Hair Care" className="h-12 w-auto" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">
@@ -27,6 +27,14 @@ export function Footer() {
             <li><Link to="/produtos" className="hover:text-ink-foreground">Produtos</Link></li>
             <li><Link to="/sobre" className="hover:text-ink-foreground">Sobre nós</Link></li>
             <li><Link to="/contato" className="hover:text-ink-foreground">Contato</Link></li>
+          </ul>
+        </div>
+        <div>
+          <p className="eyebrow text-gold">Informações</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            <li><Link to="/politica-de-privacidade" className="hover:text-ink-foreground">Política de Privacidade</Link></li>
+            <li><Link to="/termos-de-uso" className="hover:text-ink-foreground">Termos de Uso</Link></li>
+            <li><Link to="/trocas-e-devolucoes" className="hover:text-ink-foreground">Trocas, devoluções e solicitações relacionadas a pedidos</Link></li>
           </ul>
         </div>
         <div>

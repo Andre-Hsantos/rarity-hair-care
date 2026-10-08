@@ -23,3 +23,6 @@
 - Favorites persist in favorites for signed-in users (guest favorites in localStorage, merged on sign-in). Why: same pattern as the cart; RLS keeps them per user.
 - Admin→client notifications are created only via admin_send_notification RPC; clients may update only read_at. Why: one-way communication, no tampering.
 - Self account deletion (delete_own_account_data + deleteOwnAccount server fn) anonymizes the profile and bans the login instead of deleting it. Why: orders reference the profile and must stay intact.
+- Pro proof: CNPJ/MEI stored as pro_requests.proof_number (document_path = "<uid>/sem-arquivo" marker), Certificado as private file; CNPJ/MEI signups open the request in handle_new_user. Why: no upload needed for numbers and document_path stays NOT NULL.
+- Home "Kits Rarity" area reads active banners (placement home_kits) and falls back to the built-in banner when none. Why: admin edits without breaking the default.
+- Category deletion only via admin_delete_category, blocked while products/coupons reference it. Why: no orphans, no silent product changes.

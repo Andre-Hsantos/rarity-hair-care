@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, ImageOff, MessageCircle, ShoppingBag } from "lucide-react";
-import { brl, type Product } from "@/lib/catalog";
+import { brl, strikePrice, type Product } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -38,7 +38,7 @@ export function ProductCard({ p }: { p: Product }) {
         {p.size && <p className="mt-1 text-sm text-muted-foreground">{p.size}</p>}
         <div className="mt-auto flex items-end justify-between gap-2 pt-4">
           <div className="min-w-0">
-            {p.price == null ? <p className="text-base font-medium">Sob consulta</p> : <>{p.inPromotion && p.originalPrice != null && <p className="text-xs text-muted-foreground">De <s>{brl(p.originalPrice)}</s></p>}<p className="text-lg font-medium">{p.inPromotion && <span className="text-sm font-normal text-gold-deep">Por </span>}{brl(p.price)}</p></>}
+            {p.price == null ? <p className="text-base font-medium">Sob consulta</p> : <>{strikePrice(p) != null && <p className="text-xs text-muted-foreground">De <s>{brl(strikePrice(p)!)}</s></p>}<p className="text-lg font-medium">{strikePrice(p) != null && <span className="text-sm font-normal text-gold-deep">Por </span>}{brl(p.price)}</p></>}
           </div>
           {p.price == null ? (
             <Link to="/contato" aria-label={`Consultar ${p.name}`} className={buttonVariants({ variant: "dark", size: "icon", className: "shrink-0 rounded-full" })}>
