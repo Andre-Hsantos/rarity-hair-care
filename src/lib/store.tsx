@@ -15,12 +15,16 @@ type Ctx = {
   add: (p: Product, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
   remove: (id: string) => void;
-  toggleFav: (p: Product) => void;
+  toggleFav: (p: Product) => void | Promise<void>;
   count: number;
 };
 
 const StoreCtx = createContext<Ctx | null>(null);
 const GUEST_KEY = "rarity-guest-cart";
+export const GUEST_FAV_KEY = "rarity-guest-favorites";
+function readGuestFavs(): string[] {
+  try { const v = JSON.parse(localStorage.getItem(GUEST_FAV_KEY) ?? "[]"); return Array.isArray(v) ? [...new Set(v.map(String))] : []; } catch { return []; }
+}
 type Raw = { id: string; qty: number };
 
 function readGuest(): Raw[] {
@@ -34,9 +38,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
   const catalog = useCatalog();
   const [guest, setGuest] = useState<Raw[]>([]);
-  const [favItems, setFavItems] = useState<Product[]>([]);
+  const [guestFavs, setGuestFavs] = useState<string[]>([]);
 
-  useEffect(() => { setGuest(readGuest()); }, []);
+  useEffect(() => { setGuest(readGuest()); setGuestFavs(readGuestFavs()); }, []);
+  const saveGuestFavs = (f: string[]) => { setGuestFavs(f); localStorage.setItem(GUEST_FAV_KEY, JSON.stringify(f)); };
+
+  // Signed-in favorites live in the favorites table (own rows only via RLS); guests keep them in localStorage.
+  const dbFavs = useQuery({
+    queryKey: ["favorites", uid],
+    enabled: !!uid,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase.from("favorites").select("product_id").eq("user_id", uid!).order("created_at");
+      if (error) throw error;
+      return data.map((d) => d.product_id);
+    },
+  });
+
+  // Merge guest favorites into the account once signed in (primary key prevents duplicates).
+  useEffect(() => {
+    if (!uid) return;
+    const f = readGuestFavs();
+    if (!f.length) return;
+    (async () => {
+      const { error } = await supabase.from("favorites").upsert(f.map((product_id) => ({ user_id: uid, product_id })), { onConflict: "user_id,product_id", ignoreDuplicates: true });
+      if (!error) saveGuestFavs([]);
+      qc.invalidateQueries({ queryKey: ["favorites", uid] });
+    })();
+  }, [uid, qc]);
   const saveGuest = (g: Raw[]) => { setGuest(g); localStorage.setItem(GUEST_KEY, JSON.stringify(g)); };
 
   const dbCart = useQuery({
@@ -95,12 +123,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     void write(id, null);
     toast(`${name ?? "Item"} removido`, prev ? { action: { label: "Desfazer", onClick: () => void write(id, prev.qty) } } : undefined);
   };
-  const toggleFav = (p: Product) => {
-    const has = favItems.some((f) => f.id === p.id);
-    setFavItems((f) => (has ? f.filter((x) => x.id !== p.id) : [...f, p]));
+  const favIds = uid ? dbFavs.data ?? [] : guestFavs;
+  const toggleFav = async (p: Product) => {
+    const has = favIds.includes(p.id);
     toast(has ? "Removido dos favoritos" : "Adicionado aos favoritos");
+    if (!uid) { const f = readGuestFavs(); saveGuestFavs(has ? f.filter((x) => x !== p.id) : [...new Set([...f, p.id])]); return; }
+    qc.setQueryData<string[]>(["favorites", uid], has ? favIds.filter((x) => x !== p.id) : [...favIds, p.id]);
+    const res = has
+      ? await supabase.from("favorites").delete().eq("user_id", uid).eq("product_id", p.id)
+      : await supabase.from("favorites").upsert({ user_id: uid, product_id: p.id }, { onConflict: "user_id,product_id", ignoreDuplicates: true });
+    if (res.error) toast.error("Não foi possível atualizar os favoritos.");
+    qc.invalidateQueries({ queryKey: ["favorites", uid] });
   };
   const count = raw.reduce((s, l) => s + l.qty, 0);
+  // Only products still visible in the live catalog (with the visitor's correct price) are shown.
+  const favItems = favIds.map((id) => byId.get(id)).filter((p): p is Product => !!p);
   const favorites = favItems.map((f) => f.id);
   const ready = authReady && (!uid || dbCart.isFetched) && !catalog.isLoading;
 
