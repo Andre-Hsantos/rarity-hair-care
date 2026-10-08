@@ -9,9 +9,13 @@ export const deleteOwnAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const uid = context.userId;
-    const { error } = await context.supabase.rpc("delete_own_account_data");
-    if (error) throw new Error(error.message);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: prof } = await supabaseAdmin.from("profiles").select("account_status").eq("id", uid).maybeSingle();
+    // Retry path: data already removed earlier, only finish storage + login blocking.
+    if (prof?.account_status !== "excluida") {
+      const { error } = await context.supabase.rpc("delete_own_account_data");
+      if (error) throw new Error(error.message);
+    }
 
     const { data: files } = await supabaseAdmin.storage.from("pro-documents").list(uid, { limit: 1000 });
     if (files?.length) {
@@ -28,6 +32,5 @@ export const deleteOwnAccount = createServerFn({ method: "POST" })
       console.error("auth block failed", upd.error.message);
       throw new Error("Seus dados foram removidos, mas não foi possível encerrar o acesso. Tente novamente.");
     }
-    await supabaseAdmin.auth.admin.signOut(context.claims?.session_id ? String(context.claims.session_id) : "", "global").catch(() => {});
     return { ok: true };
   });
