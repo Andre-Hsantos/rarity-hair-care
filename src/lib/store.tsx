@@ -94,6 +94,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const raw = uid ? dbCart.data ?? [] : guest;
   const byId = useMemo(() => new Map((catalog.data ?? []).map((p) => [p.id, p])), [catalog.data]);
+  // Guest cart/favorites: drop products that no longer exist in the live catalog (deleted/inactive).
+  useEffect(() => {
+    if (uid || !catalog.isSuccess) return;
+    const g = readGuest();
+    const keep = g.filter((l) => byId.has(l.id));
+    if (keep.length !== g.length) saveGuest(keep);
+    const f = readGuestFavs();
+    const keepF = f.filter((id) => byId.has(id));
+    if (keepF.length !== f.length) saveGuestFavs(keepF);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uid, catalog.isSuccess, byId]);
   const cart: CartLine[] = raw.map((l) => ({ id: l.id, qty: l.qty, p: byId.get(l.id) ?? null }));
 
   const write = useCallback(async (id: string, qty: number | null) => {
