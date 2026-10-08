@@ -16,9 +16,12 @@ import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as TermosDeUsoRouteImport } from './routes/termos-de-uso'
+import { Route as TrocasEDevolucoesRouteImport } from './routes/trocas-e-devolucoes'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedCheckoutRouteImport } from './routes/_authenticated/checkout'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated/minha-conta'
@@ -70,6 +73,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
@@ -83,6 +91,16 @@ const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosDeUsoRoute = TermosDeUsoRouteImport.update({
+  id: '/termos-de-uso',
+  path: '/termos-de-uso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrocasEDevolucoesRoute = TrocasEDevolucoesRouteImport.update({
+  id: '/trocas-e-devolucoes',
+  path: '/trocas-e-devolucoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
@@ -183,9 +201,12 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
+  '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
@@ -210,9 +231,12 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
+  '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/checkout': typeof AuthenticatedCheckoutRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/notificacoes': typeof AuthenticatedNotificacoesRoute
@@ -238,9 +262,12 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
   '/login': typeof LoginRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/produtos': typeof ProdutosRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
+  '/termos-de-uso': typeof TermosDeUsoRoute
+  '/trocas-e-devolucoes': typeof TrocasEDevolucoesRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/_authenticated/checkout': typeof AuthenticatedCheckoutRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
@@ -267,9 +294,12 @@ export interface FileRouteTypes {
     | '/contato'
     | '/favoritos'
     | '/login'
+    | '/politica-de-privacidade'
     | '/produtos'
     | '/redefinir-senha'
     | '/sobre'
+    | '/termos-de-uso'
+    | '/trocas-e-devolucoes'
     | '/admin'
     | '/checkout'
     | '/minha-conta'
@@ -294,9 +324,12 @@ export interface FileRouteTypes {
     | '/contato'
     | '/favoritos'
     | '/login'
+    | '/politica-de-privacidade'
     | '/produtos'
     | '/redefinir-senha'
     | '/sobre'
+    | '/termos-de-uso'
+    | '/trocas-e-devolucoes'
     | '/checkout'
     | '/minha-conta'
     | '/notificacoes'
@@ -321,9 +354,12 @@ export interface FileRouteTypes {
     | '/contato'
     | '/favoritos'
     | '/login'
+    | '/politica-de-privacidade'
     | '/produtos'
     | '/redefinir-senha'
     | '/sobre'
+    | '/termos-de-uso'
+    | '/trocas-e-devolucoes'
     | '/_authenticated/admin'
     | '/_authenticated/checkout'
     | '/_authenticated/minha-conta'
@@ -350,9 +386,12 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   FavoritosRoute: typeof FavoritosRoute
   LoginRoute: typeof LoginRoute
+  PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SobreRoute: typeof SobreRoute
+  TermosDeUsoRoute: typeof TermosDeUsoRoute
+  TrocasEDevolucoesRoute: typeof TrocasEDevolucoesRoute
   ProdutoIdRoute: typeof ProdutoIdRoute
 }
 
@@ -407,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produtos': {
       id: '/produtos'
       path: '/produtos'
@@ -426,6 +472,20 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos-de-uso': {
+      id: '/termos-de-uso'
+      path: '/termos-de-uso'
+      fullPath: '/termos-de-uso'
+      preLoaderRoute: typeof TermosDeUsoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trocas-e-devolucoes': {
+      id: '/trocas-e-devolucoes'
+      path: '/trocas-e-devolucoes'
+      fullPath: '/trocas-e-devolucoes'
+      preLoaderRoute: typeof TrocasEDevolucoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -602,9 +662,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   FavoritosRoute: FavoritosRoute,
   LoginRoute: LoginRoute,
+  PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   SobreRoute: SobreRoute,
+  TermosDeUsoRoute: TermosDeUsoRoute,
+  TrocasEDevolucoesRoute: TrocasEDevolucoesRoute,
   ProdutoIdRoute: ProdutoIdRoute,
 }
 export const routeTree = rootRouteImport

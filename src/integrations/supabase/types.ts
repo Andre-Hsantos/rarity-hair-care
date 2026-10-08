@@ -102,6 +102,7 @@ export type Database = {
       }
       banners: {
         Row: {
+          button_label: string | null
           created_at: string
           display_order: number
           ends_at: string | null
@@ -116,6 +117,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          button_label?: string | null
           created_at?: string
           display_order?: number
           ends_at?: string | null
@@ -130,6 +132,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          button_label?: string | null
           created_at?: string
           display_order?: number
           ends_at?: string | null
