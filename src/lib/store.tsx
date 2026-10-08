@@ -60,8 +60,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const f = readGuestFavs();
     if (!f.length) return;
     (async () => {
-      const { error } = await supabase.from("favorites").upsert(f.map((product_id) => ({ user_id: uid, product_id })), { onConflict: "user_id,product_id", ignoreDuplicates: true });
-      if (!error) saveGuestFavs([]);
+      // Row by row so one deleted product never blocks merging the others.
+      await Promise.all(f.map((product_id) => supabase.from("favorites").upsert({ user_id: uid, product_id }, { onConflict: "user_id,product_id", ignoreDuplicates: true })));
+      saveGuestFavs([]);
       qc.invalidateQueries({ queryKey: ["favorites", uid] });
     })();
   }, [uid, qc]);
