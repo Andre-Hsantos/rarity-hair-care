@@ -29,6 +29,7 @@ function AdminNotifications() {
   });
   const [q, setQ] = useState("");
   const [to, setTo] = useState<string[]>([]);
+  const [mode, setMode] = useState<"select" | "todos" | "comuns" | "profissionais">("select");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const byId = useMemo(() => new Map((clients.data ?? []).map((c) => [c.id, c])), [clients.data]);
@@ -40,7 +41,9 @@ function AdminNotifications() {
 
   const send = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.rpc("admin_send_notification", { _user_ids: to, _title: title, _body: body });
+      const { data, error } = mode === "select"
+        ? await supabase.rpc("admin_send_notification", { _user_ids: to, _title: title, _body: body })
+        : await supabase.rpc("admin_send_notification_audience", { _audience: mode, _title: title, _body: body });
       if (error) throw new Error(error.message);
       return data as number;
     },
@@ -56,7 +59,16 @@ function AdminNotifications() {
     <div>
       <PageHead title="Notificações" description="Comunicados da loja para clientes. O cliente vê a mensagem na área de notificações da conta; não há resposta pelo site." />
       <form className="grid gap-4 rounded-lg border p-5" onSubmit={(e) => { e.preventDefault(); send.mutate(); }}>
-        <FieldRow label="Destinatário(s)">
+        <FieldRow label="Público">
+          <div className="flex flex-wrap gap-2" role="radiogroup">
+            {([["comuns", "Clientes comuns"], ["profissionais", "Profissionais"], ["todos", "Todos"], ["select", "Clientes específicos"]] as const).map(([k, l]) => (
+              <label key={k} className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ${mode === k ? "border-gold bg-gold/10" : ""}`}>
+                <input type="radio" name="aud" className="accent-[var(--gold-deep)]" checked={mode === k} onChange={() => setMode(k)} /> {l}
+              </label>
+            ))}
+          </div>
+        </FieldRow>
+        {mode === "select" && <FieldRow label="Destinatário(s)">
           <div className="space-y-2">
             {!!to.length && (
               <div className="flex flex-wrap gap-2">
@@ -80,10 +92,10 @@ function AdminNotifications() {
               </div>
             )}
           </div>
-        </FieldRow>
+        </FieldRow>}
         <FieldRow label="Título"><input className={inputCls} maxLength={150} value={title} onChange={(e) => setTitle(e.target.value)} required /></FieldRow>
         <FieldRow label="Mensagem"><textarea className={areaCls} maxLength={2000} value={body} onChange={(e) => setBody(e.target.value)} required /></FieldRow>
-        <Button variant="dark" disabled={send.isPending || !to.length}>{send.isPending ? "Enviando…" : "Enviar notificação"}</Button>
+        <Button variant="dark" disabled={send.isPending || (mode === "select" && !to.length)}>{send.isPending ? "Enviando…" : "Enviar notificação"}</Button>
       </form>
 
       <h2 className="mb-3 mt-10 text-2xl">Enviadas recentemente</h2>

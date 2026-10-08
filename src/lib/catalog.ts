@@ -14,6 +14,8 @@ export type Product = {
   /** Price before promotion (only meaningful when inPromotion). */
   originalPrice: number | null;
   inPromotion: boolean;
+  /** Normal (non-pro) price; set only for approved professionals so the saving can be shown. */
+  normalPrice: number | null;
   inStock: boolean;
   size: string | null;
   sizeGroup: string | null;
@@ -24,9 +26,10 @@ export type Product = {
 export const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function useCatalog() {
-  const { profile, session, ready } = useAuth();
+  const { profile, session, ready, tier } = useAuth();
+  const isPro = tier === "profissional_aprovado";
   return useQuery({
-    queryKey: ["catalog", session?.user.id ?? "anon", profile?.pro_status, profile?.individual_discount_percent],
+    queryKey: ["catalog", session?.user.id ?? "anon", isPro, profile?.pro_status, profile?.individual_discount_percent],
     enabled: ready,
     queryFn: async (): Promise<Product[]> => {
       const { data, error } = await supabase.rpc("catalog_products");
@@ -43,6 +46,7 @@ export function useCatalog() {
           price: r.final_price == null ? null : Number(r.final_price),
           originalPrice: r.original_price == null ? null : Number(r.original_price),
           inPromotion: r.final_price != null && r.in_promotion && Number(r.final_price) < Number(r.original_price),
+          normalPrice: isPro && r.price != null && r.final_price != null && Number(r.price) > Number(r.final_price) ? Number(r.price) : null,
           inStock: r.availability === "disponivel",
           size: r.size_label,
           sizeGroup: r.size_group,
@@ -78,4 +82,11 @@ export function useHomeSection(section: HomeSection) {
   });
   const byId = new Map((catalog.data ?? []).map((p) => [p.id, p]));
   return (sel.data ?? []).map((id) => byId.get(id)).filter((p): p is Product => !!p);
+}
+
+/** Price to show struck-through: normal price for approved pros, else pre-promotion price. */
+export function strikePrice(p: Product): number | null {
+  if (p.price == null) return null;
+  if (p.normalPrice != null) return p.normalPrice;
+  return p.inPromotion && p.originalPrice != null ? p.originalPrice : null;
 }
