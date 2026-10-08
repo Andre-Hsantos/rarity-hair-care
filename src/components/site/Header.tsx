@@ -144,7 +144,7 @@ export function Header() {
             <DropdownMenuTrigger className="group relative px-1 py-4 text-[13px] font-medium uppercase tracking-[0.18em] text-foreground/70 transition-colors hover:text-foreground after:absolute after:inset-x-1 after:bottom-2.5 after:h-px after:origin-center after:scale-x-0 after:bg-gold-metal after:transition-transform after:duration-300 hover:after:scale-x-100 flex items-center gap-1.5 outline-none data-[state=open]:text-foreground data-[state=open]:after:scale-x-100">
               Categorias <ChevronDown className="size-3.5 text-gold-deep transition-transform group-data-[state=open]:rotate-180" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" sideOffset=0 className="w-60 rounded-none rounded-b-lg border-gold/20 p-2">
+            <DropdownMenuContent align="center" sideOffset={0} className="w-60 rounded-none rounded-b-lg border-gold/20 p-2">
               {categories.map((c) => (
                 <DropdownMenuItem key={c.id} asChild className="cursor-pointer rounded-md px-3 py-2.5 text-sm focus:bg-gold/10 focus:text-foreground">
                   <Link to="/produtos" search={{ categoria: c.id }}>{c.name}</Link>
