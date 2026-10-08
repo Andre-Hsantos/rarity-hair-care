@@ -86,14 +86,28 @@ export function validateDoc(file: File | null | undefined): string | null {
   return null;
 }
 
-/** Uploads the proof privately to <user_id>/ and opens a pro request (status em_analise). */
-export async function submitProRequest(userId: string, file: File, proofType: ProofType) {
-  const err = validateDoc(file);
-  if (err) throw new Error(err);
-  const ext = file.name.split(".").pop()!.toLowerCase();
-  const path = `${userId}/${Date.now()}.${ext}`;
-  const up = await supabase.storage.from("pro-documents").upload(path, file, { contentType: file.type, upsert: false });
-  if (up.error) throw new Error("Não foi possível enviar o documento.");
-  const { error } = await supabase.from("pro_requests").insert({ user_id: userId, proof_type: proofType, document_path: path });
+/** 14 digits or null. Format only (MEI also uses a CNPJ number). */
+export function cleanCnpj(v: unknown): string | null {
+  const d = String(v ?? "").replace(/\D/g, "");
+  return d.length === 14 ? d : null;
+}
+
+/** Opens a pro request (em_analise). Certificado: file uploaded privately to <user_id>/. CNPJ/MEI: number only, no file. */
+export async function submitProRequest(userId: string, proofType: ProofType, file: File | null, number: string | null) {
+  let path: string;
+  let proof_number: string | null = null;
+  if (proofType === "certificado") {
+    const err = validateDoc(file);
+    if (err) throw new Error(err);
+    const ext = file!.name.split(".").pop()!.toLowerCase();
+    path = `${userId}/${Date.now()}.${ext}`;
+    const up = await supabase.storage.from("pro-documents").upload(path, file!, { contentType: file!.type, upsert: false });
+    if (up.error) throw new Error("Não foi possível enviar o documento.");
+  } else {
+    proof_number = cleanCnpj(number);
+    if (!proof_number) throw new Error("CNPJ inválido. Informe os 14 dígitos.");
+    path = `${userId}/sem-arquivo`; // marker: no file for CNPJ/MEI
+  }
+  const { error } = await supabase.from("pro_requests").insert({ user_id: userId, proof_type: proofType, document_path: path, proof_number });
   if (error) throw new Error(error.message.includes("Já existe") ? "Você já tem uma solicitação em análise ou aprovada." : "Não foi possível registrar a solicitação.");
 }

@@ -134,7 +134,7 @@ function Account() {
                       e.preventDefault();
                       const fd = new FormData(e.currentTarget);
                       try {
-                        await submitProRequest(session!.user.id, fd.get("doc_file") as File, String(fd.get("proof_type")) as ProofType);
+                        await submitProRequest(session!.user.id, String(fd.get("proof_type")) as ProofType, fd.get("doc_file") as File | null, fd.get("proof_number") as string | null);
                         await refresh();
                         toast.success("Solicitação enviada para análise.");
                       } catch (err) { toast.error((err as Error).message); }
