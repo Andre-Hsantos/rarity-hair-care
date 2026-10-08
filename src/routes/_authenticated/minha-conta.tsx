@@ -7,7 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchOrder } from "@/lib/orderQueries";
 import { orderNumber } from "@/lib/orders";
 import { OrderDetail, StatusBadge } from "@/components/site/OrderDetail";
-import { useStore } from "@/lib/store";
+import { GUEST_FAV_KEY, useStore } from "@/lib/store";
+import { useMarkRead, useMyNotifications } from "@/lib/notifications";
+import { deleteOwnAccount } from "@/lib/account.functions";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Field } from "@/components/site/Field";
@@ -15,10 +17,7 @@ import { Button } from "@/components/ui/button";
 import { ProofFields } from "@/components/site/ProofFields";
 import { supabase } from "@/integrations/supabase/client";
 import { submitProRequest, useAuth, type ProofType } from "@/lib/auth";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/_authenticated/minha-conta")({
   head: () => ({
@@ -29,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/minha-conta")({
       { property: "og:description", content: "Área do cliente Rarity." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { tab?: Tab | undefined } => ({ tab: tabs.some((t) => t.id === s["tab"]) ? (s["tab"] as Tab) : undefined }),
   component: Account,
 });
 
@@ -51,7 +51,9 @@ const tierLabel = {
 } as const;
 
 function Account() {
-  const [tab, setTab] = useState<Tab>("perfil");
+  const search = Route.useSearch();
+  const tab: Tab = search.tab ?? "perfil";
+  const setTab = (t: Tab) => navigate({ to: "/minha-conta", search: { tab: t }, replace: true });
   const { favItems: favorites } = useStore();
   const { session, profile, tier, refresh, signOut } = useAuth();
   const navigate = useNavigate();
@@ -68,21 +70,7 @@ function Account() {
             </button>
           ))}
           <div className="hidden lg:my-3 lg:block lg:border-t" />
-          <AlertDialog>
-            <AlertDialogTrigger className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm text-destructive hover:bg-destructive/5">
-              <Trash2 className="size-4" /> Excluir conta
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Excluir sua conta?</AlertDialogTitle>
-                <AlertDialogDescription>Esta ação é permanente. Seus pedidos e favoritos serão removidos.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={() => toast("Exclusão de conta ainda não disponível (próxima etapa).")}>Excluir</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <DeleteAccount isAdmin={tier === "admin"} />
           <button onClick={async () => { await signOut(); toast("Você saiu da conta."); navigate({ to: "/" }); }} className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm hover:bg-accent">
             <LogOut className="size-4" /> Sair
           </button>
@@ -117,18 +105,7 @@ function Account() {
             </form>
           )}
           {tab === "pedidos" && <MyOrders />}
-          {tab === "notificacoes" && (
-            <div>
-              <h2 className="text-3xl">Central de Notificações:</h2>
-              <ul className="mt-6 space-y-3">
-                {["Seu pedido #R-1024 foi entregue.", "Novidades na linha de tratamentos (demonstrativo)."].map((n, i) => (
-                  <li key={n} className="flex gap-3 rounded-lg border p-4 text-sm">
-                    <span className={`mt-1.5 size-2 shrink-0 rounded-full ${i === 0 ? "bg-gold" : "bg-border"}`} /> {n}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {tab === "notificacoes" && <MyNotifications />}
           {tab === "favoritos" && (
             <div>
               <h2 className="text-3xl">Favoritos</h2>
@@ -231,5 +208,100 @@ function MyOrders() {
       )}
       <p className="mt-4 text-xs text-muted-foreground">Para alterar ou cancelar um pedido, fale com a loja pelo WhatsApp.</p>
     </div>
+  );
+}
+
+function MyNotifications() {
+  const q = useMyNotifications();
+  const mark = useMarkRead();
+  const list = q.data ?? [];
+  const unread = list.filter((n) => !n.read_at);
+  const [openId, setOpenId] = useState<string | null>(null);
+  return (
+    <div>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h2 className="text-3xl">Central de Notificações:</h2>
+        {unread.length > 0 && <button onClick={() => mark.mutate(unread.map((n) => n.id))} className="text-sm text-gold-deep hover:underline">Marcar todas como lidas</button>}
+      </div>
+      {q.isLoading ? <p className="mt-6 text-sm text-muted-foreground">Carregando…</p> : !list.length ? (
+        <p className="mt-4 text-muted-foreground">Você ainda não tem notificações.</p>
+      ) : (
+        <ul className="mt-6 space-y-3">
+          {list.map((n) => {
+            const isOpen = openId === n.id;
+            return (
+              <li key={n.id} className={`rounded-lg border text-sm ${n.read_at ? "" : "bg-gold/5"}`}>
+                <button className="flex w-full gap-3 p-4 text-left" aria-expanded={isOpen}
+                  onClick={() => { setOpenId(isOpen ? null : n.id); if (!n.read_at) mark.mutate([n.id]); }}>
+                  <span className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? "bg-border" : "bg-gold"}`} aria-label={n.read_at ? "Lida" : "Não lida"} />
+                  <span className="min-w-0 flex-1">
+                    <span className={`block ${n.read_at ? "" : "font-medium"}`}>{n.title}</span>
+                    <span className="text-xs text-muted-foreground">{new Date(n.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}{n.read_at ? "" : " · Não lida"}</span>
+                    {isOpen && n.body && <span className="mt-2 block whitespace-pre-line text-foreground/80">{n.body}</span>}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function DeleteAccount({ isAdmin }: { isAdmin: boolean }) {
+  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [word, setWord] = useState("");
+  const [busy, setBusy] = useState(false);
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const close = () => { setStep(0); setWord(""); };
+  const run = async () => {
+    setBusy(true);
+    try {
+      await deleteOwnAccount();
+      localStorage.removeItem(GUEST_FAV_KEY);
+      localStorage.removeItem("rarity-guest-cart");
+      await signOut().catch(() => {});
+      close();
+      navigate({ to: "/" });
+      toast.success("Sua conta foi excluída. Sentiremos sua falta.");
+    } catch (e) {
+      toast.error((e as Error).message || "Não foi possível excluir a conta.");
+    } finally { setBusy(false); }
+  };
+  return (
+    <>
+      <button onClick={() => isAdmin ? toast.error("Contas de administrador não podem ser excluídas por aqui.") : setStep(1)} className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm text-destructive hover:bg-destructive/5">
+        <Trash2 className="size-4" /> Excluir conta
+      </button>
+      <Dialog open={step > 0} onOpenChange={(o) => !o && close()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Excluir sua conta?</DialogTitle>
+            <DialogDescription>Esta ação é permanente e não pode ser desfeita.</DialogDescription>
+          </DialogHeader>
+          {step === 1 ? (
+            <div className="space-y-4 text-sm">
+              <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+                <li>Seus dados pessoais, endereços, favoritos, carrinho e notificações serão apagados.</li>
+                <li>Documentos e solicitação de conta profissional serão apagados.</li>
+                <li>Você não poderá mais entrar com esta conta.</li>
+                <li>Os pedidos já feitos ficam guardados pela loja, sem seus dados pessoais, para o histórico.</li>
+              </ul>
+              <div className="flex gap-2"><Button variant="outline" className="flex-1" onClick={close}>Cancelar</Button>
+                <Button variant="destructive" className="flex-1" onClick={() => setStep(2)}>Continuar</Button></div>
+            </div>
+          ) : (
+            <div className="space-y-4 text-sm">
+              <p>Para confirmar, digite <strong>EXCLUIR</strong>:</p>
+              <input className="h-10 w-full rounded-md border border-input bg-card px-3 text-sm outline-none focus:border-gold" value={word} onChange={(e) => setWord(e.target.value)} autoFocus />
+              <div className="flex gap-2"><Button variant="outline" className="flex-1" onClick={close}>Cancelar</Button>
+                <Button variant="destructive" className="flex-1" disabled={word.trim() !== "EXCLUIR" || busy} onClick={run}>{busy ? "Excluindo…" : "Excluir minha conta"}</Button></div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

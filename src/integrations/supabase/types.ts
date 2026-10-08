@@ -1053,6 +1053,10 @@ export type Database = {
       }
       admin_delete_order: { Args: { _order_id: number }; Returns: undefined }
       admin_delete_product: { Args: { _product_id: string }; Returns: Json }
+      admin_send_notification: {
+        Args: { _body: string; _title: string; _user_ids: string[] }
+        Returns: number
+      }
       admin_update_order: {
         Args: {
           _note: string
@@ -1109,6 +1113,7 @@ export type Database = {
         Args: { _approve: boolean; _note: string; _request_id: string }
         Returns: undefined
       }
+      delete_own_account_data: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

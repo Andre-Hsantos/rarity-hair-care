@@ -1,3 +1,4 @@
+import { useUnreadCount } from "@/lib/notifications";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Bell, ChevronDown, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { useState, type ReactNode } from "react";
@@ -44,10 +45,11 @@ function SearchBar({ className = "" }: { className?: string }) {
   );
 }
 
-function IconLink({ to, label, children, badge }: { to: string; label: string; children: ReactNode; badge?: number }) {
+function IconLink({ to, label, children, badge, search }: { to: string; label: string; children: ReactNode; badge?: number; search?: Record<string, string> | undefined }) {
   return (
     <Link
       to={to}
+      search={search as never}
       aria-label={label}
       className="group relative flex flex-col items-center gap-1 rounded-md px-2 py-1 text-ink-foreground/80 transition hover:text-gold"
     >
@@ -68,7 +70,10 @@ export function Header() {
   const { count, favorites } = useStore();
   const categories = usePublicCategories().data ?? [];
   const { session, isAdmin } = useAuth();
+  const unread = useUnreadCount();
   const [open, setOpen] = useState(false);
+  const favTo = (session ? "/minha-conta" : "/favoritos") as "/minha-conta";
+  const favSearch = session ? { tab: "favoritos" } : undefined;
 
   return (
     <header className="sticky top-0 z-40">
@@ -101,7 +106,8 @@ export function Header() {
                   ))}
                   <div className="mt-6 border-t pt-4">
                     <Link to="/minha-conta" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><User className="size-4" /> Minha conta</Link>
-                    <Link to="/minha-conta" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Heart className="size-4" /> Favoritos</Link>
+                    <Link to={favTo} search={favSearch as never} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Heart className="size-4" /> Favoritos</Link>
+                    {session && <Link to="/minha-conta" search={{ tab: "notificacoes" } as never} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Bell className="size-4" /> Notificações{unread > 0 ? ` (${unread})` : ""}</Link>}
                   </div>
                 </nav>
               </SheetContent>
@@ -116,8 +122,8 @@ export function Header() {
 
           <div className="flex items-center gap-1 sm:gap-2">
             <span className="hidden lg:contents">
-              <IconLink to="/minha-conta" label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
-              <IconLink to="/minha-conta" label="Notificações" badge={2}><Bell className="size-5" /></IconLink>
+              <IconLink to={favTo} search={favSearch} label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
+              <IconLink to={session ? "/minha-conta" : "/login"} search={session ? { tab: "notificacoes" } : undefined} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
             </span>
             {isAdmin && <IconLink to="/admin" label="Painel"><LayoutDashboard className="size-5" /></IconLink>}
             <IconLink to={session ? "/minha-conta" : "/login"} label={session ? "Minha conta" : "Entrar"}><User className="size-5" /></IconLink>
