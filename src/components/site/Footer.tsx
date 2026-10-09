@@ -9,12 +9,17 @@ export function Footer() {
       <div className="container-site grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <img src={logo.url} alt="Rarity Hair Care" className="h-12 w-auto" />
-          <p className="mt-4 max-w-xs text-sm leading-relaxed">
-            Cuidados capilares com sofisticação e qualidade.
-          </p>
+          <p className="mt-4 max-w-xs text-sm leading-relaxed">Cuidados capilares com sofisticação e qualidade.</p>
           <div className="mt-5 flex gap-3">
             {[{ I: Instagram, href: "https://instagram.com/rarityprofissionaloficial" }].map(({ I, href }) => (
-              <a key={href} href={href} target="_blank" rel="noreferrer" aria-label="Instagram" className="grid size-9 place-items-center rounded-full border border-ink-foreground/20 transition hover:border-gold hover:text-gold">
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className="grid size-9 place-items-center rounded-full border border-ink-foreground/20 transition hover:border-gold hover:text-gold"
+              >
                 <I className="size-4" />
               </a>
             ))}
@@ -23,23 +28,56 @@ export function Footer() {
         <div>
           <p className="eyebrow text-gold">Navegação</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            <li><Link to="/" className="hover:text-ink-foreground">Início</Link></li>
-            <li><Link to="/produtos" className="hover:text-ink-foreground">Produtos</Link></li>
-            <li><Link to="/sobre" className="hover:text-ink-foreground">Sobre nós</Link></li>
-            <li><Link to="/contato" className="hover:text-ink-foreground">Contato</Link></li>
+            <li>
+              <Link to="/" className="hover:text-ink-foreground">
+                Início
+              </Link>
+            </li>
+            <li>
+              <Link to="/produtos" className="hover:text-ink-foreground">
+                Produtos
+              </Link>
+            </li>
+            <li>
+              <Link to="/sobre" className="hover:text-ink-foreground">
+                Sobre nós
+              </Link>
+            </li>
+            <li>
+              <Link to="/contato" className="hover:text-ink-foreground">
+                Contato
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="eyebrow text-gold">Informações</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            <li><Link to="/politica-de-privacidade" className="hover:text-ink-foreground">Política de Privacidade</Link></li>
-            <li><Link to="/termos-de-uso" className="hover:text-ink-foreground">Termos de Uso</Link></li>
-            <li><Link to="/trocas-e-devolucoes" className="hover:text-ink-foreground">Trocas, devoluções e solicitações relacionadas a pedidos</Link></li>
+            <li>
+              <Link to="/politica-de-privacidade" className="hover:text-ink-foreground">
+                Política de Privacidade
+              </Link>
+            </li>
+            <li>
+              <Link to="/termos-de-uso" className="hover:text-ink-foreground">
+                Termos de Uso
+              </Link>
+            </li>
+            <li>
+              <Link to="/trocas-e-devolucoes" className="hover:text-ink-foreground">
+                Trocas e devoluções
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="eyebrow text-gold">Atendimento</p>
-          <a href="https://wa.me/5527997579959" target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-md border border-gold/40 px-4 py-2.5 text-sm text-ink-foreground transition hover:bg-gold/10">
+          <a
+            href="https://wa.me/5527997579959"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center gap-2 rounded-md border border-gold/40 px-4 py-2.5 text-sm text-ink-foreground transition hover:bg-gold/10"
+          >
             <MessageCircle className="size-4 text-gold" /> Fale pelo WhatsApp
           </a>
           <p className="mt-4 text-xs">Segunda a Sexta 08:00 às 17:00.</p>
