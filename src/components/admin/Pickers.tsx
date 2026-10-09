@@ -17,7 +17,7 @@ export function useAllCategories() {
   return useQuery({
     queryKey: ["admin-categories"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categories").select("*, products(count)").order("display_order").order("name");
+      const { data, error } = await supabase.from("categories").select("*, products!product_categories(count)").order("display_order").order("name");
       if (error) throw error;
       return data;
     },

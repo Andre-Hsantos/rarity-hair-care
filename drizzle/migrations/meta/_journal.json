@@ -92,6 +92,13 @@
       "when": 1791566473666,
       "tag": "0012_product_multi_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791567204739,
+      "tag": "0013_categories_anon_read",
+      "breakpoints": true
     }
   ]
 }
