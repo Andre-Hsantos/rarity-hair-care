@@ -3,7 +3,7 @@ import type { ProofType } from "@/lib/auth";
 
 const options: { id: ProofType; label: string; hint: string }[] = [
   { id: "cnpj", label: "CNPJ", hint: "Informe o número" },
-  { id: "mei", label: "MEI", hint: "Informe o CNPJ do MEI" },
+  { id: "mei", label: "MEI", hint: "Informe o MEI" },
   { id: "certificado", label: "Certificado", hint: "Envie o arquivo" },
 ];
 
