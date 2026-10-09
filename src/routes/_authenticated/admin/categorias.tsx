@@ -69,17 +69,19 @@ function CatForm({ cat, onDone }: { cat: Partial<Cat>; onDone: () => void }) {
   const save = useMutation({
     mutationFn: async (fd: FormData) => {
       const row = {
-        id: String(fd.get("id")).trim(),
-        name: String(fd.get("name")).trim(),
+        id: isNew ? String(fd.get("id") ?? "").trim() : String(cat.id ?? ""),
+        name: String(fd.get("name") ?? "").trim(),
         description: String(fd.get("description") || "").trim() || null,
         image_url: String(fd.get("image_url") || "").trim() || null,
         display_order: Number(fd.get("display_order") || 0),
         status: fd.get("status") as Cat["status"],
       };
-      if (!row.id || !row.name) throw new Error("ID e nome são obrigatórios.");
+      if (!row.id || ["null", "undefined"].includes(row.id) || !row.name)
+        throw new Error("ID e nome são obrigatórios.");
+      const { id: _id, ...updates } = row;
       const { error } = isNew
         ? await supabase.from("categories").insert(row)
-        : await supabase.from("categories").update(row).eq("id", cat.id!);
+        : await supabase.from("categories").update(updates).eq("id", cat.id!);
       if (error)
         throw new Error(error.code === "23505" ? "Já existe uma categoria com este ID." : "Não foi possível salvar.");
     },
@@ -121,7 +123,7 @@ function CatForm({ cat, onDone }: { cat: Partial<Cat>; onDone: () => void }) {
             className={inputCls}
             defaultValue={cat.id}
             required
-            disabled={!isNew}
+            readOnly={!isNew}
             pattern="[a-z0-9\-]+"
           />
         </FieldRow>
