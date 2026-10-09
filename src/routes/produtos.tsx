@@ -56,7 +56,7 @@ function Produtos() {
     const pt = prices.find((p) => p.id === price)!.test;
     let r = products.filter(
       (p) =>
-        (!cat || p.categoryId === cat) &&
+        (!cat || p.categoryIds.includes(cat)) &&
         (!kitOnly || p.isKit) &&
         (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&

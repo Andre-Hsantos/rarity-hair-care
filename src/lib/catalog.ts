@@ -8,6 +8,8 @@ export type Product = {
   name: string;
   category: string | null;
   categoryId: string | null;
+  /** All categories the product belongs to (principal included). */
+  categoryIds: string[];
   description: string;
   image: string | null;
   price: number | null;
@@ -32,14 +34,20 @@ export function useCatalog() {
     queryKey: ["catalog", session?.user.id ?? "anon", isPro, profile?.pro_status, profile?.individual_discount_percent],
     enabled: ready,
     queryFn: async (): Promise<Product[]> => {
-      const { data, error } = await supabase.rpc("catalog_products");
+      const [{ data, error }, links] = await Promise.all([
+        supabase.rpc("catalog_products"),
+        supabase.from("product_categories").select("product_id, category_id"),
+      ]);
       if (error) throw error;
+      const extra = new Map<string, string[]>();
+      for (const l of links.data ?? []) extra.set(l.product_id, [...(extra.get(l.product_id) ?? []), l.category_id]);
       return (data ?? [])
         .map((r) => ({
           id: r.id,
           name: r.name,
           category: r.category_name,
           categoryId: r.category_id,
+          categoryIds: [...new Set([...(r.category_id ? [r.category_id] : []), ...(extra.get(r.id) ?? [])])],
           description: r.description ?? "",
           image: r.image_url,
           // Final price comes from the database (same rule as the cart); never recomputed here.
