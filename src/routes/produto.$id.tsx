@@ -51,7 +51,7 @@ function ProductPage() {
 
   const fav = favorites.includes(p.id);
   const sizes = p.sizeGroup ? all.filter((x) => x.sizeGroup === p.sizeGroup) : [];
-  const related = all.filter((x) => x.id !== p.id && x.categoryId === p.categoryId).slice(0, 4);
+  const related = all.filter((x) => x.id !== p.id && x.categoryIds.some((c) => p.categoryIds.includes(c))).slice(0, 4);
   const nameOf = (pid: string) => all.find((x) => x.id === pid)?.name ?? pid;
 
   return (

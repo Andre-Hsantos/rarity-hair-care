@@ -23,11 +23,24 @@ function Products() {
   const [cat, setCat] = useState("");
   const [kind, setKind] = useState<"" | "produto" | "kit">("");
   const [edit, setEdit] = useState<Partial<Prod> | null>(null);
-  const catName = (id: string | null) => cats?.find((c) => c.id === id)?.name ?? "Sem categoria";
+  const { data: links } = useQuery({
+    queryKey: ["admin-product-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_categories").select("product_id, category_id");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const catsOf = (p: Prod) => {
+    const ids = new Set((links ?? []).filter((l) => l.product_id === p.id).map((l) => l.category_id));
+    if (p.category_id) ids.add(p.category_id);
+    return [...ids];
+  };
+  const catNames = (p: Prod) => catsOf(p).map((id) => cats?.find((c) => c.id === id)?.name).filter(Boolean).join(", ") || "Sem categoria";
 
   const list = useMemo(() => (data ?? []).filter((p) =>
     (!q || `${p.id} ${p.name}`.toLowerCase().includes(q.toLowerCase())) &&
-    (!cat || p.category_id === cat) && (!kind || (kind === "kit") === p.is_kit)), [data, q, cat, kind]);
+    (!cat || catsOf(p).includes(cat)) && (!kind || (kind === "kit") === p.is_kit)), [data, q, cat, kind, links]);
 
   return (
     <div>
@@ -53,7 +66,7 @@ function Products() {
               <span className="size-12 shrink-0 overflow-hidden rounded bg-surface">{p.image_url && <img src={p.image_url} alt="" className="size-full object-cover" />}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-medium">{p.name}{p.size_label ? ` · ${p.size_label}` : ""}</span>
-                <span className="text-xs text-muted-foreground">{p.id} · {catName(p.category_id)}</span>
+                <span className="text-xs text-muted-foreground">{p.id} · {catNames(p)}</span>
               </span>
               <span className="text-right text-sm"><span className="block">{brl(p.price)}</span><span className="text-xs text-muted-foreground">Pro: {brl(p.pro_price)}</span></span>
               <span className="flex flex-wrap gap-1">
@@ -81,6 +94,18 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
   const [pick, setPick] = useState("");
   const [img, setImg] = useState(prod.image_url ?? "");
   const [uploading, setUploading] = useState(false);
+  const [selCats, setSelCats] = useState<string[]>(prod.category_id ? [prod.category_id] : []);
+  useQuery({
+    queryKey: ["product-categories", prod.id],
+    enabled: !isNew,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_categories").select("category_id").eq("product_id", prod.id!);
+      if (error) throw error;
+      const ids = data.map((d) => d.category_id);
+      setSelCats((cur) => [...new Set([...cur, ...ids])]);
+      return data;
+    },
+  });
   const upload = async (f: File): Promise<void> => {
     const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["jpg", "jpeg", "png", "webp"].includes(ext)) { toast.error("Use JPG, PNG ou WebP."); return; }
@@ -111,7 +136,7 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
       const row = {
         id: String(fd.get("id")).trim(),
         name: String(fd.get("name")).trim(),
-        category_id: String(fd.get("category_id") || "") || null,
+        category_id: selCats[0] ?? null,
         description: String(fd.get("description") || "").trim() || null,
         image_url: String(fd.get("image_url") || "").trim() || null,
         price: num("price") ?? NaN,
@@ -143,6 +168,12 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
         if (!error && !res.data?.length) throw new Error("Produto não encontrado para atualizar.");
       }
       if (error) throw new Error(error.code === "23505" ? "Já existe um produto com este ID." : "Não foi possível salvar o produto.");
+      const delC = await supabase.from("product_categories").delete().eq("product_id", row.id);
+      if (delC.error) throw new Error("Produto salvo, mas falhou ao atualizar as categorias.");
+      if (selCats.length) {
+        const insC = await supabase.from("product_categories").insert(selCats.map((category_id) => ({ product_id: row.id, category_id })));
+        if (insC.error) throw new Error("Produto salvo, mas falhou ao gravar as categorias.");
+      }
       if (isKit && items) {
         const del = await supabase.from("kit_items").delete().eq("kit_id", row.id);
         if (del.error) throw new Error("Produto salvo, mas falhou ao atualizar a composição do kit.");
@@ -153,6 +184,7 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
     onSuccess: () => {
       toast.success(isKit ? "Kit salvo." : "Produto salvo.");
       qc.invalidateQueries({ queryKey: ["admin-products"] }); qc.invalidateQueries({ queryKey: ["admin-categories"] });
+      qc.invalidateQueries({ queryKey: ["admin-product-categories"] }); qc.invalidateQueries({ queryKey: ["product-categories", prod.id] }); qc.invalidateQueries({ queryKey: ["catalog"] });
       qc.invalidateQueries({ queryKey: ["kit-items", prod.id] }); onDone();
     },
     onError: (e) => toast.error((e as Error).message),
@@ -186,8 +218,17 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
       <form className="grid gap-3 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }}>
         <FieldRow label="ID / código (único)" hint={isNew ? "Não pode ser alterado depois." : undefined}><input name="id" className={`${inputCls} ${isNew ? "" : "cursor-not-allowed bg-muted text-muted-foreground"}`} defaultValue={prod.id} required readOnly={!isNew} aria-readonly={!isNew} /></FieldRow>
         <FieldRow label="Nome"><input name="name" className={inputCls} defaultValue={prod.name} required /></FieldRow>
-        <FieldRow label="Categoria">
-          <select name="category_id" className={inputCls} defaultValue={prod.category_id ?? ""}><option value="">Sem categoria</option>{cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
+        <FieldRow label="Categorias" hint="Marque uma ou mais. A primeira marcada é a principal.">
+          <div className="flex max-h-40 flex-col gap-1 overflow-y-auto rounded-md border p-2">
+            {!cats.length && <span className="text-xs text-muted-foreground">Nenhuma categoria cadastrada.</span>}
+            {cats.map((c) => (
+              <label key={c.id} className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={selCats.includes(c.id)}
+                  onChange={(e) => setSelCats((cur) => e.target.checked ? [...cur, c.id] : cur.filter((x) => x !== c.id))} />
+                {c.name}
+              </label>
+            ))}
+          </div>
         </FieldRow>
         <FieldRow label="Foto do produto" hint="JPG, PNG ou WebP até 5 MB. Quadrada, 1000×1000 px recomendado.">
           <div className="flex items-center gap-3">
