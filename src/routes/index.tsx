@@ -1,7 +1,48 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ArrowRight, Headphones, MessageCircle, Sparkles, Truck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
+import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
+
+const heroSlides = [
+  { src: hero, alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas" },
+  { src: hero2, alt: "Produtos Rarity sobre pedra clara com luz natural" },
+];
+
+function HeroImages() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((n) => (n + 1) % heroSlides.length), 6000);
+    return () => clearInterval(t);
+  }, [i]);
+  return (
+    <>
+      {heroSlides.map((s, n) => (
+        <img
+          key={s.src}
+          src={s.src}
+          alt={s.alt}
+          width={1600}
+          height={1104}
+          aria-hidden={n !== i}
+          className={`absolute inset-0 h-full w-full object-cover object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+      <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+        {heroSlides.map((_, n) => (
+          <button
+            key={n}
+            type="button"
+            aria-label={`Imagem ${n + 1}`}
+            onClick={() => setI(n)}
+            className={`h-1.5 rounded-full transition-all ${n === i ? "w-6 bg-gold-deep" : "w-1.5 bg-foreground/25"}`}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
 import { useHomeSection, type Product } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { buttonVariants } from "@/components/ui/button";
@@ -34,7 +75,7 @@ function Index() {
     <>
       <section className="container-site pt-6 sm:pt-10">
         <div className="relative overflow-hidden rounded-2xl bg-surface">
-          <img src={hero} alt="Linha de produtos Rarity com embalagens brancas e tampas douradas" width={1600} height={1104} className="absolute inset-0 h-full w-full object-cover object-right" />
+          <HeroImages />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/40" />
           <div className="relative grid min-h-[440px] items-center px-6 py-14 sm:px-12 md:min-h-[520px] lg:px-16">
             <div className="max-w-lg">
