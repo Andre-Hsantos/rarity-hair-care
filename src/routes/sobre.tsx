@@ -15,10 +15,11 @@ export const Route = createFileRoute("/sobre")({
   component: About,
 });
 
+// Valores demonstrativos — altere aqui os números e textos.
 const values = [
-  ["Qualidade", "Texto demonstrativo sobre o compromisso com a qualidade dos produtos."],
-  ["Cuidado", "Texto demonstrativo sobre o atendimento e a atenção a cada cliente."],
-  ["Sofisticação", "Texto demonstrativo sobre a experiência e identidade da marca."],
+  ["+5.000", "Clientes satisfeitos"],
+  ["10 anos", "De empresa"],
+  ["100%", "Produtos de qualidade"],
 ];
 
 function About() {
@@ -43,7 +44,7 @@ function About() {
         {values.map(([t, d]) => (
           <div key={t} className="rounded-xl border bg-card p-8">
             <div className="h-px w-10 bg-gold-metal" />
-            <h3 className="mt-5 text-2xl">{t}</h3>
+            <h3 className="mt-5 text-4xl">{t}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{d}</p>
           </div>
         ))}
