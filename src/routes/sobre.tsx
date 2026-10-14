@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, CalendarCheck2, BadgeCheck } from "lucide-react";
+import { Users, CalendarCheck2, BadgeCheck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import { PageHeader } from "@/components/site/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
