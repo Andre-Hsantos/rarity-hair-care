@@ -109,6 +109,7 @@ function Signup() {
         {type === "pro" && (
           <>
             <Field id="business" label="Salão / estabelecimento" />
+            <Field id="salon_location" name="salon_location" label="Endereço do salão" required placeholder="Rua, número, bairro, cidade e estado" />
             <ProofFields />
           </>
         )}
