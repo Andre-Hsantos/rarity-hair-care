@@ -10,8 +10,8 @@
  */
 
 @theme inline {
-  --font-display: "Playfair Display", Sans-serif;
-  --font-sans: "Playfair Display", Sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
