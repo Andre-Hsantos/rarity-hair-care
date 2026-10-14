@@ -24,15 +24,19 @@ export function StatsBand() {
     <section className="container-site mt-20">
       <div className="overflow-hidden rounded-2xl bg-ink shadow-card">
         <div className="h-px w-full bg-gold-metal opacity-70" aria-hidden="true" />
-        <div className="grid gap-y-12 px-6 py-12 sm:grid-cols-2 sm:px-10 sm:py-14 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-2 gap-y-10 px-5 py-10 sm:grid-cols-2 sm:gap-x-6 sm:px-10 sm:py-14 lg:grid-cols-4">
           {stats.map(([Icon, value, label]) => (
             <div
               key={value}
               className="flex flex-col items-center text-center lg:border-l lg:border-ink-foreground/10 lg:first:border-l-0"
             >
-              <Icon className="h-9 w-9 text-gold" strokeWidth={1.5} />
-              <h3 className="mt-5 text-4xl font-semibold text-gold-metal sm:text-5xl">{value}</h3>
-              <p className="eyebrow mx-auto mt-3 max-w-[18ch] leading-relaxed text-ink-foreground/80">{label}</p>
+              <Icon className="h-7 w-7 text-gold sm:h-9 sm:w-9" strokeWidth={1.5} />
+              <h3 className="mt-4 text-[1.75rem] leading-none font-semibold text-gold-metal sm:mt-5 sm:text-4xl lg:text-5xl">
+                {value}
+              </h3>
+              <p className="mt-2 max-w-[15ch] text-[0.62rem] font-medium uppercase tracking-[0.18em] text-ink-foreground/80 sm:mt-3 sm:max-w-[18ch] sm:text-[0.72rem] sm:tracking-[0.22em] sm:leading-relaxed">
+                {label}
+              </p>
             </div>
           ))}
         </div>
