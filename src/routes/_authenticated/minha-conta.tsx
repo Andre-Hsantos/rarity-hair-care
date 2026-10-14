@@ -133,13 +133,16 @@ function Account() {
                     onSubmit={async (e) => {
                       e.preventDefault();
                       const fd = new FormData(e.currentTarget);
+                      const salonLocation = String(fd.get("salon_location") ?? "").trim();
+                      if (!salonLocation) { toast.error("Informe o endereço do salão."); return; }
                       try {
-                        await submitProRequest(session!.user.id, String(fd.get("proof_type")) as ProofType, fd.get("doc_file") as File | null, fd.get("proof_number") as string | null);
+                        await submitProRequest(session!.user.id, String(fd.get("proof_type")) as ProofType, fd.get("doc_file") as File | null, fd.get("proof_number") as string | null, salonLocation);
                         await refresh();
                         toast.success("Solicitação enviada para análise.");
                       } catch (err) { toast.error((err as Error).message); }
                     }}
                   >
+                    <Field id="salon_location" name="salon_location" label="Endereço do salão" required placeholder="Rua, número, bairro, cidade e estado" />
                     <ProofFields />
                     <Button variant="gold">Enviar solicitação</Button>
                   </form>

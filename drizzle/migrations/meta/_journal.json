@@ -99,6 +99,13 @@
       "when": 1791567204739,
       "tag": "0013_categories_anon_read",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792005633452,
+      "tag": "0014_pro_requests_salon_location",
+      "breakpoints": true
     }
   ]
 }

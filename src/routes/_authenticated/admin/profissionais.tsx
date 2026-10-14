@@ -167,6 +167,8 @@ function RequestDetail({ req, onDone }: { req: Req; onDone: () => void }) {
             ? ` · ${req.proof_number.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")}`
             : ""}
         </dd>
+        <dt className="text-muted-foreground">Endereço do salão</dt>
+        <dd className="break-words">{req.salon_location || "—"}</dd>
         <dt className="text-muted-foreground">Enviada em</dt>
         <dd>{fmtDate(req.requested_at)}</dd>
         <dt className="text-muted-foreground">Situação</dt>
