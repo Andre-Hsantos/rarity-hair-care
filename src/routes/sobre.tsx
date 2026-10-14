@@ -16,12 +16,12 @@ export const Route = createFileRoute("/sobre")({
   component: About,
 });
 
-// Valores demonstrativos — altere aqui os números e textos.
+// Valores demonstrativos — altere aqui os números, textos e ícones.
 const values = [
-  ["+5.000", "Clientes satisfeitos"],
-  ["10 anos", "De empresa"],
-  ["100%", "Produtos de qualidade"],
-];
+  [Heart, "+5.000", "Clientes satisfeitos"],
+  [CalendarCheck2, "10 anos", "De empresa"],
+  [BadgeCheck, "100%", "Produtos de qualidade"],
+] as const;
 
 function About() {
   return (
