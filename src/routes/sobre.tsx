@@ -17,9 +17,12 @@ export const Route = createFileRoute("/sobre")({
   component: About,
 });
 
+// Ícone de clientes: silhuetas preenchidas (referência enviada pelo proprietário).
+const ClientsIcon = (props: SVGProps<SVGSVGElement>) => <Users {...props} fill="currentColor" />;
+
 // Valores demonstrativos — altere aqui os números, textos e ícones.
 const values = [
-  [Heart, "+5.000", "Clientes satisfeitos"],
+  [ClientsIcon, "+5.000", "Clientes satisfeitos"],
   [CalendarCheck2, "10 anos", "De empresa"],
   [BadgeCheck, "100%", "Produtos de qualidade"],
 ] as const;
