@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Heart, CalendarCheck2, BadgeCheck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import { PageHeader } from "@/components/site/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,12 +16,12 @@ export const Route = createFileRoute("/sobre")({
   component: About,
 });
 
-// Valores demonstrativos — altere aqui os números e textos.
+// Valores demonstrativos — altere aqui os números, textos e ícones.
 const values = [
-  ["+5.000", "Clientes satisfeitos"],
-  ["10 anos", "De empresa"],
-  ["100%", "Produtos de qualidade"],
-];
+  [Heart, "+5.000", "Clientes satisfeitos"],
+  [CalendarCheck2, "10 anos", "De empresa"],
+  [BadgeCheck, "100%", "Produtos de qualidade"],
+] as const;
 
 function About() {
   return (
@@ -41,9 +42,9 @@ function About() {
         <img src={hero} alt="Produtos Rarity" loading="lazy" className="aspect-[4/3] w-full rounded-2xl object-cover object-right" />
       </div>
       <div className="container-site mt-20 grid gap-6 sm:grid-cols-3">
-        {values.map(([t, d]) => (
+        {values.map(([Icon, t, d]) => (
           <div key={t} className="rounded-xl border bg-card p-8">
-            <div className="h-px w-10 bg-gold-metal" />
+            <Icon className="h-8 w-8 text-gold-deep" strokeWidth={1.5} />
             <h3 className="mt-5 text-4xl">{t}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{d}</p>
           </div>
