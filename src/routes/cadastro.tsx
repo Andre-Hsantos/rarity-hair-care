@@ -58,7 +58,9 @@ function Signup() {
           const file = fd.get("doc_file") as File | null;
           const proofType = String(fd.get("proof_type") ?? "") as ProofType;
           const proofNumber = cleanCnpj(fd.get("proof_number"));
+          const salonLocation = String(fd.get("salon_location") ?? "").trim();
           if (type === "pro") {
+            if (!salonLocation) { toast.error("Informe o endereço do salão."); return; }
             if (proofType === "certificado") { const err = validateDoc(file); if (err) { toast.error(err); return; } }
             else if (!proofNumber) { toast.error("CNPJ inválido. Informe os 14 dígitos."); return; }
           }
@@ -72,6 +74,7 @@ function Signup() {
             options: {
               emailRedirectTo: `${window.location.origin}/minha-conta`,
               data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum", birth_date: birth,
+                ...(type === "pro" ? { salon_location: salonLocation } : {}),
                 ...(type === "pro" && proofType !== "certificado" ? { proof_type: proofType, proof_number: proofNumber } : {}) },
             },
           });
@@ -82,7 +85,7 @@ function Signup() {
           }
           // CNPJ/MEI requests are opened by the signup itself; only the certificate needs an upload (requires session).
           if (type === "pro" && proofType === "certificado" && data.session && data.user && file) {
-            try { await submitProRequest(data.user.id, "certificado", file, null); }
+            try { await submitProRequest(data.user.id, "certificado", file, null, salonLocation); }
             catch (err) { toast.error((err as Error).message); }
           }
           setLoading(false);
