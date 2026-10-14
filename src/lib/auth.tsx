@@ -26,7 +26,9 @@ type AuthCtx = {
   signOut: () => Promise<void>;
 };
 
-const Ctx = createContext<AuthCtx | null>(null);
+// Keep a single context instance across hot reloads (avoids "useAuth must be used inside AuthProvider").
+const g = globalThis as unknown as { __rarityAuthCtx?: React.Context<AuthCtx | null> };
+const Ctx = g.__rarityAuthCtx ?? (g.__rarityAuthCtx = createContext<AuthCtx | null>(null));
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
