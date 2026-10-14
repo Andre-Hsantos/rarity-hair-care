@@ -10,7 +10,7 @@
  */
 
 @theme inline {
-  --font-display: "Playfair Display", italic, Sans-serif;
+  --font-display: "Playfair Display", Sans-serif;
   --font-sans: "Jost", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
