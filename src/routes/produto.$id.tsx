@@ -5,6 +5,7 @@ import { Check, ChevronRight, Heart, ImageOff, MessageCircle, Minus, Plus } from
 import { supabase } from "@/integrations/supabase/client";
 import { brl, strikePrice, useCatalog } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { pctLabel, useQuantityTiers } from "@/lib/quantityDiscounts";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/site/ProductCard";
 
@@ -38,6 +39,7 @@ function ProductPage() {
       return data;
     },
   }).data;
+  const tiers = useQuantityTiers(id).data;
 
   if (catalog.isLoading || !catalog.data) return <div className="container-site py-20 text-sm text-muted-foreground">Carregando…</div>;
   if (!p)
@@ -81,6 +83,15 @@ function ProductPage() {
           <p className={`mt-2 flex items-center gap-1.5 text-sm ${p.inStock ? "text-success" : "text-destructive"}`}>
             {p.inStock ? <><Check className="size-4" /> Disponível</> : "Esgotado no momento"}
           </p>
+          {p.price != null && !!tiers?.length && (
+            <div className="mt-6 rounded-lg border border-gold/40 bg-gold/5 p-4">
+              <p className="eyebrow text-gold-deep">Leve mais, pague menos</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                {tiers.map((t) => <li key={t.min} className={qty >= t.min ? "font-medium" : "text-muted-foreground"}>A partir de {t.min} un.: {pctLabel(t.pct)} de desconto</li>)}
+              </ul>
+              <p className="mt-2 text-xs text-muted-foreground">Vale a maior faixa atingida. Para profissionais, aplica-se o maior entre esta faixa e o seu desconto individual. O valor final aparece no carrinho.</p>
+            </div>
+          )}
 
           {sizes.length > 1 ? (
             <div className="mt-8">

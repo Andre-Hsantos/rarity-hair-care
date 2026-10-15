@@ -5,6 +5,7 @@ import { brl } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { useQuote } from "@/lib/useQuote";
+import { pctLabel } from "@/lib/quantityDiscounts";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -60,7 +61,8 @@ function Cart() {
                     <img src={p?.image ?? info?.image_url ?? undefined} alt={p?.name ?? ""} loading="lazy" className="aspect-square w-full rounded-lg bg-surface object-cover" />
                     <div className="min-w-0">
                       {p ? <Link to="/produto/$id" params={{ id }} className="font-display text-xl hover:text-gold-deep">{p.name}</Link> : <p className="font-display text-xl">{info?.name ?? "Produto indisponível"}</p>}
-                      <p className="text-sm text-muted-foreground">{p?.size ? `${p.size} · ` : ""}{(info ? info.in_promotion && Number(info.original_price) > unit : p?.inPromotion) && <s className="mr-1">{brl(info ? Number(info.original_price) : p?.originalPrice ?? 0)}</s>}{brl(unit)}{(info ? info.in_promotion : p?.inPromotion) && <span className="ml-1.5 text-gold-deep">Promoção</span>}</p>
+                      <p className="text-sm text-muted-foreground">{p?.size ? `${p.size} · ` : ""}{(() => { const ref = info?.qty_discount_applied ? Number(info.list_price) : info?.in_promotion ? Number(info.original_price) : !info && p?.inPromotion ? p.originalPrice ?? 0 : 0; return ref > unit ? <s className="mr-1">{brl(ref)}</s> : null; })()}{brl(unit)}{(info ? info.in_promotion : p?.inPromotion) && <span className="ml-1.5 text-gold-deep">Promoção</span>}</p>
+                      {!issue && info?.qty_discount_applied && <p className="mt-1 text-xs text-gold-deep">Desconto por quantidade: {pctLabel(Number(info.qty_percent))} (a partir de {info.qty_min} un.)</p>}
                       {issue && <p className="mt-1 flex items-center gap-1.5 text-sm text-destructive"><AlertTriangle className="size-3.5" /> {issue}</p>}
                       {!issue && info?.coupon_note && <p className="mt-1 text-xs text-muted-foreground">{info.coupon_note}</p>}
                       <div className="mt-3 flex items-center gap-3">
