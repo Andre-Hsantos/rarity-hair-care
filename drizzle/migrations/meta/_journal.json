@@ -106,6 +106,13 @@
       "when": 1792005633452,
       "tag": "0014_pro_requests_salon_location",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792088594779,
+      "tag": "0015_quantity_discounts",
+      "breakpoints": true
     }
   ]
 }

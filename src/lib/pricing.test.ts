@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { finalPrice, promoActive } from "./pricing";
+import { finalPrice, promoActive, validateTier } from "./pricing";
 
 const prod = { price: 100, pro_price: 80 };
 const pro = (d: number) => ({ account_type: "profissional", pro_status: "aprovado", individual_discount_percent: d });
@@ -33,4 +33,26 @@ describe("promoActive", () => {
   it("expired promotion does not apply", () => expect(promoActive({ status: "ativo", starts_at: null, ends_at: "2026-10-07T00:00:00Z" }, now)).toBe(false));
   it("disabled promotion does not apply", () => expect(promoActive({ status: "inativo", starts_at: null, ends_at: null }, now)).toBe(false));
   it("promotion inside its period applies", () => expect(promoActive({ status: "ativo", starts_at: "2026-10-01T00:00:00Z", ends_at: "2026-10-31T00:00:00Z" }, now)).toBe(true));
+});
+
+describe("quantity discounts", () => {
+  const common = { account_type: "comum", pro_status: "nao_solicitado", individual_discount_percent: 0 };
+  const tiers = [{ min: 5, pct: 5 }, { min: 10, pct: 10 }];
+  it("product without tiers keeps price", () => expect(finalPrice(prod, common, null, 12, [])).toBe(100));
+  it("below first tier pays full price", () => expect(finalPrice(prod, common, null, 4, tiers)).toBe(100));
+  it("exactly at tier limit gets it", () => expect(finalPrice(prod, common, null, 5, tiers)).toBe(95));
+  it("between tiers gets the lower one", () => expect(finalPrice(prod, common, null, 7, tiers)).toBe(95));
+  it("12 units gets only the 10% tier", () => expect(finalPrice(prod, common, null, 12, tiers)).toBe(90));
+  it("inactive tier is ignored", () => expect(finalPrice(prod, common, null, 12, [{ min: 10, pct: 10, active: false }])).toBe(100));
+  it("pro: individual 8% beats tier 5%", () => expect(finalPrice(prod, pro(8), null, 6, tiers)).toBe(73.6));
+  it("pro: tier 10% beats individual 8%, never summed", () => expect(finalPrice(prod, pro(8), null, 10, tiers)).toBe(72));
+  it("pending pro gets tier over normal price only", () =>
+    expect(finalPrice(prod, { account_type: "profissional", pro_status: "em_analise", individual_discount_percent: 20 }, null, 10, tiers)).toBe(90));
+  it("promotion applies after tier", () => expect(finalPrice(prod, common, { type: "percentual", value: 20 }, 10, tiers)).toBe(72));
+  it("invalid tiers rejected", () => {
+    expect(validateTier(1, 5)).not.toBeNull();
+    expect(validateTier(5, 0)).not.toBeNull();
+    expect(validateTier(5, 101)).not.toBeNull();
+    expect(validateTier(5, 10)).toBeNull();
+  });
 });

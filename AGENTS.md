@@ -26,3 +26,4 @@
 - Pro proof: CNPJ/MEI stored as pro_requests.proof_number (document_path = "<uid>/sem-arquivo" marker), Certificado as private file; CNPJ/MEI signups open the request in handle_new_user. Why: no upload needed for numbers and document_path stays NOT NULL.
 - Category deletion only via admin_delete_category, blocked while products/coupons reference it. Why: no orphans, no silent product changes.
 - Products can have many categories via product_categories; products.category_id stays as the principal (first) one. Why: additive change, existing reads keep working.
+- Quantity discount tiers live in quantity_discounts and are applied only inside _quote_cart (max of tier vs pro individual %, then promotion; coupons skip such lines unless coupons.allow_with_quantity_discount). Why: one server-side price rule.

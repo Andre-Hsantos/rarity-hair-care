@@ -71,6 +71,7 @@ function CouponForm({ c, onDone }: { c: Partial<Coupon> & { products?: string[];
         ends_at: fromLocalInput(String(fd.get("ends_at"))),
         status: fd.get("status") as Coupon["status"],
         audience: fd.get("audience") as Coupon["audience"],
+        allow_with_quantity_discount: fd.get("allow_with_quantity_discount") === "on",
       };
       if (!/^[A-Z0-9_-]{3,30}$/.test(row.code)) throw new Error("Código: 3 a 30 letras, números, - ou _.");
       if (!(row.discount_value > 0)) throw new Error("Informe o valor do desconto.");
@@ -107,6 +108,10 @@ function CouponForm({ c, onDone }: { c: Partial<Coupon> & { products?: string[];
         <FieldRow label="Situação">
           <select name="status" className={inputCls} defaultValue={c.status}><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
         </FieldRow>
+        <label className="flex items-center gap-2 self-end pb-2 text-sm">
+          <input type="checkbox" name="allow_with_quantity_discount" defaultChecked={!!c.allow_with_quantity_discount} className="size-4 accent-[var(--gold)]" />
+          Permitir junto com desconto por quantidade
+        </label>
         <div className="sm:col-span-2 grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5"><p className="text-sm font-medium">Restringir a produtos <span className="font-normal text-muted-foreground">(vazio = todos)</span></p>
             <CheckList items={(prods ?? []).map((p) => ({ id: p.id, label: p.name, sub: p.is_kit ? "kit" : p.size_label ?? undefined }))} selected={products} onChange={setProducts} /></div>

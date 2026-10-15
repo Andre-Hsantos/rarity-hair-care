@@ -30,6 +30,7 @@ export type Quote = {
   items: {
     product_id: string; name: string; image_url: string | null; size_label: string | null; quantity: number;
     original_price: number; unit_price: number; line_total: number; in_promotion: boolean;
+    list_price?: number; qty_discount_applied?: boolean; qty_min?: number | null; qty_percent?: number | null;
     coupon_eligible: boolean; coupon_note: string | null; issue: string | null; coupon_discount: number;
   }[];
   empty: boolean; has_issues: boolean; is_pro: boolean;
