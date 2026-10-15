@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type Context, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ type Ctx = {
 };
 
 // Kept on globalThis so hot reloads during editing reuse the same context (avoids "useStore outside provider").
-const g = globalThis as { __rarityStoreCtx?: React.Context<Ctx | null> };
+const g = globalThis as { __rarityStoreCtx?: Context<Ctx | null> };
 const StoreCtx = (g.__rarityStoreCtx ??= createContext<Ctx | null>(null));
 const GUEST_KEY = "rarity-guest-cart";
 export const GUEST_FAV_KEY = "rarity-guest-favorites";
