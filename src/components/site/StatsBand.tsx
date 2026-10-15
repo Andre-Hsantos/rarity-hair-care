@@ -13,9 +13,9 @@ const ShieldSolid = solid(Shield);
 
 // Valores demonstrativos — altere aqui os números, rótulos e ícones.
 const stats = [
-  [AwardSolid, "10 anos", "De história"],
-  [UsersSolid, "+5.000", "Clientes satisfeitos"],
-  [DropletsSolid, "+120", "Produtos selecionados"],
+  [AwardSolid, "12+", "Anos de história"],
+  [UsersSolid, "1.000+", "Clientes satisfeitos"],
+  [DropletsSolid, "70+", "Produtos selecionados"],
   [ShieldSolid, "100%", "Procedência garantida"],
 ] as const;
 
