@@ -19,7 +19,9 @@ type Ctx = {
   count: number;
 };
 
-const StoreCtx = createContext<Ctx | null>(null);
+// Kept on globalThis so hot reloads during editing reuse the same context (avoids "useStore outside provider").
+const g = globalThis as { __rarityStoreCtx?: React.Context<Ctx | null> };
+const StoreCtx = (g.__rarityStoreCtx ??= createContext<Ctx | null>(null));
 const GUEST_KEY = "rarity-guest-cart";
 export const GUEST_FAV_KEY = "rarity-guest-favorites";
 function readGuestFavs(): string[] {
