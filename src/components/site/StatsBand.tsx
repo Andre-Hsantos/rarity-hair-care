@@ -8,7 +8,7 @@ const solid = (Icon: LucideIcon) => (props: IconProps) => <Icon {...props} fill=
 
 const AwardSolid = solid(Award);
 const UsersSolid = solid(Users);
-const SprayCanSolid = solid(SprayCan);
+const handbag = solid(handbag);
 const ShieldSolid = solid(Shield);
 
 // Valores demonstrativos — altere aqui os números, rótulos e ícones.
