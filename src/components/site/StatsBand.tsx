@@ -15,7 +15,7 @@ const ShieldSolid = solid(Shield);
 const stats = [
   [AwardSolid, "12+", "Anos de história"],
   [UsersSolid, "1.000+", "Clientes satisfeitos"],
-  [SprayCanSolid, "70+", "Produtos selecionados"],
+  [handbag, "70+", "Produtos selecionados"],
   [ShieldSolid, "100%", "Procedência garantida"],
 ] as const;
 
