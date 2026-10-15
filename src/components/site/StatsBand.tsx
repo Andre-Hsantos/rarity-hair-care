@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import { Award, Shield, handbag, Users, type LucideIcon } from "lucide-react";
+import { Award, Shield, Handbag, Users, type LucideIcon } from "lucide-react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -8,14 +8,14 @@ const solid = (Icon: LucideIcon) => (props: IconProps) => <Icon {...props} fill=
 
 const AwardSolid = solid(Award);
 const UsersSolid = solid(Users);
-const handbag = solid(handbag);
+const HandbagSolid = solid(Handbag);
 const ShieldSolid = solid(Shield);
 
 // Valores demonstrativos — altere aqui os números, rótulos e ícones.
 const stats = [
   [AwardSolid, "12+", "Anos de história"],
   [UsersSolid, "1.000+", "Clientes satisfeitos"],
-  [handbag, "70+", "Produtos selecionados"],
+  [HandbagSolid, "70+", "Produtos selecionados"],
   [ShieldSolid, "100%", "Procedência garantida"],
 ] as const;
 
