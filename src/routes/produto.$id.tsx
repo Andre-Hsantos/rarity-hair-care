@@ -140,7 +140,7 @@ function ProductPage() {
               <ul className="mt-2 space-y-1 text-sm">
                 {tiers.map((t) => (
                   <li key={t.min} className={qty >= t.min ? "font-medium" : "text-muted-foreground"}>
-                    A partir de {t.min} un.: {pctLabel(t.pct)} de desconto
+                    A partir de {t.min} unidades: {pctLabel(t.pct)} de desconto!
                   </li>
                 ))}
               </ul>
