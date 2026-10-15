@@ -32,11 +32,14 @@ function Cart() {
   const [mode, setMode] = useState<"entrega" | "retirada">("retirada");
   const quote = useQuote(coupon, mode);
   const q = quote.data;
-  const issues = new Map((q?.items ?? []).map((i) => [i.product_id, i]));
+  const qtyOf = new Map(cart.map((l) => [l.id, l.qty]));
+  // Ignore quote lines computed for an older quantity (still saving); they refresh right after.
+  const issues = new Map((q?.items ?? []).filter((i) => qtyOf.get(i.product_id) === i.quantity).map((i) => [i.product_id, i]));
+  const qtyDiscount = (q?.items ?? []).reduce((s, i) => s + (i.qty_discount_applied && !i.issue ? Math.max(0, Number(i.list_price) - Number(i.original_price)) * i.quantity : 0), 0);
   const localSubtotal = cart.reduce((s, l) => s + (l.p?.price ?? 0) * l.qty, 0);
-  const subtotal = q ? Number(q.products_total) : localSubtotal;
+  const subtotal = q ? Number(q.products_total) + qtyDiscount : localSubtotal;
   const discount = q ? Number(q.discount) : 0;
-  const total = subtotal - discount;
+  const total = subtotal - qtyDiscount - discount;
 
   if (!ready) return <><PageHeader title="Carrinho" crumb="Carrinho" /><p className="container-site mt-10 text-muted-foreground">Carregando…</p></>;
 
@@ -107,7 +110,8 @@ function Cart() {
               </div>
               <dl className="space-y-2 border-t pt-5 text-sm">
                 <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{brl(subtotal)}</dd></div>
-                <div className="flex justify-between"><dt className="text-muted-foreground">Desconto</dt><dd className="text-success">{discount ? `- ${brl(discount)}` : brl(0)}</dd></div>
+                {qtyDiscount > 0 && <div className="flex justify-between"><dt className="text-muted-foreground">Desconto por quantidade</dt><dd className="text-success">- {brl(qtyDiscount)}</dd></div>}
+                <div className="flex justify-between"><dt className="text-muted-foreground">{qtyDiscount > 0 ? "Desconto do cupom" : "Desconto"}</dt><dd className="text-success">{discount ? `- ${brl(discount)}` : brl(0)}</dd></div>
                 <div className="flex justify-between"><dt className="text-muted-foreground">{mode === "entrega" ? "Entrega" : "Retirada na loja"}</dt><dd>{mode === "entrega" ? "A combinar" : brl(0)}</dd></div>
                 <div className="flex justify-between border-t pt-3 text-lg font-medium"><dt>Total</dt><dd>{brl(total)}</dd></div>
                 {mode === "entrega" && <p className="text-xs text-muted-foreground">O valor da entrega é combinado com a loja pelo WhatsApp.</p>}

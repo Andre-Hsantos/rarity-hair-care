@@ -86,6 +86,12 @@ function ProductPage() {
           {p.price != null && !!tiers?.length && (
             <div className="mt-6 rounded-lg border border-gold/40 bg-gold/5 p-4">
               <p className="eyebrow text-gold-deep">Leve mais, pague menos</p>
+              {(() => { const hit = tiers.filter((t) => qty >= t.min).pop(); const next = tiers.find((t) => qty < t.min);
+                return hit ? (
+                  <p className="mt-3 flex items-center gap-2 rounded-md bg-success/10 px-3 py-2 text-sm font-medium text-success"><Check className="size-4" /> Desconto de {pctLabel(hit.pct)} aprovado para {qty} unidades!</p>
+                ) : next ? (
+                  <p className="mt-3 text-sm">Adicione mais <strong>{next.min - qty}</strong> {next.min - qty === 1 ? "unidade" : "unidades"} para ganhar {pctLabel(next.pct)} de desconto.</p>
+                ) : null; })()}
               <ul className="mt-2 space-y-1 text-sm">
                 {tiers.map((t) => <li key={t.min} className={qty >= t.min ? "font-medium" : "text-muted-foreground"}>A partir de {t.min} un.: {pctLabel(t.pct)} de desconto</li>)}
               </ul>
