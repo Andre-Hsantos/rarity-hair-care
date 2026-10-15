@@ -1,4 +1,4 @@
-```tsx
+``
 import { createFileRoute, Link } from "@tanstack/react-router";
 import hero from "@/assets/hero.jpg";
 import { PageHeader } from "@/components/site/PageHeader";
