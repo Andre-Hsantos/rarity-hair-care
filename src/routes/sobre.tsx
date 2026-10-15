@@ -1,3 +1,4 @@
+```tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
 import hero from "@/assets/hero.jpg";
 import { PageHeader } from "@/components/site/PageHeader";
@@ -10,10 +11,8 @@ export const Route = createFileRoute("/sobre")({
       { title: "Sobre nós — Rarity Hair Care" },
       {
         name: "description",
-        content: "Conheça a Rarity Hair Care e nossa proposta de cuidado capilar para consumidores e profissionais da beleza.",
+        content: "Conheça a Rarity Hair Care e nossa proposta de cuidado capilar.",
       },
-      { property: "og:title", content: "Sobre nós — Rarity Hair Care" },
-      { property: "og:description", content: "Cuidado capilar com identidade própria." },
     ],
   }),
   component: About,
@@ -40,10 +39,9 @@ function About() {
           </p>
 
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Nosso propósito é tornar a escolha dos produtos mais prática,
-            oferecendo atendimento próximo, soluções para diferentes
-            necessidades capilares e condições especiais para profissionais
-            da beleza com cadastro aprovado.
+            Buscamos oferecer uma experiência que une praticidade, confiança
+            e atendimento próximo, com soluções para diferentes necessidades
+            e condições especiais para profissionais com cadastro aprovado.
           </p>
 
           <p className="mt-5 font-medium text-foreground">
@@ -74,4 +72,4 @@ function About() {
     </>
   );
 }
-```
+```;
