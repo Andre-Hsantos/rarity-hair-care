@@ -73,7 +73,7 @@ function ProductPage() {
         <span className="truncate text-foreground">{p.name}</span>
       </nav>
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="overflow-hidden rounded-2xl border bg-surface">
+        <div className="self-start overflow-hidden rounded-2xl border bg-surface">
           {p.image ? (
             <img src={p.image} alt={p.name} width={816} height={816} className="aspect-square w-full object-cover" />
           ) : (
