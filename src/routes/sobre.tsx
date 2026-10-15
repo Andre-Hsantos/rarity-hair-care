@@ -25,11 +25,13 @@ function About() {
           <p className="eyebrow text-gold-deep">A Rarity</p>
           <h2 className="mt-3 text-4xl leading-tight sm:text-5xl">Cuidado capilar com identidade própria.</h2>
           <p className="mt-6 leading-relaxed text-muted-foreground">
-            Este é um texto institucional demonstrativo, que será substituído pela história oficial da marca. Aqui
-            poderá ser apresentada a origem da Rarity, sua missão e a forma como seleciona cada produto.
+            Na Rarity Hair Care, acreditamos que a beleza começa na escolha do cuidado certo. Reunimos produtos
+            capilares para quem valoriza a saúde dos fios e para profissionais que transformam conhecimento e técnica em
+            beleza todos os dias.
           </p>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            Parágrafo de apoio genérico para validar tipografia, ritmo de leitura e hierarquia visual da página.
+            Mais do que produtos, buscamos oferecer uma experiência que une praticidade, confiança e atendimento
+            próximo, com soluções para diferentes necessidades e condições especiais para profissionais aprovados.
           </p>
           <Link to="/produtos" className={buttonVariants({ variant: "gold", size: "lg", className: "mt-8" })}>
             Conheça os produtos
