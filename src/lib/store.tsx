@@ -121,6 +121,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       ? await supabase.from("cart_items").delete().eq("user_id", uid).eq("product_id", id)
       : await supabase.from("cart_items").upsert({ user_id: uid, product_id: id, quantity: qty }, { onConflict: "user_id,product_id" });
     if (res.error) { toast.error("Não foi possível atualizar o carrinho."); qc.invalidateQueries({ queryKey: ["cart", uid] }); }
+    // Re-quote only after the saved cart reflects the change (otherwise the quote can use the old quantity).
+    qc.invalidateQueries({ queryKey: ["quote"] });
   }, [uid, qc]);
 
   const add = (p: Product, qty = 1) => {
