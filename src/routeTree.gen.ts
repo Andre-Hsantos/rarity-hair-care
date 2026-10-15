@@ -37,6 +37,7 @@ import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin/produtos'
 import { Route as AuthenticatedAdminProfissionaisRouteImport } from './routes/_authenticated/admin/profissionais'
 import { Route as AuthenticatedAdminPromocoesRouteImport } from './routes/_authenticated/admin/promocoes'
+import { Route as AuthenticatedAdminQuantidadeRouteImport } from './routes/_authenticated/admin/quantidade'
 import { Route as AuthenticatedPedidoIdRouteImport } from './routes/_authenticated/pedido.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -188,6 +189,12 @@ const AuthenticatedAdminPromocoesRoute =
     path: '/promocoes',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminQuantidadeRoute =
+  AuthenticatedAdminQuantidadeRouteImport.update({
+    id: '/quantidade',
+    path: '/quantidade',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedPedidoIdRoute = AuthenticatedPedidoIdRouteImport.update({
   id: '/pedido/$id',
   path: '/pedido/$id',
@@ -221,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/admin/quantidade': typeof AuthenticatedAdminQuantidadeRoute
   '/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -250,6 +258,7 @@ export interface FileRoutesByTo {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/admin/quantidade': typeof AuthenticatedAdminQuantidadeRoute
   '/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -282,6 +291,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/_authenticated/admin/promocoes': typeof AuthenticatedAdminPromocoesRoute
+  '/_authenticated/admin/quantidade': typeof AuthenticatedAdminQuantidadeRoute
   '/_authenticated/pedido/$id': typeof AuthenticatedPedidoIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/profissionais'
     | '/admin/promocoes'
+    | '/admin/quantidade'
     | '/pedido/$id'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/profissionais'
     | '/admin/promocoes'
+    | '/admin/quantidade'
     | '/pedido/$id'
     | '/admin'
   id:
@@ -374,6 +386,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/profissionais'
     | '/_authenticated/admin/promocoes'
+    | '/_authenticated/admin/quantidade'
     | '/_authenticated/pedido/$id'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -593,6 +606,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPromocoesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/quantidade': {
+      id: '/_authenticated/admin/quantidade'
+      path: '/quantidade'
+      fullPath: '/admin/quantidade'
+      preLoaderRoute: typeof AuthenticatedAdminQuantidadeRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/pedido/$id': {
       id: '/_authenticated/pedido/$id'
       path: '/pedido/$id'
@@ -613,6 +633,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminProfissionaisRoute: typeof AuthenticatedAdminProfissionaisRoute
   AuthenticatedAdminPromocoesRoute: typeof AuthenticatedAdminPromocoesRoute
+  AuthenticatedAdminQuantidadeRoute: typeof AuthenticatedAdminQuantidadeRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -627,6 +648,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
     AuthenticatedAdminProfissionaisRoute: AuthenticatedAdminProfissionaisRoute,
     AuthenticatedAdminPromocoesRoute: AuthenticatedAdminPromocoesRoute,
+    AuthenticatedAdminQuantidadeRoute: AuthenticatedAdminQuantidadeRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   }
 
