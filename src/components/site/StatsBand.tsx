@@ -8,14 +8,14 @@ const solid = (Icon: LucideIcon) => (props: IconProps) => <Icon {...props} fill=
 
 const AwardSolid = solid(Award);
 const UsersSolid = solid(Users);
-const DropletsSolid = solid(Droplets);
+const SprayCanSolid = solid(SprayCan);
 const ShieldSolid = solid(Shield);
 
 // Valores demonstrativos — altere aqui os números, rótulos e ícones.
 const stats = [
   [AwardSolid, "12+", "Anos de história"],
   [UsersSolid, "1.000+", "Clientes satisfeitos"],
-  [DropletsSolid, "70+", "Produtos selecionados"],
+  [SprayCanSolid, "70+", "Produtos selecionados"],
   [ShieldSolid, "100%", "Procedência garantida"],
 ] as const;
 
