@@ -279,6 +279,7 @@ export type Database = {
       }
       coupons: {
         Row: {
+          allow_with_quantity_discount: boolean
           audience: Database["public"]["Enums"]["target_audience"]
           code: string
           created_at: string
@@ -294,6 +295,7 @@ export type Database = {
           uses_count: number
         }
         Insert: {
+          allow_with_quantity_discount?: boolean
           audience?: Database["public"]["Enums"]["target_audience"]
           code: string
           created_at?: string
@@ -309,6 +311,7 @@ export type Database = {
           uses_count?: number
         }
         Update: {
+          allow_with_quantity_discount?: boolean
           audience?: Database["public"]["Enums"]["target_audience"]
           code?: string
           created_at?: string
@@ -898,6 +901,44 @@ export type Database = {
         }
         Relationships: []
       }
+      quantity_discounts: {
+        Row: {
+          created_at: string
+          id: string
+          min_quantity: number
+          percent: number
+          product_id: string
+          status: Database["public"]["Enums"]["record_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          min_quantity: number
+          percent: number
+          product_id: string
+          status?: Database["public"]["Enums"]["record_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          min_quantity?: number
+          percent?: number
+          product_id?: string
+          status?: Database["public"]["Enums"]["record_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantity_discounts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           approved: boolean
@@ -1077,6 +1118,13 @@ export type Database = {
       _promo_price: {
         Args: { _base: number; _is_pro: boolean; _product_id: string }
         Returns: number
+      }
+      _qty_tier: {
+        Args: { _product_id: string; _qty: number }
+        Returns: {
+          min_quantity: number
+          percent: number
+        }[]
       }
       _quote_cart: {
         Args: {
