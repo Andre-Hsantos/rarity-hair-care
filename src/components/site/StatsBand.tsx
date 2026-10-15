@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import { Award, Shield, SprayCan, Users, type LucideIcon } from "lucide-react";
+import { Award, Shield, handbag, Users, type LucideIcon } from "lucide-react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
