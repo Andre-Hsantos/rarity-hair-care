@@ -121,7 +121,17 @@ function Checkout() {
                     <input className={`${inp} sm:col-span-3`} placeholder="Bairro" value={addr.district} onChange={(e) => setAddr({ ...addr, district: e.target.value })} />
                     <input className={`${inp} sm:col-span-3`} placeholder="Cidade *" value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} />
                     <input className={`${inp} sm:col-span-1`} placeholder="UF *" maxLength={2} value={addr.state} onChange={(e) => setAddr({ ...addr, state: e.target.value.toUpperCase() })} />
-                    <input className={`${inp} sm:col-span-2`} placeholder="CEP" inputMode="numeric" value={addr.zip} onChange={(e) => setAddr({ ...addr, zip: e.target.value })} />
+                    <input className={`${inp} sm:col-span-2`} placeholder="CEP" inputMode="numeric" maxLength={9} value={addr.zip} onChange={async (e) => {
+                      const zip = e.target.value;
+                      setAddr((a) => ({ ...a, zip }));
+                      const d = zip.replace(/\D/g, "");
+                      if (d.length !== 8) return;
+                      try {
+                        const r = await fetch(`https://viacep.com.br/ws/${d}/json/`).then((x) => x.json());
+                        if (r.erro) { toast.error("CEP não encontrado."); return; }
+                        setAddr((a) => ({ ...a, street: r.logradouro || a.street, district: r.bairro || a.district, city: r.localidade || a.city, state: r.uf || a.state }));
+                      } catch { /* sem conexão: preenchimento manual */ }
+                    }} />
                   </div>
                 </div>
               )}
