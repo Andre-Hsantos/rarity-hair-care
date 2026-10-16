@@ -17,15 +17,16 @@ export const Route = createFileRoute("/contato")({
   component: Contact,
 });
 
-const info = [
-  { icon: MessageCircle, label: "WhatsApp", value: "(27) 99757-9959" },
+const info: { icon: typeof Phone; label: string; value: string; href?: string }[] = [
+  { icon: MessageCircle, label: "WhatsApp", value: "(27) 99757-9959", href: "https://api.whatsapp.com/send?phone=5527997579959" },
   {
     icon: MapPin,
     label: "Endereço",
     value: "R. São Paulo, 43 - Jockey de Itaparica, Vila Velha - ES",
+    href: "https://www.google.com/maps/search/?api=1&query=R.+S%C3%A3o+Paulo,+43+-+Jockey+de+Itaparica,+Vila+Velha+-+ES",
   },
   { icon: Clock, label: "Horário", value: "Segunda a Sexta\n08:00 às 17:00" },
-  { icon: Instagram, label: "Redes sociais", value: "@rarityprofissionaloficial" },
+  { icon: Instagram, label: "Redes sociais", value: "@rarityprofissionaloficial", href: "https://www.instagram.com/rarityprofissionaloficial/" },
 ];
 
 function Contact() {
@@ -39,15 +40,28 @@ function Contact() {
       <div className="container-site mt-12 grid gap-10 lg:grid-cols-2">
         <div className="space-y-6">
           <ul className="grid gap-3 sm:grid-cols-2">
-            {info.map(({ icon: I, label, value }) => (
-              <li key={label} className="flex gap-4 rounded-xl border bg-card p-5">
-                <I className="size-5 shrink-0 text-gold-deep" strokeWidth={1.5} />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium">{label}</p>
-                  <p className="text-sm text-muted-foreground">{value}</p>
-                </div>
-              </li>
-            ))}
+            {info.map(({ icon: I, label, value, href }) => {
+              const body = (
+                <>
+                  <I className="size-5 shrink-0 text-gold-deep" strokeWidth={1.5} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{label}</p>
+                    <p className="whitespace-pre-line text-sm text-muted-foreground">{value}</p>
+                  </div>
+                </>
+              );
+              return (
+                <li key={label}>
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="flex h-full gap-4 rounded-xl border bg-card p-5 transition hover:border-gold hover:shadow-soft">
+                      {body}
+                    </a>
+                  ) : (
+                    <div className="flex h-full gap-4 rounded-xl border bg-card p-5">{body}</div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
           <iframe
             title="Mapa da loja"
@@ -62,7 +76,7 @@ function Contact() {
             e.preventDefault();
             const f = new FormData(e.target as HTMLFormElement);
             const text = `Olá! Sou ${f.get("cn")} (${f.get("ce")}).\n\n${f.get("cm")}`;
-            window.open(`https://wa.me/5527997579959?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+            window.open(`https://api.whatsapp.com/send?phone=5527997579959&text=${encodeURIComponent(text)}`, "_blank", "noopener");
             toast.success("Abrindo o WhatsApp para enviar sua mensagem.");
             (e.target as HTMLFormElement).reset();
           }}
