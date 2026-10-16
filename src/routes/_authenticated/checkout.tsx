@@ -103,6 +103,7 @@ function Checkout() {
                       <p className="font-medium">{i.name}{i.size_label ? ` — ${i.size_label}` : ""}</p>
                       <p className="text-muted-foreground">{i.quantity} × {i.in_promotion && Number(i.original_price) > Number(i.unit_price) && <s className="mr-1">{brl(Number(i.original_price))}</s>}{brl(Number(i.unit_price))}{i.in_promotion && <span className="ml-1.5 text-gold-deep">Promoção</span>}</p>
                       {i.issue && <p className="text-destructive">{i.issue}</p>}
+                      {!i.issue && i.qty_discount_applied && <p className="text-xs text-gold-deep">Desconto por quantidade: {Number(i.qty_percent)}% (a partir de {i.qty_min} un.)</p>}
                       {Number(i.coupon_discount) > 0 && <p className="text-success">Cupom: - {brl(Number(i.coupon_discount))}</p>}
                       {!i.issue && i.coupon_note && <p className="text-xs text-muted-foreground">{i.coupon_note}</p>}
                     </div>
@@ -131,9 +132,17 @@ function Checkout() {
             </div>
             <aside className="h-fit space-y-5 rounded-xl border bg-card p-6 shadow-soft lg:sticky lg:top-44">
               <dl className="space-y-2 text-sm">
-                <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{brl(Number(q.products_total))}</dd></div>
-                <div className="flex justify-between"><dt className="text-muted-foreground">Cupom</dt><dd>{q.coupon?.code ?? "—"}</dd></div>
-                <div className="flex justify-between"><dt className="text-muted-foreground">Desconto</dt><dd className="text-success">{Number(q.discount) ? `- ${brl(Number(q.discount))}` : brl(0)}</dd></div>
+                {(() => {
+                  const qd = q.items.reduce((s, i) => s + (i.qty_discount_applied && !i.issue ? Math.max(0, Number(i.list_price) - Number(i.original_price)) * i.quantity : 0), 0);
+                  return (
+                    <>
+                      <div className="flex justify-between"><dt className="text-muted-foreground">Subtotal</dt><dd>{brl(Number(q.products_total) + qd)}</dd></div>
+                      {qd > 0 && <div className="flex justify-between"><dt className="text-muted-foreground">Desconto por quantidade</dt><dd className="text-success">- {brl(qd)}</dd></div>}
+                      <div className="flex justify-between"><dt className="text-muted-foreground">Cupom</dt><dd>{q.coupon?.code ?? "—"}</dd></div>
+                      <div className="flex justify-between"><dt className="text-muted-foreground">{qd > 0 ? "Desconto do cupom" : "Desconto"}</dt><dd className="text-success">{Number(q.discount) ? `- ${brl(Number(q.discount))}` : brl(0)}</dd></div>
+                    </>
+                  );
+                })()}
                 <div className="flex justify-between"><dt className="text-muted-foreground">{modo === "entrega" ? "Entrega" : "Retirada na loja"}</dt><dd>{modo === "entrega" ? "A combinar" : brl(0)}</dd></div>
                 <div className="flex justify-between border-t pt-3 text-lg font-medium"><dt>Total</dt><dd>{brl(Number(q.total))}</dd></div>
                 {modo === "entrega" && <p className="text-xs text-muted-foreground">Entrega a combinar com a loja.</p>}
