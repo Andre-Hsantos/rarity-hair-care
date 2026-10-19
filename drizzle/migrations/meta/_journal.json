@@ -113,6 +113,13 @@
       "when": 1792088594779,
       "tag": "0015_quantity_discounts",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792432887651,
+      "tag": "0016_revoke_internal_function_execute",
+      "breakpoints": true
     }
   ]
 }
