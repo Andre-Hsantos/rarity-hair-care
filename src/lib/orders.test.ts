@@ -3,7 +3,12 @@ import { buildWhatsappMessage, ORDER_STATUSES, whatsappLink } from "./orders";
 
 describe("orders", () => {
   it("uses the store WhatsApp (27) 99757-9959", () => {
-    expect(whatsappLink()).toBe("https://wa.me/5527997579959");
+    expect(whatsappLink()).toBe("https://api.whatsapp.com/send?phone=5527997579959");
+  });
+  it("encodes the text parameter", () => {
+    expect(whatsappLink("Olá & pedido #7")).toBe(
+      "https://api.whatsapp.com/send?phone=5527997579959&text=Ol%C3%A1%20%26%20pedido%20%237",
+    );
   });
   it("has exactly the six commercial statuses", () => {
     expect(ORDER_STATUSES).toEqual(["em_negociacao", "aguardando_confirmacao", "aguardando_pagamento", "pagamento_confirmado", "concluido", "cancelado"]);

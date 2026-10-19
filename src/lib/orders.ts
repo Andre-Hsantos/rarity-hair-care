@@ -4,7 +4,7 @@ import { brl } from "@/lib/catalog";
 export const STORE_WHATSAPP_DISPLAY = "(27) 99757-9959";
 export const STORE_WHATSAPP_DIGITS = "5527997579959";
 export const whatsappLink = (text?: string) =>
-  `https://wa.me/${STORE_WHATSAPP_DIGITS}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+  `https://api.whatsapp.com/send?phone=${STORE_WHATSAPP_DIGITS}${text ? `&text=${encodeURIComponent(text)}` : ""}`;
 
 export const ORDER_STATUSES = [
   "em_negociacao",
