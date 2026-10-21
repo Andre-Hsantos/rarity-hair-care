@@ -45,6 +45,7 @@ function HeroImages() {
 }
 import { useHomeSection, type Product } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
+import { Testimonials } from "@/components/site/Testimonials";
 import { buttonVariants } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -104,6 +105,8 @@ function Index() {
       <KitsBanner />
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
+
+      <Testimonials />
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
