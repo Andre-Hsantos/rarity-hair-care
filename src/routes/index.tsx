@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Headphones, MessageCircle, Sparkles, Truck } from "lucide-react";
+import { ArrowRight, BadgePercent, Headphones, MessageCircle, Scissors, Sparkles, Truck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
@@ -111,6 +111,8 @@ function Index() {
 
       <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
+      <ResellerBanner />
+
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {benefits.map(({ icon: I, title, text }) => (
@@ -141,6 +143,54 @@ function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: str
       </div>
       <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
         {items.map((p) => <ProductCard key={p.id} p={p} />)}
+      </div>
+    </section>
+  );
+}
+
+function ResellerBanner() {
+  const wa = `https://api.whatsapp.com/send?phone=5527997579959&text=${encodeURIComponent("Olá! Sou profissional e tenho interesse em revender os produtos Rarity.")}`;
+  const perks = [
+    { icon: BadgePercent, t: "Preços exclusivos", d: "Condições especiais para profissionais aprovados." },
+    { icon: Scissors, t: "Linha para salões", d: "Produtos pensados para o dia a dia do salão." },
+    { icon: MessageCircle, t: "Atendimento direto", d: "Suporte comercial pelo WhatsApp." },
+  ];
+  return (
+    <section className="container-site mt-20">
+      <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-ink p-8 text-ink-foreground sm:p-12 lg:p-16">
+        <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-gold/10 blur-3xl" />
+        <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+          <div>
+            <p className="eyebrow text-gold">Seja um revendedor</p>
+            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
+              Leve a Rarity para <span className="text-gold-metal">o seu salão</span>.
+            </h2>
+            <p className="mt-4 max-w-md text-ink-foreground/70">
+              Cadastre-se como profissional e tenha acesso a preços e condições exclusivas para cabeleireiros e salões.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/cadastro" className={buttonVariants({ variant: "gold", size: "lg" })}>
+                Quero ser revendedor <ArrowRight />
+              </Link>
+              <a href={wa} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
+                Tirar dúvidas no WhatsApp
+              </a>
+            </div>
+          </div>
+          <ul className="grid gap-4">
+            {perks.map(({ icon: I, t, d }) => (
+              <li key={t} className="flex gap-4 rounded-xl border border-ink-foreground/10 bg-ink-foreground/5 p-5">
+                <span className="grid size-11 shrink-0 place-items-center rounded-full border border-gold/40">
+                  <I className="size-5 text-gold" strokeWidth={1.5} />
+                </span>
+                <span>
+                  <span className="block font-medium">{t}</span>
+                  <span className="text-sm text-ink-foreground/65">{d}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
