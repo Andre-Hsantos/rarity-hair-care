@@ -1,0 +1,2 @@
+ALTER TABLE public.home_section_products DROP CONSTRAINT IF EXISTS home_section_products_section_check;
+ALTER TABLE public.home_section_products ADD CONSTRAINT home_section_products_section_check CHECK (section IN ('featured','best_sellers','professional'));
