@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/admin/configuracoes")({ component: Settings });
 
-type Section = "featured" | "best_sellers";
+type Section = "featured" | "best_sellers" | "professional";
 
 function Settings() {
   return (
@@ -19,6 +19,7 @@ function Settings() {
       <div className="space-y-10">
         <SectionEditor section="featured" title="Produtos em destaque" />
         <SectionEditor section="best_sellers" title="Produtos mais vendidos" hint="Curadoria manual — não é calculado pelas vendas." />
+        <SectionEditor section="professional" title="Produtos profissionais" />
       </div>
     </>
   );

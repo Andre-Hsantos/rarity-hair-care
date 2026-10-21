@@ -120,6 +120,13 @@
       "when": 1792432887651,
       "tag": "0016_revoke_internal_function_execute",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792610567059,
+      "tag": "0017_home_section_professional",
+      "breakpoints": true
     }
   ]
 }
