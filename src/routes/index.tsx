@@ -72,6 +72,7 @@ const benefits = [
 function Index() {
   const featured = useHomeSection("featured");
   const bestSellers = useHomeSection("best_sellers");
+  const professional = useHomeSection("professional");
   return (
     <>
       <section className="container-site pt-6 sm:pt-10">
@@ -107,6 +108,8 @@ function Index() {
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
       <Testimonials />
+
+      <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">

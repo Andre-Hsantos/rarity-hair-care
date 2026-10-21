@@ -77,7 +77,7 @@ export function usePublicCategories() {
   });
 }
 
-export type HomeSection = "featured" | "best_sellers";
+export type HomeSection = "featured" | "best_sellers" | "professional";
 export function useHomeSection(section: HomeSection) {
   const catalog = useCatalog();
   const sel = useQuery({
