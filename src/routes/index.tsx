@@ -103,7 +103,7 @@ function Index() {
 
       <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
-      <KitsBanner />
+      <ResellerBanner />
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
@@ -111,7 +111,7 @@ function Index() {
 
       <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
-      <ResellerBanner />
+      <KitsBanner />
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
