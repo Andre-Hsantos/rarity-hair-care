@@ -52,7 +52,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Rarity Hair Care — Cuidados capilares premium" },
-      { name: "description", content: "Shampoos, máscaras, finalizadores e kits Rarity Hair Care. Compra pelo WhatsApp, entrega ou retirada." },
+      {
+        name: "description",
+        content:
+          "Shampoos, máscaras, finalizadores e kits Rarity Hair Care. Compra pelo WhatsApp, entrega ou retirada.",
+      },
       { property: "og:title", content: "Rarity Hair Care — Cuidados capilares premium" },
       { property: "og:description", content: "Conheça a linha Rarity de cuidados capilares." },
       { property: "og:type", content: "website" },
@@ -137,12 +141,17 @@ function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: str
           <p className="eyebrow text-gold-deep">{eyebrow}</p>
           <h2 className="mt-2 text-4xl">{title}</h2>
         </div>
-        <Link to="/produtos" className="hidden shrink-0 items-center gap-1 text-sm text-foreground/75 hover:text-foreground sm:inline-flex">
+        <Link
+          to="/produtos"
+          className="hidden shrink-0 items-center gap-1 text-sm text-foreground/75 hover:text-foreground sm:inline-flex"
+        >
           Ver todos <ArrowRight className="size-4" />
         </Link>
       </div>
       <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-        {items.map((p) => <ProductCard key={p.id} p={p} />)}
+        {items.map((p) => (
+          <ProductCard key={p.id} p={p} />
+        ))}
       </div>
     </section>
   );
@@ -161,7 +170,7 @@ function ResellerBanner() {
         <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-gold/10 blur-3xl" />
         <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <div>
-            <p className="eyebrow text-gold">Seja um revendedor</p>
+            <p className="eyebrow text-gold">Seja um representante</p>
             <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
               Leve a Rarity para <span className="text-gold-metal">o seu salão</span>.
             </h2>
@@ -170,9 +179,14 @@ function ResellerBanner() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/cadastro" className={buttonVariants({ variant: "gold", size: "lg" })}>
-                Quero ser revendedor <ArrowRight />
+                Quero ser um representante <ArrowRight />
               </Link>
-              <a href={wa} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
+              <a
+                href={wa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ variant: "outlineLight", size: "lg" })}
+              >
                 Tirar dúvidas no WhatsApp
               </a>
             </div>
@@ -198,25 +212,38 @@ function ResellerBanner() {
 
 function KitsBanner() {
   return (
-      <section className="container-site mt-20">
-        <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
-          <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
-            <p className="eyebrow text-gold">Kits Rarity</p>
-            <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">Rotina completa, <span className="text-gold-metal">em um só presente</span>.</h2>
-            <p className="mt-4 max-w-md text-ink-foreground/70">
-              Conteúdo demonstrativo para campanhas, ofertas e seleções especiais da marca.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/produtos" search={{ tipo: "kit" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
-                Ver kits
-              </Link>
-              <Link to="/produtos" search={{ promo: true }} className={buttonVariants({ variant: "outlineLight", size: "lg" })}>
-                Ofertas selecionadas
-              </Link>
-            </div>
+    <section className="container-site mt-20">
+      <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
+        <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+          <p className="eyebrow text-gold">Kits Rarity</p>
+          <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
+            Rotina completa, <span className="text-gold-metal">em um só presente</span>.
+          </h2>
+          <p className="mt-4 max-w-md text-ink-foreground/70">
+            Conteúdo demonstrativo para campanhas, ofertas e seleções especiais da marca.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link to="/produtos" search={{ tipo: "kit" }} className={buttonVariants({ variant: "gold", size: "lg" })}>
+              Ver kits
+            </Link>
+            <Link
+              to="/produtos"
+              search={{ promo: true }}
+              className={buttonVariants({ variant: "outlineLight", size: "lg" })}
+            >
+              Ofertas selecionadas
+            </Link>
           </div>
-          <img src={kit} alt="Kit Rarity em caixa preta com detalhes dourados" loading="lazy" width={1200} height={912} className="h-full min-h-72 w-full object-cover" />
         </div>
-      </section>
+        <img
+          src={kit}
+          alt="Kit Rarity em caixa preta com detalhes dourados"
+          loading="lazy"
+          width={1200}
+          height={912}
+          className="h-full min-h-72 w-full object-cover"
+        />
+      </div>
+    </section>
   );
 }
