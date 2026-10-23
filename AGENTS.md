@@ -27,3 +27,4 @@
 - Category deletion only via admin_delete_category, blocked while products/coupons reference it. Why: no orphans, no silent product changes.
 - Products can have many categories via product_categories; products.category_id stays as the principal (first) one. Why: additive change, existing reads keep working.
 - Quantity discount tiers live in quantity_discounts and are applied only inside _quote_cart (max of tier vs pro individual %, then promotion; coupons skip such lines unless coupons.allow_with_quantity_discount). Why: one server-side price rule.
+- Admin storefront previews use admin_catalog_preview with a database admin check and isolated catalog cache; never override auth tier or cart/checkout/order pricing. Why: preview prices safely without impersonation or changing commercial rules.
