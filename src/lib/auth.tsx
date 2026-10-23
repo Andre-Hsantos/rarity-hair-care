@@ -3,6 +3,7 @@ import { useRouter } from "@tanstack/react-router";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import type { CatalogPreview } from "@/lib/catalogPreview";
 
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProofType = Database["public"]["Enums"]["proof_type"];
@@ -22,6 +23,8 @@ type AuthCtx = {
   isAdmin: boolean;
   tier: Tier;
   ready: boolean;
+  catalogPreview: CatalogPreview | null;
+  setCatalogPreview: (mode: CatalogPreview | null) => void;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -36,15 +39,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [ready, setReady] = useState(false);
+  const [catalogPreview, setCatalogPreview] = useState<CatalogPreview | null>(null);
 
   const load = useCallback(async (s: Session | null) => {
-    if (!s) { setProfile(null); setIsAdmin(false); return; }
+    if (!s) { setProfile(null); setIsAdmin(false); setCatalogPreview(null); return; }
     const [{ data: p }, { data: roles }] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", s.user.id).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", s.user.id),
     ]);
     setProfile(p ?? null);
     setIsAdmin(!!roles?.some((r) => r.role === "admin"));
+    if (!roles?.some((r) => r.role === "admin")) setCatalogPreview(null);
   }, []);
 
   useEffect(() => {
@@ -64,6 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value: AuthCtx = {
     session, profile, isAdmin, ready,
+    catalogPreview: isAdmin ? catalogPreview : null,
+    setCatalogPreview: (mode) => { if (isAdmin) setCatalogPreview(mode); },
     tier: tierOf(profile, isAdmin),
     refresh: () => load(session),
     signOut: async () => { await supabase.auth.signOut(); },

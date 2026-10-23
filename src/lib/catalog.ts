@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useLocation } from "@tanstack/react-router";
+import { effectiveCatalogPreview } from "@/lib/catalogPreview";
 
 /** Public catalog product, already priced for the current visitor. price null = "Sob consulta". */
 export type Product = {
@@ -28,14 +30,16 @@ export type Product = {
 export const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 export function useCatalog() {
-  const { profile, session, ready, tier } = useAuth();
-  const isPro = tier === "profissional_aprovado";
+  const { profile, session, ready, tier, isAdmin, catalogPreview } = useAuth();
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const preview = effectiveCatalogPreview(isAdmin, catalogPreview, pathname);
+  const isPro = preview ? preview === "profissional" : tier === "profissional_aprovado";
   return useQuery({
-    queryKey: ["catalog", session?.user.id ?? "anon", isPro, profile?.pro_status, profile?.individual_discount_percent],
+    queryKey: ["catalog", session?.user.id ?? "anon", isPro, profile?.pro_status, profile?.individual_discount_percent, preview],
     enabled: ready,
     queryFn: async (): Promise<Product[]> => {
       const [{ data, error }, links] = await Promise.all([
-        supabase.rpc("catalog_products"),
+        preview ? supabase.rpc("admin_catalog_preview", { _mode: preview }) : supabase.rpc("catalog_products"),
         supabase.from("product_categories").select("product_id, category_id"),
       ]);
       if (error) throw error;

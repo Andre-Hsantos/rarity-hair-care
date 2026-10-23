@@ -134,6 +134,13 @@
       "when": 1792770680584,
       "tag": "0018_hide_pro_price_fix_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792771936547,
+      "tag": "0019_admin_catalog_preview",
+      "breakpoints": true
     }
   ]
 }

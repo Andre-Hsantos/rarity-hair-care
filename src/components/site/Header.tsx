@@ -1,11 +1,13 @@
 import { useUnreadCount } from "@/lib/notifications";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Bell, ChevronDown, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Bell, Briefcase, Check, ChevronDown, Eye, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
 import { usePublicCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import type { CatalogPreview } from "@/lib/catalogPreview";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -69,7 +71,12 @@ function IconLink({ to, label, children, badge, search }: { to: string; label: s
 export function Header() {
   const { count, favorites } = useStore();
   const categories = usePublicCategories().data ?? [];
-  const { session, isAdmin } = useAuth();
+  const { session, isAdmin, catalogPreview, setCatalogPreview } = useAuth();
+  const navigate = useNavigate();
+  const previewAs = (mode: CatalogPreview) => {
+    setCatalogPreview(mode);
+    void navigate({ to: "/" });
+  };
   const unread = useUnreadCount();
   const [open, setOpen] = useState(false);
 
@@ -124,6 +131,26 @@ export function Header() {
               <IconLink to={session ? "/notificacoes" : "/login"} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
             </span>
             {isAdmin && <IconLink to="/admin" label="Painel"><LayoutDashboard className="size-5" /></IconLink>}
+            {isAdmin && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="Ver site como" title="Ver site como" className="text-ink-foreground hover:bg-ink-soft hover:text-gold">
+                    <Eye className="size-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-60">
+                  <DropdownMenuItem onSelect={() => previewAs("normal")}>
+                    <User className="mr-2 size-4" /> Ver como cliente normal
+                    {catalogPreview === "normal" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => previewAs("profissional")}>
+                    <Briefcase className="mr-2 size-4" /> Ver como profissional
+                    {catalogPreview === "profissional" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                  {catalogPreview && <DropdownMenuItem onSelect={() => setCatalogPreview(null)}><X className="mr-2 size-4" /> Encerrar visualização</DropdownMenuItem>}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <IconLink to={session ? "/minha-conta" : "/login"} label={session ? "Minha conta" : "Entrar"}><User className="size-5" /></IconLink>
             <IconLink to="/carrinho" label="Carrinho" badge={count}><ShoppingBag className="size-5" /></IconLink>
           </div>
@@ -160,6 +187,14 @@ export function Header() {
           ))}
         </div>
       </nav>
+      {isAdmin && catalogPreview && (
+        <div className="border-b border-gold/30 bg-gold/10 text-foreground">
+          <div className="container-site flex flex-wrap items-center justify-between gap-2 py-2">
+            <p role="status" className="flex items-center gap-2 text-xs sm:text-sm"><Eye className="size-4 shrink-0" /> Visualização: {catalogPreview === "profissional" ? "profissional aprovado · sem desconto individual" : "cliente normal"}</p>
+            <Button variant="ghost" size="sm" onClick={() => setCatalogPreview(null)}><X /> Encerrar</Button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

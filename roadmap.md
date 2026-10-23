@@ -1,0 +1,2 @@
+- [x] Add an admin-only normal/professional storefront preview selector without changing the account or order rules.
+- [x] Verify preview access, prices, navigation and automated regressions (37 tests passed; signed-in admin browser flow and anonymous control visibility checked).
