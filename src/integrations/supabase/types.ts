@@ -1107,6 +1107,7 @@ export type Database = {
         Args: { _is_pro: boolean; _product_id: string }
         Returns: boolean
       }
+      _product_is_active: { Args: { _id: string }; Returns: boolean }
       _promo_apply: {
         Args: {
           _base: number

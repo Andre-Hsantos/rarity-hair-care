@@ -127,6 +127,13 @@
       "when": 1792610567059,
       "tag": "0017_home_section_professional",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792770680584,
+      "tag": "0018_hide_pro_price_fix_reviews",
+      "breakpoints": true
     }
   ]
 }
