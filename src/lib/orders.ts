@@ -48,23 +48,41 @@ export type WaOrder = {
   products_total: number; discount: number; shipping: number | null; total: number; coupon: string | null;
 };
 
+const SEP = "───────────────────────";
+const fmtZip = (z: string) => { const d = z.replace(/\D/g, ""); return d.length === 8 ? `${d.slice(0, 5)}-${d.slice(5)}` : z; };
+/** "Nome — 120 ml" → "Nome (120 ml)" */
+const fmtItemName = (n: string) => { const m = n.match(/^(.*?)\s+—\s+(.+)$/); return m ? `${m[1]} (${m[2]})` : n; };
+
 /** Builds the WhatsApp message strictly from the stored order. */
 export function buildWhatsappMessage(o: WaOrder) {
   const lines = [
-    `Olá! Gostaria de finalizar o pedido ${orderNumber(o.id)}.`,
-    `Cliente: ${o.customerName}`,
+    `*RARITY HAIR CARE* — Pedido ${orderNumber(o.id)}`,
     "",
-    "Itens:",
-    ...o.items.map((i) => `- ${i.product_name} x${i.quantity} — ${brl(Number(i.item_total))}`),
+    `👤 *Cliente:* ${o.customerName}`,
     "",
-    `Subtotal: ${brl(Number(o.products_total))}`,
+    "📦 *Itens do pedido:*",
+    ...o.items.map((i) => `• ${i.quantity}x ${fmtItemName(i.product_name)} — ${brl(Number(i.item_total))}`),
+    "",
+    SEP,
   ];
-  if (Number(o.discount) > 0) lines.push(`Desconto${o.coupon ? ` (cupom ${o.coupon})` : ""}: - ${brl(Number(o.discount))}`);
-  if (o.delivery === "retirada") lines.push("Retirada na loja: R$ 0,00");
+  if (o.delivery === "retirada") lines.push("📍 *Retirada na loja:* R$ 0,00");
   else {
-    lines.push(`Entrega: ${o.shipping == null ? "a combinar" : brl(Number(o.shipping))}`);
-    if (o.address) lines.push(`Endereço: ${formatAddress(o.address)}`);
+    lines.push(`📍 *Entrega:* ${o.shipping == null ? "a combinar" : brl(Number(o.shipping))}`);
+    const a = o.address;
+    if (a) {
+      lines.push("🏠 *Endereço:*");
+      lines.push(`${a.street}${a.number ? `, ${a.number}` : ""}${a.complement ? ` (${a.complement})` : ""}`);
+      const cityLine = [a.district, `${a.city}/${a.state}`].filter(Boolean).join(" — ");
+      lines.push(cityLine);
+      if (a.zip) lines.push(`CEP ${fmtZip(a.zip)}`);
+    }
   }
-  lines.push(`Total: ${brl(Number(o.total))}${o.delivery === "entrega" && o.shipping == null ? " + entrega a combinar" : ""}`);
+  lines.push(SEP, "", `💰 *Subtotal:* ${brl(Number(o.products_total))}`);
+  if (Number(o.discount) > 0) lines.push(`🏷️ *Desconto${o.coupon ? ` (cupom ${o.coupon})` : ""}:* - ${brl(Number(o.discount))}`);
+  const pending = o.delivery === "entrega" && o.shipping == null;
+  lines.push(`✨ *Total a pagar:* *${brl(Number(o.total))}*${pending ? " (+ frete a combinar)" : ""}`);
+  lines.push("", pending
+    ? "Olá! Gostaria de confirmar a disponibilidade e combinar o frete/pagamento."
+    : "Olá! Gostaria de confirmar a disponibilidade e combinar o pagamento.");
   return lines.join("\n");
 }
