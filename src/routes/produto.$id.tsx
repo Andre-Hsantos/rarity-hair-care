@@ -1,5 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { Product } from "@/lib/catalog";
+
+/** Same-category products first (shuffled), then other categories (shuffled) to fill up to 4. */
+function pickRelated(all: Product[], p: Product, seed: number, count = 4): Product[] {
+  let s = Math.floor(seed * 2 ** 31) || 1;
+  const rand = () => ((s = (s * 48271) % 2147483647) / 2147483647);
+  const shuffle = <T,>(a: T[]) => {
+    const r = [...a];
+    for (let i = r.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      const t = r[i]!;
+      r[i] = r[j]!;
+      r[j] = t;
+    }
+    return r;
+  };
+  const others = all.filter((x) => x.id !== p.id);
+  const same = others.filter((x) => x.categoryIds.some((c) => p.categoryIds.includes(c)));
+  const rest = others.filter((x) => !same.includes(x));
+  return [...shuffle(same), ...shuffle(rest)].slice(0, count);
+}
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronRight, Heart, ImageOff, MessageCircle, Minus, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +49,8 @@ function ProductPage() {
   const catalog = useCatalog();
   const { add, toggleFav, favorites } = useStore();
   const [qty, setQty] = useState(1);
+  // New random order each time a product page is opened (stable while viewing it).
+  const seed = useMemo(() => Math.random(), [id]);
   const all = catalog.data ?? [];
   const p = all.find((x) => x.id === id);
   const kit = useQuery({
@@ -56,7 +79,7 @@ function ProductPage() {
 
   const fav = favorites.includes(p.id);
   const sizes = p.sizeGroup ? all.filter((x) => x.sizeGroup === p.sizeGroup) : [];
-  const related = all.filter((x) => x.id !== p.id && x.categoryIds.some((c) => p.categoryIds.includes(c))).slice(0, 4);
+  const related = pickRelated(all, p, seed);
   const nameOf = (pid: string) => all.find((x) => x.id === pid)?.name ?? pid;
 
   return (
