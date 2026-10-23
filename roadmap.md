@@ -1,0 +1,2 @@
+- [ ] Add an admin-only normal/professional storefront preview selector without changing the account or order rules.
+- [ ] Verify preview access, prices, navigation and automated regressions.
