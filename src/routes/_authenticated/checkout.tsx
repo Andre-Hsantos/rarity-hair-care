@@ -63,6 +63,7 @@ function Checkout() {
     if (modo === "entrega" && (!addr.street.trim() || !addr.city.trim() || !addr.state.trim())) { toast.error("Informe rua, cidade e estado para a entrega."); return; }
     setBusy(true);
     const win = window.open("", "_blank"); // opened during the click so browsers don't block it
+    if (win) win.opener = null; // detach the new tab from the store page
     const { data: id, error } = await supabase.rpc("create_order", {
       _coupon: cupom, _delivery: modo, _address: modo === "entrega" ? addr : null, _note: note, _request_id: requestId.current,
     } as never);
