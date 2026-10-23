@@ -1135,6 +1135,28 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_catalog_preview: {
+        Args: { _mode: string }
+        Returns: {
+          audience: Database["public"]["Enums"]["product_audience"]
+          availability: Database["public"]["Enums"]["availability"]
+          category_id: string
+          category_name: string
+          created_at: string
+          description: string
+          final_price: number
+          id: string
+          image_url: string
+          in_promotion: boolean
+          is_kit: boolean
+          name: string
+          original_price: number
+          price: number
+          pro_price: number
+          size_group: string
+          size_label: string
+        }[]
+      }
       admin_delete_category: { Args: { _id: string }; Returns: undefined }
       admin_delete_client_data: {
         Args: { _user_id: string }
