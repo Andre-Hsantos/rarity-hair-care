@@ -10,7 +10,9 @@ function pickRelated(all: Product[], p: Product, seed: number, count = 4): Produ
     const r = [...a];
     for (let i = r.length - 1; i > 0; i--) {
       const j = Math.floor(rand() * (i + 1));
-      [r[i], r[j]] = [r[j], r[i]];
+      const t = r[i]!;
+      r[i] = r[j]!;
+      r[j] = t;
     }
     return r;
   };
