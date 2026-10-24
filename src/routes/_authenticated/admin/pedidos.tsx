@@ -66,7 +66,7 @@ function Orders() {
         </div>
       )}
       <Dialog open={open != null} onOpenChange={(v) => !v && setOpen(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="max-h-[96vh] w-[96vw] max-w-[96vw] overflow-y-auto p-5 sm:p-6 lg:max-w-6xl">
           <DialogHeader><DialogTitle>Detalhes do pedido</DialogTitle></DialogHeader>
           {open != null && <AdminOrder id={open} onDeleted={() => setOpen(null)} />}
         </DialogContent>
@@ -98,9 +98,13 @@ function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
   return (
     <div className="space-y-6">
       {c && <p className="text-sm"><span className="font-medium">{c.name}</span> · {c.email} · {c.phone || "sem telefone"} · {c.account_type === "profissional" ? "Profissional" : "Comum"}</p>}
-      <OrderDetail o={q.data} />
-      <EditOrder o={q.data} onDone={refresh} />
-      <EditItems o={q.data} onDone={refresh} />
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        <OrderDetail o={q.data} />
+        <div className="space-y-6">
+          <EditOrder o={q.data} onDone={refresh} />
+          <EditItems o={q.data} onDone={refresh} />
+        </div>
+      </div>
       <div className="border-t pt-4">
         <DeleteConfirm label="Excluir pedido" title={`Excluir pedido ${orderNumber(id)}`} pending={del.isPending} onConfirm={() => del.mutate()}
           items={["O pedido e todos os seus itens", "Todo o histórico de alterações do pedido", "O cliente e os produtos NÃO são excluídos"]} />
