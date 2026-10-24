@@ -1135,6 +1135,16 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_add_order_item: {
+        Args: {
+          _note: string
+          _order_id: number
+          _product_id: string
+          _quantity: number
+          _unit_price: number
+        }
+        Returns: undefined
+      }
       admin_catalog_preview: {
         Args: { _mode: string }
         Returns: {
@@ -1163,6 +1173,10 @@ export type Database = {
         Returns: undefined
       }
       admin_delete_order: { Args: { _order_id: number }; Returns: undefined }
+      admin_delete_order_item: {
+        Args: { _item_id: number; _note: string }
+        Returns: undefined
+      }
       admin_delete_product: { Args: { _product_id: string }; Returns: Json }
       admin_send_notification: {
         Args: { _body: string; _title: string; _user_ids: string[] }
