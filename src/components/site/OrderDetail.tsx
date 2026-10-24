@@ -22,7 +22,7 @@ export function OrderDetail({ o, showHistory = true }: { o: FullOrder; showHisto
       <ul className="divide-y rounded-lg border">
         {o.items.map((i) => (
           <li key={i.id} className="flex flex-wrap justify-between gap-2 p-3">
-            <span><span className="font-medium">{i.product_name}</span><span className="block text-muted-foreground">{i.quantity} × {brl(Number(i.unit_price))}{Number(i.discount) > 0 ? ` · desconto ${brl(Number(i.discount))}` : ""}</span></span>
+            <span className="break-words"><span className="font-medium">{i.product_name}</span><span className="block text-muted-foreground">{i.quantity} × {brl(Number(i.unit_price))}{Number(i.discount) > 0 ? ` · desconto ${brl(Number(i.discount))}` : ""}</span></span>
             <span className="font-medium">{brl(Number(i.item_total))}</span>
           </li>
         ))}
@@ -42,7 +42,7 @@ export function OrderDetail({ o, showHistory = true }: { o: FullOrder; showHisto
             {o.history.map((h) => (
               <li key={h.id}>
                 <p className="font-medium">{h.old_status && h.old_status !== h.new_status ? `${statusLabel[h.old_status] ?? h.old_status} → ` : ""}{statusLabel[h.new_status ?? ""] ?? h.new_status}</p>
-                <p className="text-xs text-muted-foreground">{dt(h.created_at)}{h.change_note ? ` · ${h.change_note}` : ""}</p>
+                <p className="break-words text-xs text-muted-foreground">{dt(h.created_at)}{h.change_note ? ` · ${h.change_note}` : ""}</p>
               </li>
             ))}
           </ol>
