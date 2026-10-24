@@ -66,7 +66,7 @@ function Orders() {
         </div>
       )}
       <Dialog open={open != null} onOpenChange={(v) => !v && setOpen(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="max-h-[96vh] w-[96vw] max-w-[96vw] overflow-y-auto p-5 sm:p-6 lg:max-w-6xl">
           <DialogHeader><DialogTitle>Detalhes do pedido</DialogTitle></DialogHeader>
           {open != null && <AdminOrder id={open} onDeleted={() => setOpen(null)} />}
         </DialogContent>
