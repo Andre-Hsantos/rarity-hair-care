@@ -167,11 +167,60 @@ function EditItems({ o, onDone }: { o: FullOrder; onDone: () => void }) {
           <div className="flex gap-2"><Button size="sm" variant="dark" onClick={save}>Salvar item</Button><Button size="sm" variant="outline" onClick={() => setEdit(null)}>Cancelar</Button></div>
         </div>
       ) : (
-        <div key={i.id} className="flex items-center justify-between text-sm">
+        <div key={i.id} className="flex items-center justify-between gap-2 text-sm">
           <span>{i.product_name} · {i.quantity} × {brl(Number(i.unit_price))}</span>
-          <Button size="sm" variant="outline" onClick={() => setEdit({ id: i.id, qty: String(i.quantity), price: String(i.unit_price), disc: String(i.discount), note: "" })}>Editar</Button>
+          <span className="flex shrink-0 gap-2">
+            <Button size="sm" variant="outline" onClick={() => setEdit({ id: i.id, qty: String(i.quantity), price: String(i.unit_price), disc: String(i.discount), note: "" })}>Editar</Button>
+            <Button size="sm" variant="outline" className="text-destructive" onClick={() => removeItem(i.id, i.product_name)}>Remover</Button>
+          </span>
         </div>
       ))}
+      <AddItem orderId={o.id} onDone={onDone} />
+    </div>
+  );
+}
+
+function AddItem({ orderId, onDone }: { orderId: number; onDone: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [pid, setPid] = useState("");
+  const [qty, setQty] = useState("1");
+  const [price, setPrice] = useState("");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const products = useQuery({
+    queryKey: ["admin-order-products"],
+    enabled: open,
+    queryFn: async () => (await supabase.from("products").select("id, name, size_label, price").order("name")).data ?? [],
+  });
+  const pick = (id: string) => {
+    setPid(id);
+    const p = products.data?.find((x) => x.id === id);
+    if (p) setPrice(String(p.price));
+  };
+  const save = async () => {
+    if (!pid) { toast.error("Escolha um produto."); return; }
+    setBusy(true);
+    const { error } = await supabase.rpc("admin_add_order_item", { _order_id: orderId, _product_id: pid, _quantity: Number(qty), _unit_price: Number(price.replace(",", ".")), _note: note });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Item adicionado"); setOpen(false); setPid(""); setQty("1"); setPrice(""); setNote(""); onDone();
+  };
+  if (!open) return <Button size="sm" variant="dark" className="mt-2" onClick={() => setOpen(true)}>+ Adicionar item</Button>;
+  return (
+    <div className="mt-2 space-y-2 rounded-md bg-surface p-3">
+      <p className="text-sm font-medium">Novo item</p>
+      <FieldRow label="Produto">
+        <select className={inputCls} value={pid} onChange={(e) => pick(e.target.value)}>
+          <option value="">Selecione…</option>
+          {products.data?.map((p) => <option key={p.id} value={p.id}>{p.name}{p.size_label ? ` — ${p.size_label}` : ""} ({brl(Number(p.price))})</option>)}
+        </select>
+      </FieldRow>
+      <div className="grid grid-cols-2 gap-2">
+        <FieldRow label="Qtd"><input className={inputCls} inputMode="numeric" value={qty} onChange={(e) => setQty(e.target.value)} /></FieldRow>
+        <FieldRow label="Preço unit."><input className={inputCls} inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} /></FieldRow>
+      </div>
+      <FieldRow label="Motivo (obrigatório)"><input className={inputCls} value={note} onChange={(e) => setNote(e.target.value)} /></FieldRow>
+      <div className="flex gap-2"><Button size="sm" variant="dark" disabled={busy} onClick={save}>Adicionar</Button><Button size="sm" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button></div>
     </div>
   );
 }
