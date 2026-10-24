@@ -152,6 +152,13 @@ function EditItems({ o, onDone }: { o: FullOrder; onDone: () => void }) {
     if (error) { toast.error(error.message); return; }
     toast.success("Item atualizado"); setEdit(null); onDone();
   };
+  const removeItem = async (id: number, name: string) => {
+    const note = window.prompt(`Remover "${name}" do pedido? Informe o motivo:`);
+    if (note == null) return;
+    const { error } = await supabase.rpc("admin_delete_order_item", { _item_id: id, _note: note });
+    if (error) { toast.error(error.message); return; }
+    toast.success("Item removido"); onDone();
+  };
   return (
     <div className="space-y-2 rounded-lg border p-4">
       <p className="font-medium">Ajustar itens</p>
