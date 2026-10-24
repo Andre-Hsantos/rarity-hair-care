@@ -11,13 +11,14 @@ export function StatusBadge({ status }: { status: string }) {
 
 export function OrderDetail({ o, showHistory = true }: { o: FullOrder; showHistory?: boolean }) {
   const cancel = o.status === "cancelado" ? [...o.history].reverse().find((h) => h.new_status === "cancelado")?.change_note : null;
+
   return (
     <div className="space-y-5 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="font-display text-2xl">Pedido {orderNumber(o.id)}</p><p className="text-muted-foreground">{dt(o.created_at)}</p></div>
         <StatusBadge status={o.status} />
       </div>
-      {cancel && <p className="rounded-md bg-destructive/5 p-3 text-destructive">Motivo do cancelamento: {cancel}</p>}
+      {cancel && <p className="break-words rounded-md bg-destructive/5 p-3 text-destructive">Motivo do cancelamento: {cancel}</p>}
       <ul className="divide-y rounded-lg border">
         {o.items.map((i) => (
           <li key={i.id} className="flex flex-wrap justify-between gap-2 p-3">
@@ -32,8 +33,8 @@ export function OrderDetail({ o, showHistory = true }: { o: FullOrder; showHisto
         <div className="flex justify-between"><dt className="text-muted-foreground">{o.delivery === "entrega" ? "Entrega" : "Retirada na loja"}</dt><dd>{o.delivery === "retirada" ? brl(0) : o.shipping == null ? "A combinar" : brl(Number(o.shipping))}</dd></div>
         <div className="flex justify-between border-t pt-2 text-base font-medium"><dt>Total</dt><dd>{brl(Number(o.total))}{o.delivery === "entrega" && o.shipping == null ? " + entrega" : ""}</dd></div>
       </dl>
-      {o.delivery === "entrega" && o.address && <p><span className="text-muted-foreground">Endereço: </span>{formatAddress(o.address)}</p>}
-      {o.note && <p><span className="text-muted-foreground">Observação: </span>{o.note}</p>}
+      {o.delivery === "entrega" && o.address && <p className="break-words"><span className="text-muted-foreground">Endereço: </span>{formatAddress(o.address)}</p>}
+      {o.note && <p className="break-words"><span className="text-muted-foreground">Observação: </span>{o.note}</p>}
       {showHistory && (
         <div>
           <p className="eyebrow text-muted-foreground">Histórico</p>
