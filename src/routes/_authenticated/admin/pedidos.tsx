@@ -114,7 +114,7 @@ function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
   );
 }
 
-function EditOrder({ o, onDone }: { o: FullOrder; onDone: () => void }) {
+function EditOrder({ o, onDone, onClose }: { o: FullOrder; onDone: () => void; onClose: () => void }) {
   const [status, setStatus] = useState<string>(o.status);
   const [shipping, setShipping] = useState(o.shipping == null ? "" : String(o.shipping));
   const [tec, setTec] = useState(o.tecnobyte_registered);
@@ -132,7 +132,7 @@ function EditOrder({ o, onDone }: { o: FullOrder; onDone: () => void }) {
   return (
     <div className="space-y-3 rounded-lg border p-4">
       <p className="font-medium">Atualizar pedido</p>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid items-end gap-3 sm:grid-cols-3">
         <FieldRow label="Status"><select className={inputCls} value={status} onChange={(e) => setStatus(e.target.value)}>{ORDER_STATUSES.map((s) => <option key={s} value={s}>{statusLabel[s]}</option>)}</select></FieldRow>
         <FieldRow label="Frete (R$)" hint={o.delivery_method === "entrega" ? "Vazio = a combinar" : "Retirada: R$ 0,00"}><input className={inputCls} inputMode="decimal" value={shipping} onChange={(e) => setShipping(e.target.value)} placeholder="A combinar" /></FieldRow>
         <FieldRow label="Venda registrada no Tecnobyte"><select className={inputCls} value={tec ? "s" : "n"} onChange={(e) => setTec(e.target.value === "s")}><option value="n">Não</option><option value="s">Sim</option></select></FieldRow>
