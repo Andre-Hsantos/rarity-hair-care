@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import hero from "@/assets/hero.jpg";
+import sobreImg from "@/assets/sobre.jpg";
 import { PageHeader } from "@/components/site/PageHeader";
 import { StatsBand } from "@/components/site/StatsBand";
 import { buttonVariants } from "@/components/ui/button";
@@ -38,7 +38,7 @@ function About() {
           </Link>
         </div>
         <img
-          src={hero}
+          src={sobreImg}
           alt="Produtos Rarity"
           loading="lazy"
           className="aspect-[4/3] w-full rounded-2xl object-cover object-right"
