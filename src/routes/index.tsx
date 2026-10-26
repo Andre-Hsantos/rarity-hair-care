@@ -87,7 +87,7 @@ function Index() {
             <div className="max-w-lg">
               <p className="eyebrow text-gold-deep">coleções rarity</p>
               <h1 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
-                O cuidado que seu cabelo <em className="text-gold-metal not-italic">merece.</em>.
+                O cuidado que seu cabelo <em className="text-gold-metal not-italic">merece</em>.
               </h1>
               <p className="mt-5 max-w-md text-base text-muted-foreground">
                 Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.
