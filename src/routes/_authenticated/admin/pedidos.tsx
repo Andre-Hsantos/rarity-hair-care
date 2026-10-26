@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { brl } from "@/lib/catalog";
 import { fetchOrder, type FullOrder } from "@/lib/orderQueries";
 import { isFinished, ORDER_STATUSES, orderNumber, statusLabel } from "@/lib/orders";
-import { OrderDetail, StatusBadge } from "@/components/site/OrderDetail";
+import { OrderDetail, StatusBadge, TecnobyteBadge } from "@/components/site/OrderDetail";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { areaCls, Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead } from "@/components/admin/ui";
