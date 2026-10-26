@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -10,11 +10,35 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { CheckList, useAllProducts } from "@/components/admin/Pickers";
 import { audienceLabel, brl, Empty, ErrorBox, FieldRow, fmtDate, fromLocalInput, inputCls, Loading, PageHead, Pill, toLocalInput } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/promocoes")({ component: Promotions });
+export const Route = createFileRoute("/_authenticated/admin/promocoes")({
+  head: () => ({ meta: [
+    { title: "Promoções | Administração Rarity Hair Care" },
+    { name: "description", content: "Gerencie as promoções da Rarity Hair Care." },
+    { property: "og:title", content: "Promoções | Administração Rarity Hair Care" },
+    { property: "og:description", content: "Gerencie as promoções da Rarity Hair Care." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
+  component: Promotions,
+});
 
 type Promo = Database["public"]["Tables"]["promotions"]["Row"];
 
 function Promotions() {
+  const qc = useQueryClient();
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { data, error } = await supabase.from("promotions").delete().eq("id", id).select("id");
+      if (error || !data?.length) throw new Error("Não foi possível excluir a promoção.");
+    },
+    onSuccess: () => {
+      toast.success("Promoção excluída.");
+      for (const key of ["admin-promotions", "catalog", "quote"]) {
+        qc.invalidateQueries({ queryKey: [key] });
+      }
+    },
+    onError: (e) => toast.error(e.message),
+  });
   const { data, isLoading, isError } = useQuery({
     queryKey: ["admin-promotions"],
     queryFn: async () => {
@@ -31,16 +55,22 @@ function Promotions() {
       {isLoading ? <Loading /> : isError ? <ErrorBox /> : !data?.length ? <Empty>Nenhuma promoção cadastrada.</Empty> : (
         <div className="divide-y rounded-lg border">
           {data.map((p) => (
-            <button key={p.id} className="flex w-full flex-wrap items-center gap-3 p-4 text-left hover:bg-accent/50"
-              onClick={() => setEdit({ ...p, products: p.promotion_products.map((x) => x.product_id) })}>
+            <div key={p.id} className="flex items-center gap-2 p-4 hover:bg-accent/50">
+              <Button variant="ghost" className="h-auto min-w-0 flex-1 flex-wrap justify-start gap-3 whitespace-normal p-0 text-left"
+                onClick={() => setEdit({ ...p, products: p.promotion_products.map((x) => x.product_id) })}>
               <span className="min-w-0 flex-1">
-                <span className="block font-medium">{p.name}</span>
+                <span className="block break-words font-medium">{p.name}</span>
                 <span className="text-xs text-muted-foreground">
                   {p.discount_type === "percentual" ? `${p.discount_value}%` : brl(p.discount_value)} · {audienceLabel[p.audience]} · {p.promotion_products.length} item(ns) · {fmtDate(p.starts_at)} → {fmtDate(p.ends_at)}
                 </span>
               </span>
               <Pill tone={p.status === "ativo" ? "ok" : "off"}>{p.status === "ativo" ? "Ativa" : "Inativa"}</Pill>
-            </button>
+              </Button>
+              <Button type="button" variant="ghost" size="icon" className="shrink-0 text-destructive" aria-label={`Excluir promoção ${p.name}`} title="Excluir promoção" disabled={del.isPending}
+                onClick={() => confirm(`Excluir a promoção "${p.name}"? Esta ação não pode ser desfeita.`) && del.mutate(p.id)}>
+                <Trash2 className="size-4" />
+              </Button>
+            </div>
           ))}
         </div>
       )}
