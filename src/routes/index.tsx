@@ -85,9 +85,9 @@ function Index() {
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/40" />
           <div className="relative grid min-h-[440px] items-center px-6 py-14 sm:px-12 md:min-h-[520px] lg:px-16">
             <div className="max-w-lg">
-              <p className="eyebrow text-gold-deep">coleção</p>
+              <p className="eyebrow text-gold-deep">coleções rarity</p>
               <h1 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
-                EMBELEZAR <em className="text-gold-metal not-italic">CACHOS</em>.
+                O cuidado que seu cabelo <em className="text-gold-metal not-italic">merece.</em>.
               </h1>
               <p className="mt-5 max-w-md text-base text-muted-foreground">
                 Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.
