@@ -1,3 +1,4 @@
+import { BadgeCheck, CircleDashed } from "lucide-react";
 import { brl } from "@/lib/catalog";
 import { formatAddress, orderNumber, statusLabel } from "@/lib/orders";
 import type { FullOrder } from "@/lib/orderQueries";
@@ -9,14 +10,26 @@ export function StatusBadge({ status }: { status: string }) {
   return <span className={`rounded-full px-3 py-1 text-xs font-medium ${tone}`}>{statusLabel[status] ?? status}</span>;
 }
 
-export function OrderDetail({ o, showHistory = true }: { o: FullOrder; showHistory?: boolean }) {
+export function TecnobyteBadge({ registered }: { registered: boolean }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${registered ? "bg-success/10 text-success" : "bg-gold/15 text-gold-deep"}`}>
+      {registered ? <BadgeCheck className="size-3.5" /> : <CircleDashed className="size-3.5" />}
+      {registered ? "Registrado no Tecnobyte" : "Não registrado no Tecnobyte"}
+    </span>
+  );
+}
+
+export function OrderDetail({ o, showHistory = true, showTecnobyte = false }: { o: FullOrder; showHistory?: boolean; showTecnobyte?: boolean }) {
   const cancel = o.status === "cancelado" ? [...o.history].reverse().find((h) => h.new_status === "cancelado")?.change_note : null;
 
   return (
     <div className="space-y-5 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div><p className="font-display text-2xl">Pedido {orderNumber(o.id)}</p><p className="text-muted-foreground">{dt(o.created_at)}</p></div>
-        <StatusBadge status={o.status} />
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={o.status} />
+          {showTecnobyte && <TecnobyteBadge registered={o.tecnobyte_registered} />}
+        </div>
       </div>
       {cancel && <p className="break-words rounded-md bg-destructive/5 p-3 text-destructive">Motivo do cancelamento: {cancel}</p>}
       <ul className="divide-y rounded-lg border">
