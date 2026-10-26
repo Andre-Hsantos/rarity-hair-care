@@ -69,14 +69,14 @@ function Orders() {
       <Dialog open={open != null} onOpenChange={(v) => !v && setOpen(null)}>
         <DialogContent className="max-h-[96vh] w-[96vw] max-w-[96vw] overflow-y-auto p-5 sm:p-6 lg:max-w-6xl">
           <DialogHeader><DialogTitle>Detalhes do pedido</DialogTitle></DialogHeader>
-          {open != null && <AdminOrder id={open} onDeleted={() => setOpen(null)} />}
+          {open != null && <AdminOrder id={open} onDeleted={() => setOpen(null)} onClose={() => setOpen(null)} />}
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
+function AdminOrder({ id, onDeleted, onClose }: { id: number; onDeleted: () => void; onClose: () => void }) {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin-order", id], queryFn: () => fetchOrder(id) });
   const client = useQuery({
@@ -102,7 +102,7 @@ function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <OrderDetail o={q.data} showTecnobyte />
         <div className="space-y-6">
-          <EditOrder o={q.data} onDone={refresh} />
+          <EditOrder o={q.data} onDone={refresh} onClose={onClose} />
           <EditItems o={q.data} onDone={refresh} />
         </div>
       </div>
@@ -127,7 +127,7 @@ function EditOrder({ o, onDone, onClose }: { o: FullOrder; onDone: () => void; o
     const { error } = await supabase.rpc("admin_update_order", { _order_id: o.id, _status: status, _shipping: sh as number, _tecnobyte: tec, _note: note });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("Pedido atualizado"); setNote(""); onDone();
+    toast.success("Pedido atualizado"); setNote(""); onDone(); onClose();
   };
   return (
     <div className="space-y-3 rounded-lg border p-4">
