@@ -57,7 +57,8 @@ function Orders() {
             return (
               <button key={o.id} onClick={() => setOpen(o.id)} className="flex w-full flex-wrap items-center gap-3 p-4 text-left text-sm hover:bg-accent/50">
                 <span className="w-16 font-medium">{orderNumber(o.id)}</span>
-                <span className="min-w-0 flex-1"><span className="block font-medium">{p?.name || "—"}</span><span className="text-muted-foreground">{new Date(o.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })} · {o.delivery_method === "entrega" ? "Entrega" : "Retirada"}{o.tecnobyte_registered ? " · Tecnobyte ✓" : ""}</span></span>
+                <span className="min-w-0 flex-1"><span className="block font-medium">{p?.name || "—"}</span><span className="text-muted-foreground">{new Date(o.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })} · {o.delivery_method === "entrega" ? "Entrega" : "Retirada"}</span></span>
+                <TecnobyteBadge registered={o.tecnobyte_registered} />
                 <StatusBadge status={o.status} />
                 <span className="w-28 text-right font-medium">{brl(Number(o.total))}</span>
               </button>
