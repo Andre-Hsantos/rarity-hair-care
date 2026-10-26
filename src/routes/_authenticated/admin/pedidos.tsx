@@ -99,7 +99,7 @@ function AdminOrder({ id, onDeleted }: { id: number; onDeleted: () => void }) {
     <div className="space-y-6">
       {c && <p className="text-sm"><span className="font-medium">{c.name}</span> · {c.email} · {c.phone || "sem telefone"} · {c.account_type === "profissional" ? "Profissional" : "Comum"}</p>}
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-        <OrderDetail o={q.data} />
+        <OrderDetail o={q.data} showTecnobyte />
         <div className="space-y-6">
           <EditOrder o={q.data} onDone={refresh} />
           <EditItems o={q.data} onDone={refresh} />
