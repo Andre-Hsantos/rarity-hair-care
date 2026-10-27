@@ -87,7 +87,7 @@ function HeroCarousel() {
                   <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
                     {s.primary.label} <ArrowRight />
                   </Link>
-                  <Link to={s.secondary.to} tabIndex={n === i ? 0 : -1} className={`${buttonVariants({ variant: "outlineGold", size: "lg" })} hidden sm:inline-flex`}>
+                  <Link to={s.secondary.to} tabIndex={n === i ? 0 : -1} className={`${buttonVariants({ variant: "outlineGold", size: "lg" })} max-sm:hidden`}>
                     {s.secondary.label}
                   </Link>
                 </div>
