@@ -137,3 +137,15 @@
     padding-inline: 2rem;
   }
 }
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+@utility animate-pop {
+  animation: pop 0.45s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
