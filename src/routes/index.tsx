@@ -47,7 +47,6 @@ const heroSlides: HeroSlide[] = [
 function HeroCarousel() {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const touchX = useRef<number | null>(null);
   const total = heroSlides.length;
   const go = (d: number) => setI((n) => (n + d + total) % total);
@@ -61,11 +60,8 @@ function HeroCarousel() {
       <div
         className="group/hero relative overflow-hidden rounded-2xl bg-surface"
         onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => { setPaused(false); setTilt({ x: 0, y: 0 }); }}
-        onMouseMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect();
-          setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
-        }}
+        onMouseLeave={() => setPaused(false)}
+
         onTouchStart={(e) => { touchX.current = e.touches[0]?.clientX ?? null; }}
         onTouchEnd={(e) => {
           if (touchX.current == null) return;
@@ -83,9 +79,9 @@ function HeroCarousel() {
               width={1600}
               height={1104}
               aria-hidden={n !== i}
-              style={{ transform: `scale(1.04) translate(${tilt.x * -14}px, ${tilt.y * -10}px)` }}
-              className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] ease-out motion-reduce:!transform-none object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-[70%_center] sm:object-right ${n === i ? "opacity-100" : "opacity-0"}`}
             />
+
           </picture>
         ))}
         <div className="absolute inset-0 hidden bg-gradient-to-r from-background via-background/80 to-transparent sm:block md:via-background/40" />
