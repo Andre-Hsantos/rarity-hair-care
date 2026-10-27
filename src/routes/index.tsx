@@ -59,16 +59,16 @@ function HeroCarousel() {
             width={1600}
             height={1104}
             aria-hidden={n !== i}
-            className={`absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 h-full w-full object-cover object-[70%_bottom] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-background from-45% via-background/85 via-60% to-transparent to-80% sm:bg-gradient-to-r sm:from-0% sm:via-background/80 sm:via-50% sm:to-100% md:via-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background from-35% via-background/70 via-50% to-transparent to-70% sm:bg-gradient-to-r sm:from-0% sm:via-background/80 sm:via-50% sm:to-100% md:via-background/40" />
         <div className="relative grid min-h-[600px] sm:min-h-[440px] md:min-h-[520px]">
           {heroSlides.map((s, n) => (
             <div
               key={s.src}
               aria-hidden={n !== i}
-              className={`col-start-1 row-start-1 flex items-end px-5 pb-14 pt-10 transition-opacity duration-700 sm:items-center sm:px-12 sm:py-14 lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
+              className={`col-start-1 row-start-1 flex items-start px-5 pb-14 pt-8 transition-opacity duration-700 sm:items-center sm:px-12 sm:py-14 lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
             >
               <div className="max-w-lg">
                 <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
