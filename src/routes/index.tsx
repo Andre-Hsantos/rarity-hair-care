@@ -63,7 +63,7 @@ function HeroCarousel() {
           />
         ))}
         <div className="absolute inset-0 bg-gradient-to-b from-background from-35% via-background/70 via-50% to-transparent to-70% sm:bg-gradient-to-r sm:from-0% sm:via-background/80 sm:via-50% sm:to-100% md:via-background/40" />
-        <div className="relative grid min-h-[600px] sm:min-h-[440px] md:min-h-[520px]">
+        <div className="relative grid min-h-[660px] sm:min-h-[440px] md:min-h-[520px]">
           {heroSlides.map((s, n) => (
             <div
               key={s.src}
