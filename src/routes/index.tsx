@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowRight, BadgePercent, Headphones, MessageCircle, Scissors, Sparkles, Truck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, ChevronLeft, ChevronRight, BadgePercent, Headphones, MessageCircle, Scissors, Sparkles, Truck } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
@@ -46,13 +46,34 @@ const heroSlides: HeroSlide[] = [
 
 function HeroCarousel() {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const touchX = useRef<number | null>(null);
+  const total = heroSlides.length;
+  const go = (d: number) => setI((n) => (n + d + total) % total);
   useEffect(() => {
-    const t = setInterval(() => setI((n) => (n + 1) % heroSlides.length), 6000);
+    if (paused) return;
+    const t = setInterval(() => setI((n) => (n + 1) % total), 6000);
     return () => clearInterval(t);
-  }, [i]);
+  }, [i, paused, total]);
   return (
     <section className="container-site pt-6 sm:pt-10">
-      <div className="relative overflow-hidden rounded-2xl bg-surface">
+      <div
+        className="group/hero relative overflow-hidden rounded-2xl bg-surface"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => { setPaused(false); setTilt({ x: 0, y: 0 }); }}
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
+        }}
+        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          if (touchX.current == null) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+          touchX.current = null;
+        }}
+      >
         {heroSlides.map((s, n) => (
           <picture key={s.src}>
             <source media="(min-width: 640px)" srcSet={s.src} />
@@ -62,7 +83,8 @@ function HeroCarousel() {
               width={1600}
               height={1104}
               aria-hidden={n !== i}
-              className={`absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+              style={{ transform: `scale(1.04) translate(${tilt.x * -14}px, ${tilt.y * -10}px)` }}
+              className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] ease-out motion-reduce:!transform-none object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
             />
           </picture>
         ))}
@@ -102,6 +124,17 @@ function HeroCarousel() {
             </div>
           ))}
         </div>
+        {[-1, 1].map((d) => (
+          <button
+            key={d}
+            type="button"
+            aria-label={d < 0 ? "Imagem anterior" : "Próxima imagem"}
+            onClick={() => go(d)}
+            className={`absolute top-1/2 z-10 hidden size-11 -translate-y-1/2 place-items-center rounded-full border border-gold/40 bg-card/80 text-foreground opacity-0 shadow-soft backdrop-blur transition-all duration-300 hover:scale-110 hover:bg-gold hover:text-gold-foreground group-hover/hero:opacity-100 sm:grid ${d < 0 ? "left-4" : "right-4"}`}
+          >
+            {d < 0 ? <ChevronLeft className="size-5" /> : <ChevronRight className="size-5" />}
+          </button>
+        ))}
         <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
           {heroSlides.map((_, n) => (
             <button
@@ -109,7 +142,7 @@ function HeroCarousel() {
               type="button"
               aria-label={`Imagem ${n + 1}`}
               onClick={() => setI(n)}
-              className={`h-1.5 rounded-full transition-all ${n === i ? "w-6 bg-gold-deep" : "w-1.5 bg-foreground/25"}`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${n === i ? "w-6 bg-gold-deep" : "w-1.5 bg-foreground/25 hover:w-3 hover:bg-gold"}`}
             />
           ))}
         </div>
@@ -120,6 +153,7 @@ function HeroCarousel() {
 import { useHomeSection, type Product } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Testimonials } from "@/components/site/Testimonials";
+import { Reveal } from "@/components/site/Reveal";
 import { buttonVariants } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -157,15 +191,15 @@ function Index() {
 
       <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
-      <ResellerBanner />
+      <Reveal><ResellerBanner /></Reveal>
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
-      <KitsBanner />
+      <Reveal><KitsBanner /></Reveal>
 
       <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
-      <Testimonials />
+      <Reveal><Testimonials /></Reveal>
 
 
       <section className="container-site mt-20">
@@ -200,8 +234,10 @@ function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: str
         </Link>
       </div>
       <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
-        {items.map((p) => (
-          <ProductCard key={p.id} p={p} />
+        {items.map((p, n) => (
+          <Reveal key={p.id} delay={(n % 4) * 90}>
+            <ProductCard p={p} />
+          </Reveal>
         ))}
       </div>
     </section>
