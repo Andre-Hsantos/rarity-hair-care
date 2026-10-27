@@ -97,6 +97,7 @@ function HeroCarousel() {
                     {s.secondary.label}
                   </Link>
                 </div>
+                </div>
               </div>
             </div>
           ))}
