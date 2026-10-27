@@ -76,13 +76,12 @@ function HeroCarousel() {
                   <h1 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
                     {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
                   </h1>
-                <img src={s.src} alt="" aria-hidden className="mt-6 aspect-[4/3] w-full rounded-xl object-cover object-right sm:hidden" />
                 ) : (
                   <h2 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
                     {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
                   </h2>
-                <img src={s.src} alt="" aria-hidden className="mt-6 aspect-[4/3] w-full rounded-xl object-cover object-right sm:hidden" />
                 )}
+                <img src={s.src} alt="" aria-hidden className="mt-6 aspect-[4/3] w-full rounded-xl object-cover object-right sm:hidden" />
                 <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground sm:mx-0 sm:mt-5 sm:text-base">{s.text}</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start">
                   <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
