@@ -62,8 +62,8 @@ function HeroCarousel() {
             className={`absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent sm:bg-gradient-to-r sm:via-background/80 md:via-background/40" />
-        <div className="relative grid min-h-[480px] sm:min-h-[440px] md:min-h-[520px]">
+        <div className="absolute inset-0 bg-gradient-to-t from-background from-45% via-background/85 via-60% to-transparent to-80% sm:bg-gradient-to-r sm:from-0% sm:via-background/80 sm:via-50% sm:to-100% md:via-background/40" />
+        <div className="relative grid min-h-[600px] sm:min-h-[440px] md:min-h-[520px]">
           {heroSlides.map((s, n) => (
             <div
               key={s.src}
