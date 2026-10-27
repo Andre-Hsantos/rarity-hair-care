@@ -10,7 +10,7 @@ import {
   Scissors,
   Sparkles,
   Truck,
-  Ticket-Percent,
+  TicketPercent,
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
@@ -276,7 +276,7 @@ function ResellerBanner() {
   const perks = [
     { icon: BadgePercent, t: "Preços exclusivos", d: "Condições especiais para profissionais aprovados." },
     { icon: Scissors, t: "Linha para salões", d: "Produtos pensados para o dia a dia do salão." },
-    { icon: Ticket-Percent, t: "Descontos Exclusivos", d: "Ofertas especiais para atender melhor o seu salão." },
+    { icon: TicketPercent, t: "Descontos Exclusivos", d: "Ofertas especiais para atender melhor o seu salão." },
   ];
   return (
     <section className="container-site mt-20">
