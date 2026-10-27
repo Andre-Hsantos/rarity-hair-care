@@ -111,11 +111,12 @@ function Index() {
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
-      <Testimonials />
+      <KitsBanner />
 
       <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
-      <KitsBanner />
+      <Testimonials />
+
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
