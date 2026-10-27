@@ -5,42 +5,108 @@ import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
 
-const heroSlides = [
-  { src: hero, alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas" },
-  { src: hero2, alt: "Produtos Rarity sobre pedra clara com luz natural" },
+type HeroSlide = {
+  src: string;
+  alt: string;
+  eyebrow: string;
+  before: string;
+  highlight: string;
+  after: string;
+  text: string;
+  primary: { label: string; to: "/produtos" | "/sobre" | "/cadastro" | "/contato" };
+  secondary: { label: string; to: "/produtos" | "/sobre" | "/cadastro" | "/contato" };
+};
+
+const heroSlides: HeroSlide[] = [
+  {
+    src: hero,
+    alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas",
+    eyebrow: "coleções rarity",
+    before: "O cuidado que seu cabelo ",
+    highlight: "merece",
+    after: ".",
+    text: "Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.",
+    primary: { label: "Ver produtos", to: "/produtos" },
+    secondary: { label: "Conheça a Rarity", to: "/sobre" },
+  },
+  {
+    src: hero2,
+    alt: "Produtos Rarity sobre pedra clara com luz natural",
+    eyebrow: "rotina completa",
+    before: "Brilho e leveza ",
+    highlight: "todos os dias",
+    after: ".",
+    text: "Monte sua rotina com shampoos, máscaras e finalizadores pensados para cada tipo de fio.",
+    primary: { label: "Ver produtos", to: "/produtos" },
+    secondary: { label: "Fale com a gente", to: "/contato" },
+  },
 ];
 
-function HeroImages() {
+function HeroCarousel() {
   const [i, setI] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setI((n) => (n + 1) % heroSlides.length), 6000);
     return () => clearInterval(t);
   }, [i]);
   return (
-    <>
-      {heroSlides.map((s, n) => (
-        <img
-          key={s.src}
-          src={s.src}
-          alt={s.alt}
-          width={1600}
-          height={1104}
-          aria-hidden={n !== i}
-          className={`absolute inset-0 h-full w-full object-cover object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
-        />
-      ))}
-      <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-        {heroSlides.map((_, n) => (
-          <button
-            key={n}
-            type="button"
-            aria-label={`Imagem ${n + 1}`}
-            onClick={() => setI(n)}
-            className={`h-1.5 rounded-full transition-all ${n === i ? "w-6 bg-gold-deep" : "w-1.5 bg-foreground/25"}`}
+    <section className="container-site pt-6 sm:pt-10">
+      <div className="relative overflow-hidden rounded-2xl bg-surface">
+        {heroSlides.map((s, n) => (
+          <img
+            key={s.src}
+            src={s.src}
+            alt={s.alt}
+            width={1600}
+            height={1104}
+            aria-hidden={n !== i}
+            className={`absolute inset-0 h-full w-full object-cover object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
           />
         ))}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/40" />
+        <div className="relative grid min-h-[440px] md:min-h-[520px]">
+          {heroSlides.map((s, n) => (
+            <div
+              key={s.src}
+              aria-hidden={n !== i}
+              className={`col-start-1 row-start-1 flex items-center px-6 py-14 transition-opacity duration-700 sm:px-12 lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            >
+              <div className="max-w-lg">
+                <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
+                {n === 0 ? (
+                  <h1 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
+                    {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
+                  </h1>
+                ) : (
+                  <h2 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
+                    {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
+                  </h2>
+                )}
+                <p className="mt-5 max-w-md text-base text-muted-foreground">{s.text}</p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
+                    {s.primary.label} <ArrowRight />
+                  </Link>
+                  <Link to={s.secondary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "outlineGold", size: "lg" })}>
+                    {s.secondary.label}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          {heroSlides.map((_, n) => (
+            <button
+              key={n}
+              type="button"
+              aria-label={`Imagem ${n + 1}`}
+              onClick={() => setI(n)}
+              className={`h-1.5 rounded-full transition-all ${n === i ? "w-6 bg-gold-deep" : "w-1.5 bg-foreground/25"}`}
+            />
+          ))}
+        </div>
       </div>
-    </>
+    </section>
   );
 }
 import { useHomeSection, type Product } from "@/lib/catalog";
@@ -79,31 +145,7 @@ function Index() {
   const professional = useHomeSection("professional");
   return (
     <>
-      <section className="container-site pt-6 sm:pt-10">
-        <div className="relative overflow-hidden rounded-2xl bg-surface">
-          <HeroImages />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/40" />
-          <div className="relative grid min-h-[440px] items-center px-6 py-14 sm:px-12 md:min-h-[520px] lg:px-16">
-            <div className="max-w-lg">
-              <p className="eyebrow text-gold-deep">coleções rarity</p>
-              <h1 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
-                O cuidado que seu cabelo <em className="text-gold-metal not-italic">merece</em>.
-              </h1>
-              <p className="mt-5 max-w-md text-base text-muted-foreground">
-                Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link to="/produtos" className={buttonVariants({ variant: "gold", size: "lg" })}>
-                  Ver produtos <ArrowRight />
-                </Link>
-                <Link to="/sobre" className={buttonVariants({ variant: "outlineGold", size: "lg" })}>
-                  Conheça a Rarity
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
