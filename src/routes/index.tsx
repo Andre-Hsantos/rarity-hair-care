@@ -217,7 +217,7 @@ function ResellerBanner() {
   ];
   return (
     <section className="container-site mt-20">
-      <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-ink p-8 text-ink-foreground sm:p-12 lg:p-16">
+      <div className="group relative overflow-hidden rounded-2xl border border-gold/30 bg-ink p-8 text-ink-foreground transition-all duration-500 hover:border-gold/60 hover:shadow-gold sm:p-12 lg:p-16">
         <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-gold/10 blur-3xl" />
         <div className="relative grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-center">
           <div>
@@ -264,7 +264,7 @@ function ResellerBanner() {
 function KitsBanner() {
   return (
     <section className="container-site mt-20">
-      <div className="grid overflow-hidden rounded-2xl bg-ink text-ink-foreground md:grid-cols-2">
+      <div className="group grid overflow-hidden rounded-2xl bg-ink text-ink-foreground transition-shadow duration-500 hover:shadow-gold md:grid-cols-2">
         <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
           <p className="eyebrow text-gold">Kits Rarity</p>
           <h2 className="mt-4 text-4xl leading-tight sm:text-5xl">
