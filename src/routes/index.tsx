@@ -66,10 +66,10 @@ function HeroCarousel() {
           const r = e.currentTarget.getBoundingClientRect();
           setTilt({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
         }}
-        onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+        onTouchStart={(e) => { touchX.current = e.touches[0]?.clientX ?? null; }}
         onTouchEnd={(e) => {
           if (touchX.current == null) return;
-          const dx = e.changedTouches[0].clientX - touchX.current;
+          const dx = (e.changedTouches[0]?.clientX ?? touchX.current) - touchX.current;
           if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
           touchX.current = null;
         }}
