@@ -59,30 +59,30 @@ function HeroCarousel() {
             width={1600}
             height={1104}
             aria-hidden={n !== i}
-            className={`absolute inset-0 h-full w-full object-cover object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+            className={`absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/40" />
-        <div className="relative grid min-h-[440px] md:min-h-[520px]">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent sm:bg-gradient-to-r sm:via-background/80 md:via-background/40" />
+        <div className="relative grid min-h-[480px] sm:min-h-[440px] md:min-h-[520px]">
           {heroSlides.map((s, n) => (
             <div
               key={s.src}
               aria-hidden={n !== i}
-              className={`col-start-1 row-start-1 flex items-center px-6 py-14 transition-opacity duration-700 sm:px-12 lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
+              className={`col-start-1 row-start-1 flex items-end px-5 pb-14 pt-10 transition-opacity duration-700 sm:items-center sm:px-12 sm:py-14 lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
             >
               <div className="max-w-lg">
                 <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
                 {n === 0 ? (
-                  <h1 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
+                  <h1 className="mt-3 text-[2rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
                     {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
                   </h1>
                 ) : (
-                  <h2 className="mt-4 text-5xl leading-[1.05] sm:text-6xl">
+                  <h2 className="mt-3 text-[2rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
                     {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
                   </h2>
                 )}
-                <p className="mt-5 max-w-md text-base text-muted-foreground">{s.text}</p>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <p className="mt-3 max-w-md text-sm text-muted-foreground sm:mt-5 sm:text-base">{s.text}</p>
+                <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
                   <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
                     {s.primary.label} <ArrowRight />
                   </Link>
