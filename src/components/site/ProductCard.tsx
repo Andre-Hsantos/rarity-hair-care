@@ -19,9 +19,6 @@ export function ProductCard({ p }: { p: Product }) {
           ) : (
             <span className="grid h-full w-full place-items-center text-muted-foreground"><ImageOff className="size-8" strokeWidth={1.25} /></span>
           )}
-          <span className="pointer-events-none absolute inset-x-3 bottom-3 translate-y-3 rounded-md bg-card/90 py-2 text-center text-xs font-medium tracking-wide opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-            Ver detalhes
-          </span>
         </Link>
         <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
           {p.inPromotion && <span className="rounded-full bg-gold px-2.5 py-1 text-[11px] font-medium tracking-wide text-ink">Promoção</span>}
