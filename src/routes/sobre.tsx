@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import sobreImg from "@/assets/sobre.jpg";
+import sobreImg from "@/assets/sobre.jpeg";
 import { PageHeader } from "@/components/site/PageHeader";
 import { StatsBand } from "@/components/site/StatsBand";
 import { buttonVariants } from "@/components/ui/button";
