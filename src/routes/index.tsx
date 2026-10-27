@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, BadgePercent, Headphones, MessageCircle, Scissors, Sparkles, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  BadgePercent,
+  Headphones,
+  MessageCircle,
+  Scissors,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
@@ -62,7 +72,9 @@ function HeroCarousel() {
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
 
-        onTouchStart={(e) => { touchX.current = e.touches[0]?.clientX ?? null; }}
+        onTouchStart={(e) => {
+          touchX.current = e.touches[0]?.clientX ?? null;
+        }}
         onTouchEnd={(e) => {
           if (touchX.current == null) return;
           const dx = (e.changedTouches[0]?.clientX ?? touchX.current) - touchX.current;
@@ -81,7 +93,6 @@ function HeroCarousel() {
               aria-hidden={n !== i}
               className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-[70%_center] sm:object-right ${n === i ? "opacity-100" : "opacity-0"}`}
             />
-
           </picture>
         ))}
         <div className="absolute inset-0 hidden bg-gradient-to-r from-background via-background/80 to-transparent sm:block md:via-background/40" />
@@ -94,27 +105,41 @@ function HeroCarousel() {
             >
               <div className="mx-auto flex max-w-lg flex-col justify-between sm:mx-0 sm:block">
                 <div>
-                <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
-                {n === 0 ? (
-                  <h1 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
-                    {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
-                  </h1>
-                ) : (
-                  <h2 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
-                    {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
-                  </h2>
-                )}
+                  <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
+                  {n === 0 ? (
+                    <h1 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
+                      {s.before}
+                      <em className="text-gold-metal not-italic">{s.highlight}</em>
+                      {s.after}
+                    </h1>
+                  ) : (
+                    <h2 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
+                      {s.before}
+                      <em className="text-gold-metal not-italic">{s.highlight}</em>
+                      {s.after}
+                    </h2>
+                  )}
                 </div>
                 <div>
-                <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground max-sm:hidden sm:mx-0 sm:mt-5 sm:text-base">{s.text}</p>
-                <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start">
-                  <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
-                    {s.primary.label} <ArrowRight />
-                  </Link>
-                  <Link to={s.secondary.to} tabIndex={n === i ? 0 : -1} className={`${buttonVariants({ variant: "outlineGold", size: "lg" })} max-sm:hidden`}>
-                    {s.secondary.label}
-                  </Link>
-                </div>
+                  <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground max-sm:hidden sm:mx-0 sm:mt-5 sm:text-base">
+                    {s.text}
+                  </p>
+                  <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start">
+                    <Link
+                      to={s.primary.to}
+                      tabIndex={n === i ? 0 : -1}
+                      className={buttonVariants({ variant: "gold", size: "lg" })}
+                    >
+                      {s.primary.label} <ArrowRight />
+                    </Link>
+                    <Link
+                      to={s.secondary.to}
+                      tabIndex={n === i ? 0 : -1}
+                      className={`${buttonVariants({ variant: "outlineGold", size: "lg" })} max-sm:hidden`}
+                    >
+                      {s.secondary.label}
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -187,16 +212,21 @@ function Index() {
 
       <ProductSection eyebrow="Seleção Rarity" title="Produtos em destaque" items={featured} />
 
-      <Reveal><ResellerBanner /></Reveal>
+      <Reveal>
+        <ResellerBanner />
+      </Reveal>
 
       <ProductSection eyebrow="Favoritos das clientes" title="Produtos mais vendidos" items={bestSellers} />
 
-      <Reveal><KitsBanner /></Reveal>
+      <Reveal>
+        <KitsBanner />
+      </Reveal>
 
       <ProductSection eyebrow="Linha para salões" title="Produtos profissionais" items={professional} />
 
-      <Reveal><Testimonials /></Reveal>
-
+      <Reveal>
+        <Testimonials />
+      </Reveal>
 
       <section className="container-site mt-20">
         <div className="grid gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-2 lg:grid-cols-4">
@@ -245,7 +275,7 @@ function ResellerBanner() {
   const perks = [
     { icon: BadgePercent, t: "Preços exclusivos", d: "Condições especiais para profissionais aprovados." },
     { icon: Scissors, t: "Linha para salões", d: "Produtos pensados para o dia a dia do salão." },
-    { icon: MessageCircle, t: "Atendimento direto", d: "Suporte comercial pelo WhatsApp." },
+    { icon: MessageCircle, t: "Descontos Exclusivos", d: "Ofertas especiais para atender melhor o seu salão." },
   ];
   return (
     <section className="container-site mt-20">
