@@ -23,7 +23,7 @@ export function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: n
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`reveal transition-all duration-700 ease-out ${shown ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}
+      className={`reveal h-full transition-all duration-700 ease-out ${shown ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}
     >
       {children}
     </div>

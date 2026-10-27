@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Heart, ImageOff, MessageCircle, ShoppingBag } from "lucide-react";
+import { Check, Heart, ImageOff, MessageCircle, ShoppingBag } from "lucide-react";
 import { brl, strikePrice, type Product } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -7,15 +8,20 @@ import { Button, buttonVariants } from "@/components/ui/button";
 export function ProductCard({ p }: { p: Product }) {
   const { add, toggleFav, favorites } = useStore();
   const fav = favorites.includes(p.id);
+  const [popKey, setPopKey] = useState(0);
+  const [added, setAdded] = useState(false);
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border bg-card shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-card">
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-card">
       <div className="relative aspect-square overflow-hidden bg-surface">
         <Link to="/produto/$id" params={{ id: p.id }} aria-label={p.name}>
           {p.image ? (
-            <img src={p.image} alt={p.name} loading="lazy" width={816} height={816} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+            <img src={p.image} alt={p.name} loading="lazy" width={816} height={816} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.07]" />
           ) : (
             <span className="grid h-full w-full place-items-center text-muted-foreground"><ImageOff className="size-8" strokeWidth={1.25} /></span>
           )}
+          <span className="pointer-events-none absolute inset-x-3 bottom-3 translate-y-3 rounded-md bg-card/90 py-2 text-center text-xs font-medium tracking-wide opacity-0 shadow-soft backdrop-blur transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            Ver detalhes
+          </span>
         </Link>
         <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
           {p.inPromotion && <span className="rounded-full bg-gold px-2.5 py-1 text-[11px] font-medium tracking-wide text-ink">Promoção</span>}
@@ -24,12 +30,12 @@ export function ProductCard({ p }: { p: Product }) {
           {!p.inStock && <span className="rounded-full bg-card px-2.5 py-1 text-[11px] font-medium text-muted-foreground">Indisponível</span>}
         </div>
         <button
-          onClick={() => toggleFav(p)}
+          onClick={() => { toggleFav(p); setPopKey((k) => k + 1); }}
           aria-label={fav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
           aria-pressed={fav}
-          className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-card/90 shadow-soft transition hover:scale-105"
+          className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-card/90 shadow-soft transition hover:scale-110 active:scale-95"
         >
-          <Heart className={`size-4 ${fav ? "fill-gold text-gold" : "text-foreground/70"}`} />
+          <Heart key={popKey} className={`size-4 ${popKey ? "animate-pop " : ""}${fav ? "fill-gold text-gold" : "text-foreground/70"}`} />
         </button>
       </div>
       <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -45,8 +51,8 @@ export function ProductCard({ p }: { p: Product }) {
               <MessageCircle />
             </Link>
           ) : (
-            <Button variant="dark" size="icon" disabled={!p.inStock} onClick={() => add(p)} aria-label={`Adicionar ${p.name} ao carrinho`} className="shrink-0 rounded-full">
-              <ShoppingBag />
+            <Button variant="dark" size="icon" disabled={!p.inStock} onClick={() => { add(p); setAdded(true); setTimeout(() => setAdded(false), 1400); }} aria-label={`Adicionar ${p.name} ao carrinho`} className={`shrink-0 rounded-full transition-all duration-300 hover:scale-110 ${added ? "bg-gold text-gold-foreground hover:bg-gold" : ""}`}>
+              {added ? <Check className="animate-pop" /> : <ShoppingBag />}
             </Button>
           )}
         </div>
