@@ -7,6 +7,8 @@ import kit from "@/assets/kit.jpg";
 
 type HeroSlide = {
   src: string;
+  /** Imagem vertical opcional só para celular (até 639px). Ideal 1080×1350. */
+  mobileSrc?: string;
   alt: string;
   eyebrow: string;
   before: string;
@@ -52,25 +54,28 @@ function HeroCarousel() {
     <section className="container-site pt-6 sm:pt-10">
       <div className="relative overflow-hidden rounded-2xl bg-surface">
         {heroSlides.map((s, n) => (
-          <img
-            key={s.src}
-            src={s.src}
-            alt={s.alt}
-            width={1600}
-            height={1104}
-            aria-hidden={n !== i}
-            className={`absolute inset-0 hidden h-full w-full object-cover sm:block sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
-          />
+          <picture key={s.src}>
+            <source media="(min-width: 640px)" srcSet={s.src} />
+            <img
+              src={s.mobileSrc ?? s.src}
+              alt={s.alt}
+              width={1600}
+              height={1104}
+              aria-hidden={n !== i}
+              className={`absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-right transition-opacity duration-1000 ${n === i ? "opacity-100" : "opacity-0"}`}
+            />
+          </picture>
         ))}
         <div className="absolute inset-0 hidden bg-gradient-to-r from-background via-background/80 to-transparent sm:block md:via-background/40" />
-        <div className="relative grid sm:min-h-[440px] md:min-h-[520px]">
+        <div className="relative grid min-h-[560px] sm:min-h-[440px] md:min-h-[520px]">
           {heroSlides.map((s, n) => (
             <div
               key={s.src}
               aria-hidden={n !== i}
-              className={`col-start-1 row-start-1 flex items-center px-5 pb-12 pt-8 text-center transition-opacity duration-700 sm:px-12 sm:py-14 sm:text-left lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
+              className={`col-start-1 row-start-1 flex items-stretch px-5 pb-12 pt-8 text-center transition-opacity duration-700 sm:items-center sm:px-12 sm:py-14 sm:text-left lg:px-16 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}
             >
-              <div className="mx-auto max-w-lg sm:mx-0">
+              <div className="mx-auto flex max-w-lg flex-col justify-between sm:mx-0 sm:block">
+                <div>
                 <p className="eyebrow text-gold-deep">{s.eyebrow}</p>
                 {n === 0 ? (
                   <h1 className="mt-3 text-[2.1rem] leading-[1.1] sm:mt-4 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
@@ -81,8 +86,9 @@ function HeroCarousel() {
                     {s.before}<em className="text-gold-metal not-italic">{s.highlight}</em>{s.after}
                   </h2>
                 )}
-                <img src={s.src} alt="" aria-hidden className="mt-6 aspect-[4/3] w-full rounded-xl object-cover object-right sm:hidden" />
-                <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground sm:mx-0 sm:mt-5 sm:text-base">{s.text}</p>
+                </div>
+                <div>
+                <p className="mx-auto mt-6 max-w-md text-sm text-muted-foreground max-sm:hidden sm:mx-0 sm:mt-5 sm:text-base">{s.text}</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start">
                   <Link to={s.primary.to} tabIndex={n === i ? 0 : -1} className={buttonVariants({ variant: "gold", size: "lg" })}>
                     {s.primary.label} <ArrowRight />
