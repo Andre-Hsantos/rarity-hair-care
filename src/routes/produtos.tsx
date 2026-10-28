@@ -39,9 +39,13 @@ const prices = [
 ];
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-function matches(p: { id: string; name: string; description: string }, q: string) {
-  const hay = norm(`${p.id} ${p.name} ${p.description}`);
-  return norm(q).trim().split(/\s+/).every((w) => hay.includes(w));
+/** 0 = no match; higher = better (name/category hits beat description-only hits). */
+function score(p: { id: string; name: string; description: string }, catNames: string, q: string) {
+  const words = norm(q).trim().split(/\s+/).filter(Boolean);
+  const strong = norm(`${p.id} ${p.name} ${catNames}`);
+  const all = `${strong} ${norm(p.description ?? "")}`;
+  if (!words.every((w) => all.includes(w))) return 0;
+  return words.every((w) => strong.includes(w)) ? 2 : 1;
 }
 
 function Produtos() {
