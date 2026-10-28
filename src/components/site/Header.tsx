@@ -1,7 +1,7 @@
 import { useUnreadCount } from "@/lib/notifications";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Bell, Briefcase, Check, ChevronDown, Eye, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
 import { usePublicCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
@@ -24,7 +24,11 @@ const nav = [
 ] as const;
 
 function SearchBar({ className = "" }: { className?: string }) {
-  const [q, setQ] = useState("");
+  const urlQ = useRouterState({
+    select: (s) => (s.location.pathname === "/produtos" ? String((s.location.search as { q?: string }).q ?? "") : ""),
+  });
+  const [q, setQ] = useState(urlQ);
+  useEffect(() => { setQ(urlQ); }, [urlQ]);
   const navigate = useNavigate();
   return (
     <form

@@ -39,9 +39,13 @@ const prices = [
 ];
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-function matches(p: { id: string; name: string; description: string }, q: string) {
-  const hay = norm(`${p.id} ${p.name} ${p.description}`);
-  return norm(q).trim().split(/\s+/).every((w) => hay.includes(w));
+/** 0 = no match; higher = better (name/category hits beat description-only hits). */
+function score(p: { id: string; name: string; description: string }, catNames: string, q: string) {
+  const words = norm(q).trim().split(/\s+/).filter(Boolean);
+  const strong = norm(`${p.id} ${p.name} ${catNames}`);
+  const all = `${strong} ${norm(p.description ?? "")}`;
+  if (!words.every((w) => all.includes(w))) return 0;
+  return words.every((w) => strong.includes(w)) ? 2 : 1;
 }
 
 function Produtos() {
@@ -61,20 +65,28 @@ function Produtos() {
 
   const list = useMemo(() => {
     const pt = prices.find((p) => p.id === price)!.test;
-    let r = products.filter(
-      (p) =>
+    const catName = new Map(categories.map((c) => [c.id, c.name]));
+    const scores = new Map<string, number>();
+    let r = products.filter((p) => {
+      if (!(
         (!cat || p.categoryIds.includes(cat)) &&
         (!kitOnly || p.isKit) &&
         (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&
-        (price === "all" || (p.price != null && pt(p.price))) &&
-        (!q || matches(p, q)),
-    );
+        (price === "all" || (p.price != null && pt(p.price)))
+      )) return false;
+      if (!q.trim()) return true;
+      const names = [p.category ?? "", ...p.categoryIds.map((id) => catName.get(id) ?? "")].join(" ");
+      const s = score(p, names, q);
+      scores.set(p.id, s);
+      return s > 0;
+    });
+    if (q.trim()) r = [...r].sort((a, b) => (scores.get(b.id) ?? 0) - (scores.get(a.id) ?? 0));
     const val = (n: number | null, d: number) => n ?? d;
     if (sort === "asc") r = [...r].sort((a, b) => val(a.price, Infinity) - val(b.price, Infinity));
     if (sort === "desc") r = [...r].sort((a, b) => val(b.price, -Infinity) - val(a.price, -Infinity));
     return r;
-  }, [products, kitOnly, cat, promo, onlyStock, price, q, sort]);
+  }, [products, categories, kitOnly, cat, promo, onlyStock, price, q, sort]);
 
   const setCat = (c?: string) => navigate({ search: (s) => ({ ...s, categoria: c }) });
   const clear = () => {
