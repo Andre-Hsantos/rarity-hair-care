@@ -31,11 +31,14 @@ function SearchBar({ className = "" }: { className?: string }) {
       role="search"
       onSubmit={(e) => {
         e.preventDefault();
-        navigate({ to: "/produtos", search: { q } });
+        const t = q.trim();
+        navigate({ to: "/produtos", search: t ? { q: t } : {} });
       }}
       className={`relative ${className}`}
     >
-      <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <button type="submit" aria-label="Pesquisar" className="absolute left-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition hover:text-gold">
+        <Search className="size-4" />
+      </button>
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
