@@ -24,7 +24,11 @@ const nav = [
 ] as const;
 
 function SearchBar({ className = "" }: { className?: string }) {
-  const [q, setQ] = useState("");
+  const urlQ = useRouterState({
+    select: (s) => (s.location.pathname === "/produtos" ? String((s.location.search as { q?: string }).q ?? "") : ""),
+  });
+  const [q, setQ] = useState(urlQ);
+  useEffect(() => { setQ(urlQ); }, [urlQ]);
   const navigate = useNavigate();
   return (
     <form
