@@ -1,7 +1,7 @@
 import { useUnreadCount } from "@/lib/notifications";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Bell, Briefcase, Check, ChevronDown, Eye, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import logo from "@/assets/rarity-logo.png.asset.json";
 import { usePublicCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
