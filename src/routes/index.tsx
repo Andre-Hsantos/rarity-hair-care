@@ -33,6 +33,17 @@ type HeroSlide = {
 
 const heroSlides: HeroSlide[] = [
   {
+    src: hero2,
+    alt: "Produtos Rarity sobre pedra clara com luz natural",
+    eyebrow: "rotina completa",
+    before: "Brilho e leveza ",
+    highlight: "todos os dias",
+    after: ".",
+    text: "Monte sua rotina com shampoos, máscaras e finalizadores pensados para cada tipo de fio.",
+    primary: { label: "Ver produtos", to: "/produtos" },
+    secondary: { label: "Fale com a gente", to: "/contato" },
+  },
+  {
     src: hero,
     mobileSrc: hero1Mobile.url,
     alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas",
@@ -43,17 +54,6 @@ const heroSlides: HeroSlide[] = [
     text: "Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.",
     primary: { label: "Ver produtos", to: "/produtos" },
     secondary: { label: "Conheça a Rarity", to: "/sobre" },
-  },
-  {
-    src: hero2,
-    alt: "Produtos Rarity sobre pedra clara com luz natural",
-    eyebrow: "rotina completa",
-    before: "Brilho e leveza ",
-    highlight: "todos os dias",
-    after: ".",
-    text: "Monte sua rotina com shampoos, máscaras e finalizadores pensados para cada tipo de fio.",
-    primary: { label: "Ver produtos", to: "/produtos" },
-    secondary: { label: "Fale com a gente", to: "/contato" },
   },
 ];
 
