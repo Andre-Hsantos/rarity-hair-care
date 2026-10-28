@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useCatalog, usePublicCategories } from "@/lib/catalog";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -38,10 +38,17 @@ const prices = [
   { id: "c", label: "Acima de R$ 110", test: (n: number) => n > 110 },
 ];
 
+const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function matches(p: { id: string; name: string; description: string }, q: string) {
+  const hay = norm(`${p.id} ${p.name} ${p.description}`);
+  return norm(q).trim().split(/\s+/).every((w) => hay.includes(w));
+}
+
 function Produtos() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/produtos" });
   const [q, setQ] = useState(search.q ?? "");
+  useEffect(() => { setQ(search.q ?? ""); }, [search.q]);
   const [price, setPrice] = useState("all");
   const [onlyStock, setOnlyStock] = useState(false);
   const [sort, setSort] = useState("relevance");
@@ -61,7 +68,7 @@ function Produtos() {
         (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&
         (price === "all" || (p.price != null && pt(p.price))) &&
-        (!q || p.name.toLowerCase().includes(q.toLowerCase())),
+        (!q || matches(p, q)),
     );
     const val = (n: number | null, d: number) => n ?? d;
     if (sort === "asc") r = [...r].sort((a, b) => val(a.price, Infinity) - val(b.price, Infinity));
