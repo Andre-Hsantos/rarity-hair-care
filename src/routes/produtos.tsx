@@ -65,20 +65,28 @@ function Produtos() {
 
   const list = useMemo(() => {
     const pt = prices.find((p) => p.id === price)!.test;
-    let r = products.filter(
-      (p) =>
+    const catName = new Map(categories.map((c) => [c.id, c.name]));
+    const scores = new Map<string, number>();
+    let r = products.filter((p) => {
+      if (!(
         (!cat || p.categoryIds.includes(cat)) &&
         (!kitOnly || p.isKit) &&
         (!promo || p.inPromotion) &&
         (!onlyStock || p.inStock) &&
-        (price === "all" || (p.price != null && pt(p.price))) &&
-        (!q || matches(p, q)),
-    );
+        (price === "all" || (p.price != null && pt(p.price)))
+      )) return false;
+      if (!q.trim()) return true;
+      const names = [p.category ?? "", ...p.categoryIds.map((id) => catName.get(id) ?? "")].join(" ");
+      const s = score(p, names, q);
+      scores.set(p.id, s);
+      return s > 0;
+    });
+    if (q.trim()) r = [...r].sort((a, b) => (scores.get(b.id) ?? 0) - (scores.get(a.id) ?? 0));
     const val = (n: number | null, d: number) => n ?? d;
     if (sort === "asc") r = [...r].sort((a, b) => val(a.price, Infinity) - val(b.price, Infinity));
     if (sort === "desc") r = [...r].sort((a, b) => val(b.price, -Infinity) - val(a.price, -Infinity));
     return r;
-  }, [products, kitOnly, cat, promo, onlyStock, price, q, sort]);
+  }, [products, categories, kitOnly, cat, promo, onlyStock, price, q, sort]);
 
   const setCat = (c?: string) => navigate({ search: (s) => ({ ...s, categoria: c }) });
   const clear = () => {
