@@ -15,6 +15,7 @@ import {
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
+import hero1Mobile from "@/assets/hero1_mobile.jpg.asset.json";
 
 type HeroSlide = {
   src: string;
@@ -33,6 +34,7 @@ type HeroSlide = {
 const heroSlides: HeroSlide[] = [
   {
     src: hero,
+    mobileSrc: hero1Mobile.url,
     alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas",
     eyebrow: "coleções rarity",
     before: "O cuidado que seu cabelo ",
