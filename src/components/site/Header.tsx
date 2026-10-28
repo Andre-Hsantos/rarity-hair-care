@@ -42,7 +42,7 @@ function SearchBar({ className = "" }: { className?: string }) {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Buscar shampoo, máscara, kits..."
+        type="search" enterKeyHint="search" placeholder="Buscar shampoo, máscara, kits..."
         aria-label="Buscar produtos"
         className="h-11 w-full rounded-full border border-input bg-surface pl-10 pr-4 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-gold focus:bg-card focus:ring-2 focus:ring-gold/25"
       />
