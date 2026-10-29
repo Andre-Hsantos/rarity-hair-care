@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/contato")({
+export const Route = createFileRoute("/contato")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Contato — Rarity Hair Care" },

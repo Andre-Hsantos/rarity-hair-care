@@ -11,7 +11,7 @@ import { Empty, ErrorBox, FieldRow, fmtDate, inputCls, Loading, PageHead, Pill }
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
 import { deleteClient } from "@/lib/adminDelete.functions";
 
-export const Route = createFileRoute("/_authenticated/admin/clientes")({ component: Clients });
+export const Route = createFileRoute("/_authenticated/admin/clientes")({ staticData: { sitemap: false }, component: Clients });
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 const proLabel = { nao_solicitado: "Não solicitado", em_analise: "Em análise", aprovado: "Aprovado", rejeitado: "Rejeitado" } as const;

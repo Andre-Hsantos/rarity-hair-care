@@ -8,7 +8,7 @@ import { ProofFields } from "@/components/site/ProofFields";
 import { supabase } from "@/integrations/supabase/client";
 import { cleanCnpj, submitProRequest, validateDoc, type ProofType } from "@/lib/auth";
 
-export const Route = createFileRoute("/cadastro")({
+export const Route = createFileRoute("/cadastro")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Criar conta — Rarity Hair Care" },

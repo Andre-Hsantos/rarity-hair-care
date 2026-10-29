@@ -30,7 +30,7 @@ import { pctLabel, useQuantityTiers } from "@/lib/quantityDiscounts";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ProductCard } from "@/components/site/ProductCard";
 
-export const Route = createFileRoute("/produto/$id")({
+export const Route = createFileRoute("/produto/$id")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Produto — Rarity Hair Care" },

@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useAllCategories, useAllProducts } from "@/components/admin/Pickers";
 import { areaCls, brl, Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/produtos")({ component: Products });
+export const Route = createFileRoute("/_authenticated/admin/produtos")({ staticData: { sitemap: false }, component: Products });
 
 type Prod = Database["public"]["Tables"]["products"]["Row"];
 

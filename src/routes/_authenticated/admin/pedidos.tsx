@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { areaCls, Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/pedidos")({ component: Orders });
+export const Route = createFileRoute("/_authenticated/admin/pedidos")({ staticData: { sitemap: false }, component: Orders });
 
 function Orders() {
   const list = useQuery({

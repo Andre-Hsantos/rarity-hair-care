@@ -9,7 +9,7 @@ import { useAllProducts } from "@/components/admin/Pickers";
 import { Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 import { validateTier } from "@/lib/pricing";
 
-export const Route = createFileRoute("/_authenticated/admin/quantidade")({ component: QuantityDiscounts });
+export const Route = createFileRoute("/_authenticated/admin/quantidade")({ staticData: { sitemap: false }, component: QuantityDiscounts });
 
 const errMsg = (e: { message?: string; code?: string } | null) =>
   e?.code === "23505" ? "Já existe uma faixa com essa quantidade para este produto." : e?.message?.includes("conflitante") ? e.message : "Não foi possível salvar.";

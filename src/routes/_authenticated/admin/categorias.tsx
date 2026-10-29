@@ -11,7 +11,7 @@ import { useAllCategories } from "@/components/admin/Pickers";
 import { DeleteConfirm } from "@/components/admin/DeleteConfirm";
 import { areaCls, Empty, ErrorBox, FieldRow, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/categorias")({ component: Categories });
+export const Route = createFileRoute("/_authenticated/admin/categorias")({ staticData: { sitemap: false }, component: Categories });
 
 type Cat = Database["public"]["Tables"]["categories"]["Row"];
 

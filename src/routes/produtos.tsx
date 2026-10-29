@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 
 type S = { q?: string | undefined; categoria?: string | undefined; promo?: boolean | undefined; tipo?: "kit" | undefined };
 
-export const Route = createFileRoute("/produtos")({
+export const Route = createFileRoute("/produtos")({ staticData: { sitemap: true },
   validateSearch: (s: Record<string, unknown>): S => ({
     q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
     categoria: typeof s["categoria"] === "string" ? s["categoria"] : undefined,

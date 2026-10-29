@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { StatsBand } from "@/components/site/StatsBand";
 import { buttonVariants } from "@/components/ui/button";
 
-export const Route = createFileRoute("/sobre")({
+export const Route = createFileRoute("/sobre")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Sobre nós — Rarity Hair Care" },

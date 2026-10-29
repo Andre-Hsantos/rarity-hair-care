@@ -3,7 +3,7 @@ import { BarChart3, Bell, Boxes, ClipboardList, FolderTree, Layers, Percent, Set
 import { supabase } from "@/integrations/supabase/client";
 
 // Admin gate: role is checked in the database (has_role on user_roles). RLS also enforces it on every admin read/write.
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/_authenticated/admin")({ staticData: { sitemap: "exclude-subtree" },
   ssr: false,
   beforeLoad: async ({ context }) => {
     const user = (context as { user?: { id: string } }).user;

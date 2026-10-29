@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { areaCls, Empty, ErrorBox, FieldRow, fmtDate, inputCls, Loading, PageHead } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/notificacoes")({ component: AdminNotifications });
+export const Route = createFileRoute("/_authenticated/admin/notificacoes")({ staticData: { sitemap: false }, component: AdminNotifications });
 
 function AdminNotifications() {
   const qc = useQueryClient();

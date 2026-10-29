@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { CheckList, useAllCategories, useAllProducts } from "@/components/admin/Pickers";
 import { audienceLabel, brl, Empty, ErrorBox, FieldRow, fmtDate, fromLocalInput, inputCls, Loading, PageHead, Pill, toLocalInput } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/cupons")({ component: Coupons });
+export const Route = createFileRoute("/_authenticated/admin/cupons")({ staticData: { sitemap: false }, component: Coupons });
 
 type Coupon = Database["public"]["Tables"]["coupons"]["Row"];
 

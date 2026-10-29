@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { areaCls, Empty, ErrorBox, fmtDate, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/profissionais")({ component: Professionals });
+export const Route = createFileRoute("/_authenticated/admin/profissionais")({ staticData: { sitemap: false }, component: Professionals });
 
 type Status = "em_analise" | "aprovado" | "rejeitado";
 const statusLabel: Record<Status, string> = {

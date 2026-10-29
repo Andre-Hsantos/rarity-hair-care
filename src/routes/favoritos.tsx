@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { PageHeader } from "@/components/site/PageHeader";
 import { ProductCard } from "@/components/site/ProductCard";
 
-export const Route = createFileRoute("/favoritos")({
+export const Route = createFileRoute("/favoritos")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Favoritos — Rarity Hair Care" },

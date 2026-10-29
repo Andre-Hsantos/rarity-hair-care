@@ -14,13 +14,14 @@ import { Button, buttonVariants } from "@/components/ui/button";
 
 type Search = { modo: "entrega" | "retirada"; cupom?: string | undefined };
 
-export const Route = createFileRoute("/_authenticated/checkout")({
+export const Route = createFileRoute("/_authenticated/checkout")({ staticData: { sitemap: false },
   validateSearch: (s: Record<string, unknown>): Search => ({
     modo: s['modo'] === "entrega" ? "entrega" : "retirada",
     cupom: typeof s['cupom'] === "string" && s['cupom'] ? s['cupom'] : undefined,
   }),
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Revisão do pedido — Rarity Hair Care" },
       { name: "description", content: "Revise seu pedido antes de finalizar pelo WhatsApp." },
       { property: "og:title", content: "Revisão do pedido — Rarity Hair Care" },
