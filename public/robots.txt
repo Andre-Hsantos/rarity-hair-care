@@ -12,3 +12,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /carrinho
+Disallow: /minha-conta
+Disallow: /notificacoes
+Disallow: /pedido/
+Disallow: /redefinir-senha
+
+Sitemap: https://pixel-perfect-match-1058.lovable.app/sitemap.xml
