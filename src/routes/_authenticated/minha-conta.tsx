@@ -19,7 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { submitProRequest, useAuth, type ProofType } from "@/lib/auth";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-export const Route = createFileRoute("/_authenticated/minha-conta")({
+export const Route = createFileRoute("/_authenticated/minha-conta")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Minha conta — Rarity Hair Care" },

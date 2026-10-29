@@ -8,7 +8,7 @@ import { useAllProducts } from "@/components/admin/Pickers";
 import { Empty, ErrorBox, inputCls, Loading, PageHead, Pill } from "@/components/admin/ui";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/_authenticated/admin/configuracoes")({ component: Settings });
+export const Route = createFileRoute("/_authenticated/admin/configuracoes")({ staticData: { sitemap: false }, component: Settings });
 
 type Section = "featured" | "best_sellers" | "professional";
 

@@ -182,7 +182,7 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { Reveal } from "@/components/site/Reveal";
 import { buttonVariants } from "@/components/ui/button";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Rarity Hair Care — Cuidados capilares premium" },

@@ -5,7 +5,7 @@ import { AuthShell, Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/redefinir-senha")({
+export const Route = createFileRoute("/redefinir-senha")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Redefinir senha — Rarity Hair Care" },

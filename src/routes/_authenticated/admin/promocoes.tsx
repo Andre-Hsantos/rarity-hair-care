@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { CheckList, useAllProducts } from "@/components/admin/Pickers";
 import { audienceLabel, brl, Empty, ErrorBox, FieldRow, fmtDate, fromLocalInput, inputCls, Loading, PageHead, Pill, toLocalInput } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/_authenticated/admin/promocoes")({
+export const Route = createFileRoute("/_authenticated/admin/promocoes")({ staticData: { sitemap: false },
   head: () => ({ meta: [
     { title: "Promoções | Administração Rarity Hair Care" },
     { name: "description", content: "Gerencie as promoções da Rarity Hair Care." },

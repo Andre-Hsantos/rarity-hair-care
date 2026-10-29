@@ -8,7 +8,7 @@ import { OrderDetail } from "@/components/site/OrderDetail";
 import { PageHeader } from "@/components/site/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 
-export const Route = createFileRoute("/_authenticated/pedido/$id")({
+export const Route = createFileRoute("/_authenticated/pedido/$id")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Pedido realizado — Rarity Hair Care" },

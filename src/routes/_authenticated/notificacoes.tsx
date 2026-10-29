@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 import { MyNotifications } from "@/components/site/MyNotifications";
 
-export const Route = createFileRoute("/_authenticated/notificacoes")({
+export const Route = createFileRoute("/_authenticated/notificacoes")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Notificações — Rarity Hair Care" },

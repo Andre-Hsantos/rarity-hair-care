@@ -9,7 +9,7 @@ import { pctLabel } from "@/lib/quantityDiscounts";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button, buttonVariants } from "@/components/ui/button";
 
-export const Route = createFileRoute("/carrinho")({
+export const Route = createFileRoute("/carrinho")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Carrinho — Rarity Hair Care" },

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const Route = createFileRoute("/politica-de-privacidade")({
+export const Route = createFileRoute("/politica-de-privacidade")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Política de Privacidade — Rarity Hair Care" },

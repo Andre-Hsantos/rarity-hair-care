@@ -6,7 +6,7 @@ import { AuthShell, Field } from "@/components/site/Field";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/login")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Entrar — Rarity Hair Care" },

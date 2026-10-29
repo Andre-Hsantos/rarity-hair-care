@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const Route = createFileRoute("/termos-de-uso")({
+export const Route = createFileRoute("/termos-de-uso")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Termos de Uso — Rarity Hair Care" },

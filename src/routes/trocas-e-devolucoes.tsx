@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
 
-export const Route = createFileRoute("/trocas-e-devolucoes")({
+export const Route = createFileRoute("/trocas-e-devolucoes")({ staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Trocas e devoluções — Rarity Hair Care" },
