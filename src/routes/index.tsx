@@ -96,7 +96,7 @@ function HeroCarousel() {
               width={1600}
               height={1104}
               aria-hidden={n !== i}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-[70%_center] sm:object-right ${n === i ? "opacity-100" : "opacity-0"}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-center sm:object-right ${n === i ? "opacity-100" : "opacity-0"}`}
             />
           </picture>
         ))}
