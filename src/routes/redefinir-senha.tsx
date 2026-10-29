@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/redefinir-senha")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Redefinir senha — Rarity Hair Care" },
       { name: "description", content: "Crie uma nova senha para sua conta Rarity Hair Care." },
       { property: "og:title", content: "Redefinir senha — Rarity Hair Care" },

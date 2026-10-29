@@ -11,6 +11,7 @@ import { buttonVariants } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/pedido/$id")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Pedido realizado — Rarity Hair Care" },
       { name: "description", content: "Confirmação do seu pedido Rarity Hair Care." },
       { property: "og:title", content: "Pedido realizado — Rarity Hair Care" },
