@@ -133,7 +133,7 @@ export function Header() {
           <div className="lg:hidden" />
 
           <div className="flex items-center gap-1 sm:gap-2">
-            <span className="hidden lg:contents">
+            <span className="contents">
               <IconLink to="/favoritos" label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
               <IconLink to={session ? "/notificacoes" : "/login"} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
             </span>
