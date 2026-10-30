@@ -64,12 +64,12 @@ function Products() {
           {list.map((p) => (
             <button key={p.id} onClick={() => setEdit(p)} className="flex w-full flex-wrap items-center gap-3 p-3 text-left hover:bg-accent/50">
               <span className="size-12 shrink-0 overflow-hidden rounded bg-surface">{p.image_url && <img src={p.image_url} alt="" className="size-full object-cover" />}</span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-medium">{p.name}{p.size_label ? ` · ${p.size_label}` : ""}</span>
+              <span className="min-w-0 flex-1 basis-[calc(100%-4.5rem)] sm:basis-0">
+                <span className="block font-medium sm:truncate">{p.name}{p.size_label ? ` · ${p.size_label}` : ""}</span>
                 <span className="text-xs text-muted-foreground">{p.id} · {catNames(p)}</span>
               </span>
-              <span className="text-right text-sm"><span className="block">{brl(p.price)}</span><span className="text-xs text-muted-foreground">Pro: {brl(p.pro_price)}</span></span>
-              <span className="flex flex-wrap gap-1">
+              <span className="ml-15 text-sm sm:ml-0 sm:text-right"><span className="block">{brl(p.price)}</span><span className="text-xs text-muted-foreground">Pro: {brl(p.pro_price)}</span></span>
+              <span className="ml-auto flex flex-wrap gap-1">
                 {p.is_kit && <Pill tone="warn">Kit</Pill>}
                 {p.audience === "profissionais" && <Pill>Só profissionais</Pill>}
                 {p.availability === "esgotado" && <Pill tone="bad">Esgotado</Pill>}

@@ -42,24 +42,24 @@ const items = [
 function AdminLayout() {
   return (
     <div className="bg-surface">
-      <div className="container-site grid gap-8 py-8 lg:grid-cols-[240px_1fr] lg:py-12">
-        <aside>
+      <div className="container-site grid grid-cols-1 gap-4 py-4 sm:gap-8 sm:py-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:py-12">
+        <aside className="min-w-0">
           <p className="eyebrow mb-3 text-muted-foreground">Painel administrativo</p>
-          <nav className="flex gap-1 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
+          <nav className="-mx-1 flex gap-1 overflow-x-auto px-1 pb-2 lg:flex-col lg:overflow-visible">
             {items.map(({ to, label, icon: Icon, ...rest }) => (
               <Link
                 key={to}
                 to={to}
                 activeOptions={{ exact: "exact" in rest }}
-                className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm text-foreground/75 transition hover:bg-accent hover:text-foreground"
+                className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm text-foreground/75 transition hover:bg-accent hover:text-foreground lg:gap-3 lg:py-2.5"
                 activeProps={{ className: "!bg-ink !text-ink-foreground" }}
               >
-                <Icon className="size-4" /> {label}
+                <Icon className="size-4 shrink-0" /> {label}
               </Link>
             ))}
           </nav>
         </aside>
-        <main className="min-w-0 rounded-lg border bg-background p-6 sm:p-8">
+        <main className="min-w-0 overflow-x-hidden rounded-lg border bg-background p-4 sm:p-8">
           <Outlet />
         </main>
       </div>
