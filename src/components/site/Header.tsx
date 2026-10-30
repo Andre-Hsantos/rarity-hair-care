@@ -102,7 +102,7 @@ export function Header() {
               <SheetTrigger aria-label="Abrir menu" className="rounded-md p-2 text-ink-foreground lg:hidden">
                 <Menu className="size-5" />
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 bg-background">
+              <SheetContent side="left" className="w-80 overflow-y-auto bg-background">
                 <SheetTitle className="font-display text-2xl">Menu</SheetTitle>
                 <nav className="mt-6 flex flex-col gap-1">
                   {nav.map((n) => (
