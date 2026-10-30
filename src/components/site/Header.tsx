@@ -102,7 +102,7 @@ export function Header() {
               <SheetTrigger aria-label="Abrir menu" className="rounded-md p-2 text-ink-foreground lg:hidden">
                 <Menu className="size-5" />
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 bg-background">
+              <SheetContent side="left" className="w-80 overflow-y-auto bg-background">
                 <SheetTitle className="font-display text-2xl">Menu</SheetTitle>
                 <nav className="mt-6 flex flex-col gap-1">
                   {nav.map((n) => (
@@ -121,11 +121,20 @@ export function Header() {
                     <Link to="/favoritos" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Heart className="size-4" /> Favoritos</Link>
                     {session && <Link to="/notificacoes" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><Bell className="size-4" /> Notificações{unread > 0 ? ` (${unread})` : ""}</Link>}
                   </div>
+                  {isAdmin && (
+                    <div className="mt-4 border-t pt-4">
+                      <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-md px-3 py-3 hover:bg-accent"><LayoutDashboard className="size-4" /> Painel administrativo</Link>
+                      <p className="eyebrow mt-2 px-3 text-muted-foreground">Ver site como</p>
+                      <button type="button" onClick={() => { previewAs("normal"); setOpen(false); }} className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left hover:bg-accent"><User className="size-4" /> Cliente normal{catalogPreview === "normal" && <Check className="ml-auto size-4" />}</button>
+                      <button type="button" onClick={() => { previewAs("profissional"); setOpen(false); }} className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left hover:bg-accent"><Briefcase className="size-4" /> Profissional{catalogPreview === "profissional" && <Check className="ml-auto size-4" />}</button>
+                      {catalogPreview && <button type="button" onClick={() => { setCatalogPreview(null); setOpen(false); }} className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left hover:bg-accent"><X className="size-4" /> Encerrar visualização</button>}
+                    </div>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
             <Link to="/" aria-label="Rarity Hair Care — início" className="shrink-0">
-              <img src={logo.url} alt="Rarity Hair Care" className="h-10 w-auto sm:h-12" />
+              <img src={logo.url} alt="Rarity Hair Care" className="h-9 w-auto sm:h-12" />
             </Link>
           </div>
 
@@ -133,10 +142,11 @@ export function Header() {
           <div className="lg:hidden" />
 
           <div className="flex items-center gap-1 sm:gap-2">
-            <span className="hidden lg:contents">
+            <span className="contents">
               <IconLink to="/favoritos" label="Favoritos" badge={favorites.length}><Heart className="size-5" /></IconLink>
               <IconLink to={session ? "/notificacoes" : "/login"} label="Notificações" badge={unread}><Bell className="size-5" /></IconLink>
             </span>
+            <span className="hidden md:contents">
             {isAdmin && <IconLink to="/admin" label="Painel"><LayoutDashboard className="size-5" /></IconLink>}
             {isAdmin && (
               <DropdownMenu>
@@ -158,6 +168,7 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
+            </span>
             <IconLink to={session ? "/minha-conta" : "/login"} label={session ? "Minha conta" : "Entrar"}><User className="size-5" /></IconLink>
             <IconLink to="/carrinho" label="Carrinho" badge={count}><ShoppingBag className="size-5" /></IconLink>
           </div>
