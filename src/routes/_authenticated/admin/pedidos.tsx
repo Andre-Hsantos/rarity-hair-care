@@ -47,7 +47,7 @@ function Orders() {
             </button>
           ))}
         </div>
-        <div className="relative flex-1 sm:max-w-sm"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="relative w-full flex-1 sm:w-auto sm:max-w-sm"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input className={`${inputCls} pl-9`} placeholder="Nº do pedido, cliente, e-mail ou telefone" value={q} onChange={(e) => setQ(e.target.value)} /></div>
       </div>
       {list.isLoading ? <Loading /> : list.isError ? <ErrorBox /> : !rows.length ? <Empty>{list.data?.length ? "Nenhum pedido encontrado." : "Nenhum pedido ainda."}</Empty> : (
@@ -55,12 +55,12 @@ function Orders() {
           {rows.map((o) => {
             const p = o.profiles as { name: string; email: string } | null;
             return (
-              <button key={o.id} onClick={() => setOpen(o.id)} className="flex w-full flex-wrap items-center gap-3 p-4 text-left text-sm hover:bg-accent/50">
-                <span className="w-16 font-medium">{orderNumber(o.id)}</span>
-                <span className="min-w-0 flex-1"><span className="block font-medium">{p?.name || "—"}</span><span className="text-muted-foreground">{new Date(o.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })} · {o.delivery_method === "entrega" ? "Entrega" : "Retirada"}</span></span>
-                <TecnobyteBadge registered={o.tecnobyte_registered} />
+              <button key={o.id} onClick={() => setOpen(o.id)} className="flex w-full flex-wrap items-center gap-x-3 gap-y-2 p-4 text-left text-sm hover:bg-accent/50">
+                <span className="shrink-0 font-medium sm:w-16">{orderNumber(o.id)}</span>
+                <span className="min-w-0 flex-1 basis-40"><span className="block truncate font-medium">{p?.name || "—"}</span><span className="text-muted-foreground">{new Date(o.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })} · {o.delivery_method === "entrega" ? "Entrega" : "Retirada"}</span></span>
+                <span className="flex w-full flex-wrap items-center gap-2 sm:w-auto"><TecnobyteBadge registered={o.tecnobyte_registered} />
                 <StatusBadge status={o.status} />
-                <span className="w-28 text-right font-medium">{brl(Number(o.total))}</span>
+                <span className="ml-auto font-medium sm:w-28 sm:text-right">{brl(Number(o.total))}</span></span>
               </button>
             );
           })}
