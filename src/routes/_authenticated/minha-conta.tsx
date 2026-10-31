@@ -96,6 +96,15 @@ function Account() {
               }}
             >
               <h2 className="text-3xl sm:col-span-2">Meu perfil</h2>
+              {tier === "profissional_pendente" && (
+                <div role="status" className="flex items-start gap-3 rounded-lg border-2 border-gold bg-gold/10 p-4 sm:col-span-2">
+                  <Briefcase className="mt-0.5 size-5 shrink-0 text-gold" />
+                  <div>
+                    <p className="font-semibold">Sua conta profissional está em análise</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Recebemos sua solicitação. Até a aprovação, você verá os preços de cliente comum. Avisaremos assim que houver uma decisão.</p>
+                  </div>
+                </div>
+              )}
               <Field id="name" name="name" label="Nome" required defaultValue={profile?.name ?? ""} />
               <Field id="e" label="E-mail" type="email" disabled defaultValue={profile?.email ?? session?.user.email ?? ""} />
               <Field id="phone" name="phone" label="WhatsApp" defaultValue={profile?.phone ?? ""} />
