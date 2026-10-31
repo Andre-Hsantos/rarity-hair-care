@@ -1,3 +1,4 @@
+import { SalonAddressFields } from "@/components/site/SalonAddressFields";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Briefcase, User } from "lucide-react";
