@@ -102,7 +102,7 @@ export function cleanCnpj(v: unknown): string | null {
 }
 
 /** Opens a pro request (em_analise). Certificado: file uploaded privately to <user_id>/. CNPJ/MEI: number only, no file. */
-export async function submitProRequest(userId: string, proofType: ProofType, file: File | null, number: string | null, salonLocation?: string | null) {
+export async function submitProRequest(userId: string, proofType: ProofType, file: File | null, number: string | null, salonLocation?: string | null, salonName?: string | null) {
   let path: string;
   let proof_number: string | null = null;
   if (proofType === "certificado") {
@@ -118,6 +118,6 @@ export async function submitProRequest(userId: string, proofType: ProofType, fil
     path = `${userId}/sem-arquivo`; // marker: no file for CNPJ/MEI
   }
   const location = salonLocation?.trim();
-  const { error } = await supabase.from("pro_requests").insert({ user_id: userId, proof_type: proofType, document_path: path, proof_number, salon_location: location || null });
+  const { error } = await supabase.from("pro_requests").insert({ user_id: userId, proof_type: proofType, document_path: path, proof_number, salon_location: location || null, salon_name: salonName?.trim() || null });
   if (error) throw new Error(error.message.includes("Já existe") ? "Você já tem uma solicitação em análise ou aprovada." : "Não foi possível registrar a solicitação.");
 }

@@ -25,7 +25,7 @@ function useRequests() {
       const { data, error } = await supabase
         .from("pro_requests")
         .select(
-          "*, client:profiles!pro_requests_user_id_fkey(id,name,email,phone,cpf,pro_status,account_type,created_at)",
+          "*, client:profiles!pro_requests_user_id_fkey(id,name,email,phone,cpf,birth_date,pro_status,account_type,created_at)",
         )
         .order("requested_at", { ascending: false });
       if (error) throw error;
@@ -93,7 +93,7 @@ function Professionals() {
               <span>
                 <span className="block font-medium">{r.client?.name || "Sem nome"}</span>
                 <span className="text-sm text-muted-foreground">
-                  {r.client?.email} · {proofLabel[r.proof_type]}
+                  {r.salon_name ? `${r.salon_name} · ` : ""}{r.client?.email} · {proofLabel[r.proof_type]}
                 </span>
               </span>
               <span className="text-xs text-muted-foreground">Enviada em {fmtDate(r.requested_at)}</span>
@@ -158,6 +158,8 @@ function RequestDetail({ req, onDone }: { req: Req; onDone: () => void }) {
         <dd>{c?.phone || "—"}</dd>
         <dt className="text-muted-foreground">CPF</dt>
         <dd>{c?.cpf || "—"}</dd>
+        <dt className="text-muted-foreground">Nascimento</dt>
+        <dd>{c?.birth_date ? new Date(c.birth_date + "T12:00").toLocaleDateString("pt-BR") : "—"}</dd>
         <dt className="text-muted-foreground">Cliente desde</dt>
         <dd>{fmtDate(c?.created_at ?? null)}</dd>
         <dt className="text-muted-foreground">Comprovante</dt>
@@ -167,6 +169,8 @@ function RequestDetail({ req, onDone }: { req: Req; onDone: () => void }) {
             ? ` · ${req.proof_number.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")}`
             : ""}
         </dd>
+        <dt className="text-muted-foreground">Nome do salão</dt>
+        <dd className="break-words">{req.salon_name || "—"}</dd>
         <dt className="text-muted-foreground">Endereço do salão</dt>
         <dd className="break-words">{req.salon_location || "—"}</dd>
         <dt className="text-muted-foreground">Enviada em</dt>
