@@ -1,3 +1,4 @@
+import { SalonAddressFields } from "@/components/site/SalonAddressFields";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeft, Briefcase, User } from "lucide-react";
@@ -114,7 +115,7 @@ function Signup() {
         {type === "pro" && (
           <>
             <Field id="business" label="Salão / estabelecimento" />
-            <Field id="salon_location" name="salon_location" label="Endereço do salão" required placeholder="Rua, número, bairro, cidade e estado" />
+            <SalonAddressFields />
             <ProofFields />
           </>
         )}

@@ -1,3 +1,4 @@
+import { SalonAddressFields } from "@/components/site/SalonAddressFields";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Bell, Briefcase, Heart, KeyRound, LogOut, Package, Trash2, User } from "lucide-react";
@@ -151,7 +152,7 @@ function Account() {
                       } catch (err) { toast.error((err as Error).message); }
                     }}
                   >
-                    <Field id="salon_location" name="salon_location" label="Endereço do salão" required placeholder="Rua, número, bairro, cidade e estado" />
+                    <SalonAddressFields />
                     <ProofFields />
                     <Button variant="gold">Enviar solicitação</Button>
                   </form>
