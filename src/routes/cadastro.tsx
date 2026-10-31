@@ -80,7 +80,12 @@ function Signup() {
           });
           if (error) {
             setLoading(false);
-            toast.error(error.message.toLowerCase().includes("registered") ? "Este e-mail já está cadastrado." : "Não foi possível criar a conta. Verifique os dados (CPF pode já estar em uso).");
+            const msg = error.message.toLowerCase();
+            toast.error(
+              error.code === "weak_password" || msg.includes("password") ? "Senha inválida. Use pelo menos 6 caracteres."
+              : msg.includes("registered") ? "Este e-mail já está cadastrado."
+              : msg.includes("cpf") || msg.includes("duplicate") ? "Este CPF já está em uso."
+              : "Não foi possível criar a conta. Verifique os dados e tente novamente.");
             return;
           }
           // CNPJ/MEI requests are opened by the signup itself; only the certificate needs an upload (requires session).
@@ -113,7 +118,7 @@ function Signup() {
             <ProofFields />
           </>
         )}
-        <Field id="pwd" name="pwd" label="Senha" type="password" required minLength={8} hint="Mínimo de 8 caracteres." autoComplete="new-password" />
+        <Field id="pwd" name="pwd" label="Senha" type="password" required minLength={6} hint="Mínimo de 6 caracteres." autoComplete="new-password" />
         <label className="flex items-start gap-2.5 pt-1 text-sm text-muted-foreground">
           <input type="checkbox" required className="mt-1 accent-[var(--gold-deep)]" />
           Li e aceito os Termos de Uso e a Política de Privacidade.
