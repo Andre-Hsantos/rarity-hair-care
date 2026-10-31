@@ -148,6 +148,13 @@
       "when": 1792881507103,
       "tag": "0020_admin_add_remove_order_items",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1793408021050,
+      "tag": "0021_pro_requests_salon_name",
+      "breakpoints": true
     }
   ]
 }
