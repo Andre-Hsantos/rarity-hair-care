@@ -60,6 +60,7 @@ function Signup() {
           const proofType = String(fd.get("proof_type") ?? "") as ProofType;
           const proofNumber = cleanCnpj(fd.get("proof_number"));
           const salonLocation = String(fd.get("salon_location") ?? "").trim();
+          const salonName = String(fd.get("salon_name") ?? "").trim();
           if (type === "pro") {
             if (!salonLocation) { toast.error("Informe o endereço do salão."); return; }
             if (proofType === "certificado") { const err = validateDoc(file); if (err) { toast.error(err); return; } }
@@ -75,7 +76,7 @@ function Signup() {
             options: {
               emailRedirectTo: `${window.location.origin}/minha-conta`,
               data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum", birth_date: birth,
-                ...(type === "pro" ? { salon_location: salonLocation } : {}),
+                ...(type === "pro" ? { salon_location: salonLocation, salon_name: salonName } : {}),
                 ...(type === "pro" && proofType !== "certificado" ? { proof_type: proofType, proof_number: proofNumber } : {}) },
             },
           });
@@ -91,7 +92,7 @@ function Signup() {
           }
           // CNPJ/MEI requests are opened by the signup itself; only the certificate needs an upload (requires session).
           if (type === "pro" && proofType === "certificado" && data.session && data.user && file) {
-            try { await submitProRequest(data.user.id, "certificado", file, null, salonLocation); }
+            try { await submitProRequest(data.user.id, "certificado", file, null, salonLocation, salonName); }
             catch (err) { toast.error((err as Error).message); }
           }
           setLoading(false);
@@ -114,7 +115,7 @@ function Signup() {
         <Field id="cpf" name="cpf" label="CPF" inputMode="numeric" placeholder="000.000.000-00" />
         {type === "pro" && (
           <>
-            <Field id="business" label="Salão / estabelecimento" />
+            <Field id="business" name="salon_name" label="Salão / estabelecimento" required />
             <SalonAddressFields />
             <ProofFields />
           </>

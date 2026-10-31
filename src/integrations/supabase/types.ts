@@ -646,6 +646,7 @@ export type Database = {
           proof_type: Database["public"]["Enums"]["proof_type"]
           requested_at: string
           salon_location: string | null
+          salon_name: string | null
           status: Database["public"]["Enums"]["request_status"]
           user_id: string
         }
@@ -659,6 +660,7 @@ export type Database = {
           proof_type: Database["public"]["Enums"]["proof_type"]
           requested_at?: string
           salon_location?: string | null
+          salon_name?: string | null
           status?: Database["public"]["Enums"]["request_status"]
           user_id: string
         }
@@ -672,6 +674,7 @@ export type Database = {
           proof_type?: Database["public"]["Enums"]["proof_type"]
           requested_at?: string
           salon_location?: string | null
+          salon_name?: string | null
           status?: Database["public"]["Enums"]["request_status"]
           user_id?: string
         }

@@ -146,12 +146,13 @@ function Account() {
                       const salonLocation = String(fd.get("salon_location") ?? "").trim();
                       if (!salonLocation) { toast.error("Informe o endereço do salão."); return; }
                       try {
-                        await submitProRequest(session!.user.id, String(fd.get("proof_type")) as ProofType, fd.get("doc_file") as File | null, fd.get("proof_number") as string | null, salonLocation);
+                        await submitProRequest(session!.user.id, String(fd.get("proof_type")) as ProofType, fd.get("doc_file") as File | null, fd.get("proof_number") as string | null, salonLocation, String(fd.get("salon_name") ?? ""));
                         await refresh();
                         toast.success("Solicitação enviada para análise.");
                       } catch (err) { toast.error((err as Error).message); }
                     }}
                   >
+                    <Field id="salon_name" name="salon_name" label="Salão / estabelecimento" required />
                     <SalonAddressFields />
                     <ProofFields />
                     <Button variant="gold">Enviar solicitação</Button>
