@@ -15,8 +15,8 @@ import {
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
 import kit from "@/assets/kit.jpg";
-import hero1Mobile from "@/assets/hero1_mobile.jpg.asset.json";
-import hero2Mobile from "@/assets/hero2_mobile.jpg.asset.json";
+import hero1Mobile from "@/assets/hero1_mobile.jpg";
+import hero2Mobile from "@/assets/hero2_mobile.jpg";
 
 type HeroSlide = {
   src: string;
@@ -35,7 +35,7 @@ type HeroSlide = {
 const heroSlides: HeroSlide[] = [
   {
     src: hero2,
-    mobileSrc: hero2Mobile.url,
+    mobileSrc: hero2Mobile,
     alt: "Produtos Rarity sobre pedra clara com luz natural",
     eyebrow: "rotina completa",
     before: "Brilho e leveza ",
@@ -47,7 +47,7 @@ const heroSlides: HeroSlide[] = [
   },
   {
     src: hero,
-    mobileSrc: hero1Mobile.url,
+    mobileSrc: hero1Mobile,
     alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas",
     eyebrow: "coleções rarity",
     before: "O cuidado que seu cabelo ",

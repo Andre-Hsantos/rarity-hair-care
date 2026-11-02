@@ -2,7 +2,7 @@ import { useUnreadCount } from "@/lib/notifications";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Bell, Briefcase, Check, ChevronDown, Eye, Heart, LayoutDashboard, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
-import logo from "@/assets/rarity-logo.png.asset.json";
+import logo from "@/assets/rarity-logo.png";
 import { usePublicCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
@@ -134,7 +134,7 @@ export function Header() {
               </SheetContent>
             </Sheet>
             <Link to="/" aria-label="Rarity Hair Care — início" className="shrink-0">
-              <img src={logo.url} alt="Rarity Hair Care" className="h-9 w-auto sm:h-12" />
+              <img src={logo} alt="Rarity Hair Care" className="h-9 w-auto sm:h-12" />
             </Link>
           </div>
 
