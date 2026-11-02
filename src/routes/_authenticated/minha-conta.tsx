@@ -1,12 +1,13 @@
 import { SalonAddressFields } from "@/components/site/SalonAddressFields";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Bell, Briefcase, Heart, KeyRound, LogOut, Package, Trash2, User } from "lucide-react";
+import { Bell, Briefcase, Heart, KeyRound, LogOut, MessageCircle, Package, Send, Trash2, User } from "lucide-react";
 import { toast } from "sonner";
 import { brl } from "@/lib/catalog";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOrder } from "@/lib/orderQueries";
-import { orderNumber } from "@/lib/orders";
+import { buildWhatsappMessage, orderNumber, whatsappLink } from "@/lib/orders";
+import { buttonVariants } from "@/components/ui/button";
 import { OrderDetail, StatusBadge } from "@/components/site/OrderDetail";
 import { GUEST_FAV_KEY, useStore } from "@/lib/store";
 import { MyNotifications } from "@/components/site/MyNotifications";
@@ -192,7 +193,7 @@ function Account() {
 }
 
 function MyOrders() {
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const [open, setOpen] = useState<number | null>(null);
   const list = useQuery({
     queryKey: ["my-orders", session?.user.id],
@@ -215,7 +216,19 @@ function MyOrders() {
                 <StatusBadge status={o.status} />
                 <span className="font-medium">{brl(Number(o.total))}</span>
               </button>
-              {open === o.id && <div className="border-t bg-surface/50 p-4">{detail.data ? <OrderDetail o={detail.data} /> : <p className="text-muted-foreground">Carregando…</p>}</div>}
+              {open === o.id && <div className="border-t bg-surface/50 p-4">{detail.data ? (
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    <a href={whatsappLink(`Olá! Gostaria de falar sobre o pedido ${orderNumber(o.id)}.`)} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "outline", size: "sm" })}>
+                      <MessageCircle className="size-4" /> Falar no WhatsApp
+                    </a>
+                    <a href={whatsappLink(buildWhatsappMessage({ ...detail.data, customerName: profile?.name || "Cliente" }))} target="_blank" rel="noopener noreferrer" className={buttonVariants({ variant: "gold", size: "sm" })}>
+                      <Send className="size-4" /> Reenviar mensagem do pedido
+                    </a>
+                  </div>
+                  <OrderDetail o={detail.data} />
+                </div>
+              ) : <p className="text-muted-foreground">Carregando…</p>}</div>}
             </li>
           ))}
         </ul>
