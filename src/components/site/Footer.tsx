@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Instagram, MessageCircle } from "lucide-react";
-import logo from "@/assets/rarity-logo.png.asset.json";
+import logo from "@/assets/rarity-logo.png";
 
 export function Footer() {
   return (
