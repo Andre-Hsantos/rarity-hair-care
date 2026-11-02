@@ -155,6 +155,13 @@
       "when": 1793408021050,
       "tag": "0021_pro_requests_salon_name",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793660539547,
+      "tag": "0022_block_delete_product_with_orders",
+      "breakpoints": true
     }
   ]
 }

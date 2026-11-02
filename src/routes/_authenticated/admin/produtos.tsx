@@ -286,7 +286,7 @@ function ProdForm({ prod, all, cats, onDone }: { prod: Partial<Prod>; all: Prod[
           <p className="mb-2 text-xs text-muted-foreground">Para apenas tirar da loja, use “Situação: Inativo”. A exclusão abaixo é permanente.</p>
           <DeleteConfirm label={isKit ? "Excluir kit" : "Excluir produto"} title={`Excluir “${prod.name}”`} pending={del.isPending} onConfirm={() => del.mutate()}
             items={["O cadastro do produto e sua foto (se não for usada por outro item)", "Vínculos com kits, promoções, cupons e seções da página inicial",
-              "Favoritos, avisos de disponibilidade, avaliações e carrinhos", "Os itens deste produto em pedidos (os totais são recalculados; pedidos que ficarem vazios são excluídos)"]} />
+              "Favoritos, avisos de disponibilidade, avaliações e carrinhos", "Produtos que já aparecem em pedidos não podem ser excluídos (use “Inativo”)"]} />
         </div>
       )}
     </>
