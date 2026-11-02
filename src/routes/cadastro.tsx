@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ProofFields } from "@/components/site/ProofFields";
 import { supabase } from "@/integrations/supabase/client";
 import { cleanCnpj, submitProRequest, validateDoc, type ProofType } from "@/lib/auth";
+import { submitSignupCertificate } from "@/lib/proSignup.functions";
 
 export const Route = createFileRoute("/cadastro")({ staticData: { sitemap: false },
   head: () => ({
@@ -77,7 +78,7 @@ function Signup() {
               emailRedirectTo: `${window.location.origin}/minha-conta`,
               data: { name: String(fd.get("name")), phone: String(fd.get("phone")), cpf: cpfDigits.length === 11 ? cpfDigits : "", account_intent: type === "pro" ? "profissional" : "comum", birth_date: birth,
                 ...(type === "pro" ? { salon_location: salonLocation, salon_name: salonName } : {}),
-                ...(type === "pro" && proofType !== "certificado" ? { proof_type: proofType, proof_number: proofNumber } : {}) },
+                ...(type === "pro" ? (proofType !== "certificado" ? { proof_type: proofType, proof_number: proofNumber } : { proof_type: "certificado" }) : {}) },
             },
           });
           if (error) {
@@ -90,17 +91,25 @@ function Signup() {
               : "Não foi possível criar a conta. Verifique os dados e tente novamente.");
             return;
           }
-          // CNPJ/MEI requests are opened by the signup itself; only the certificate needs an upload (requires session).
-          if (type === "pro" && proofType === "certificado" && data.session && data.user && file) {
-            try { await submitProRequest(data.user.id, "certificado", file, null, salonLocation, salonName); }
-            catch (err) { toast.error((err as Error).message); }
+          // CNPJ/MEI requests are opened by the signup trigger; the certificate is uploaded by the server right away.
+          let certFailed = false;
+          if (type === "pro" && proofType === "certificado" && data.user && file) {
+            try {
+              if (data.session) await submitProRequest(data.user.id, "certificado", file, null, salonLocation, salonName);
+              else {
+                const body = new FormData();
+                body.set("user_id", data.user.id); body.set("file", file);
+                body.set("salon_location", salonLocation); body.set("salon_name", salonName);
+                await submitSignupCertificate({ data: body });
+              }
+            } catch (err) { certFailed = true; toast.error((err as Error).message); }
           }
           setLoading(false);
           if (data.session) {
-            toast.success(type === "pro" ? "Conta criada e solicitação enviada para análise." : "Conta criada!");
+            toast.success(type === "pro" && !certFailed ? "Conta criada e solicitação enviada para análise." : "Conta criada!");
             navigate({ to: "/minha-conta" });
           } else {
-            toast.success(type === "pro" && proofType === "certificado"
+            toast.success(type === "pro" && certFailed
               ? "Conta criada! Confirme seu e-mail e, ao entrar, envie o certificado em Minha conta › Conta profissional."
               : type === "pro" ? "Conta criada e solicitação enviada para análise! Confirme seu e-mail para entrar."
               : "Conta criada! Confirme seu e-mail para entrar.", { duration: 10000 });
