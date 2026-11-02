@@ -23,12 +23,12 @@ export const submitSignupCertificate = createServerFn({ method: "POST" })
     const { data: u } = await supabaseAdmin.auth.admin.getUserById(data.userId);
     const user = u?.user;
     const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
-    if (!user || meta.account_intent !== "profissional" || meta.proof_type !== "certificado"
+    if (!user || meta['account_intent'] !== "profissional" || meta['proof_type'] !== "certificado"
       || Date.now() - new Date(user.created_at).getTime() > 15 * 60 * 1000) throw new Error("Não autorizado.");
     const { count } = await supabaseAdmin.from("pro_requests").select("id", { count: "exact", head: true }).eq("user_id", data.userId);
     if (count) throw new Error("Solicitação já enviada.");
     const path = `${data.userId}/${Date.now()}.${ext}`;
-    const up = await supabaseAdmin.storage.from("pro-documents").upload(path, data.file, { contentType: data.file.type || undefined, upsert: false });
+    const up = await supabaseAdmin.storage.from("pro-documents").upload(path, data.file, { contentType: data.file.type || "application/octet-stream", upsert: false });
     if (up.error) throw new Error("Não foi possível enviar o documento.");
     const { error } = await supabaseAdmin.from("pro_requests").insert({
       user_id: data.userId, proof_type: "certificado", document_path: path,
