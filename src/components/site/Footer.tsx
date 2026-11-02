@@ -8,7 +8,7 @@ export function Footer() {
       <div className="h-px bg-gold-metal opacity-60" />
       <div className="container-site grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <img src={logo.url} alt="Rarity Hair Care" className="h-12 w-auto" />
+          <img src={logo} alt="Rarity Hair Care" className="h-12 w-auto" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Cuidados capilares com sofisticação e qualidade.</p>
           <div className="mt-5 flex gap-3">
             {[{ I: Instagram, href: "https://instagram.com/rarityprofissionaloficial" }].map(({ I, href }) => (

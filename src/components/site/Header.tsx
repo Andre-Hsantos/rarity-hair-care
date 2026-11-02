@@ -134,7 +134,7 @@ export function Header() {
               </SheetContent>
             </Sheet>
             <Link to="/" aria-label="Rarity Hair Care — início" className="shrink-0">
-              <img src={logo.url} alt="Rarity Hair Care" className="h-9 w-auto sm:h-12" />
+              <img src={logo} alt="Rarity Hair Care" className="h-9 w-auto sm:h-12" />
             </Link>
           </div>
 
