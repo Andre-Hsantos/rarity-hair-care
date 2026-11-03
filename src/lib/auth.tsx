@@ -110,7 +110,8 @@ export async function submitProRequest(userId: string, proofType: ProofType, fil
     if (err) throw new Error(err);
     const ext = file!.name.split(".").pop()!.toLowerCase();
     path = `${userId}/${Date.now()}.${ext}`;
-    const up = await supabase.storage.from("pro-documents").upload(path, file!, { contentType: file!.type, upsert: false });
+    const contentType = ext === "pdf" ? "application/pdf" : ext === "png" ? "image/png" : "image/jpeg";
+    const up = await supabase.storage.from("pro-documents").upload(path, file!, { contentType, upsert: false });
     if (up.error) throw new Error("Não foi possível enviar o documento.");
   } else {
     proof_number = cleanCnpj(number);
