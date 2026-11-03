@@ -162,6 +162,13 @@
       "when": 1793660539547,
       "tag": "0022_block_delete_product_with_orders",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793721093482,
+      "tag": "0023_pro_docs_mime_allowlist",
+      "breakpoints": true
     }
   ]
 }
