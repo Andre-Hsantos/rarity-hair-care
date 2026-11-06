@@ -276,7 +276,7 @@ function ProductSection({ eyebrow, title, items }: { eyebrow: string; title: str
 }
 
 function ResellerBanner() {
-  const wa = `https://api.whatsapp.com/send?phone=5527997579959&text=${encodeURIComponent("Olá! Sou profissional e tenho interesse em revender os produtos Rarity.")}`;
+  const wa = `https://api.whatsapp.com/send?phone=5527997579959&text=${encodeURIComponent("Olá! Gostaria de mais informações sobre como me tornar um representante/revendedor da Rarity Hair Care para o meu salão.")}`;
   const perks = [
     { icon: BadgePercent, t: "Preços exclusivos", d: "Condições especiais para profissionais aprovados." },
     { icon: Scissors, t: "Linha para salões", d: "Produtos pensados para o dia a dia do salão." },
