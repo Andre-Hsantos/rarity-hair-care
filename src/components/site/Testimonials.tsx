@@ -1,13 +1,37 @@
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 
-// Esboço: depoimentos fictícios, substituir pelos reais.
 const testimonials = [
-  { name: "Juliana Martins", salon: "Studio Juliana Hair", rating: 5, text: "Os produtos da Rarity transformaram os tratamentos do meu salão. Minhas clientes notam o brilho logo na primeira aplicação." },
-  { name: "Patrícia Souza", salon: "Espaço Bella Fios", rating: 5, text: "Atendimento excelente e entrega rápida. A máscara de reconstrução virou queridinha das clientes." },
-  { name: "Camila Rocha", salon: "Camila Rocha Beauty", rating: 4, text: "Ótimo rendimento e resultado profissional. Uso diariamente nas escovas e finalizações." },
-  { name: "Fernanda Lima", salon: "Salão Raízes", rating: 5, text: "Qualidade impecável. Compro há anos e nunca tive problema com nenhum pedido." },
-  { name: "Renata Alves", salon: "Ateliê do Cabelo", rating: 4, text: "Os kits são perfeitos para revenda. Minhas clientes sempre voltam pedindo mais." },
+  {
+    name: "Juliana Martins",
+    salon: "Studio Juliana Hair",
+    rating: 5,
+    text: "Os produtos da Rarity transformaram os tratamentos do meu salão. Minhas clientes notam o brilho logo na primeira aplicação.",
+  },
+  {
+    name: "Patrícia Souza",
+    salon: "Espaço Bella Fios",
+    rating: 5,
+    text: "Atendimento excelente e entrega rápida. A máscara de reconstrução virou queridinha das clientes.",
+  },
+  {
+    name: "Camila Rocha",
+    salon: "Camila Rocha Beauty",
+    rating: 4,
+    text: "Ótimo rendimento e resultado profissional. Uso diariamente nas escovas e finalizações.",
+  },
+  {
+    name: "Fernanda Lima",
+    salon: "Salão Raízes",
+    rating: 5,
+    text: "Qualidade impecável. Compro há anos e nunca tive problema com nenhum pedido.",
+  },
+  {
+    name: "Renata Alves",
+    salon: "Ateliê do Cabelo",
+    rating: 4,
+    text: "Os kits são perfeitos para revenda. Minhas clientes sempre voltam pedindo mais.",
+  },
 ];
 
 function Stars({ value }: { value: number }) {
