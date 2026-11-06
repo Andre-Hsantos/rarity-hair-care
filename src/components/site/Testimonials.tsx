@@ -3,10 +3,10 @@ import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Juliana Martins",
-    salon: "Studio Juliana Hair",
+    name: "Joelma Chaves",
+    salon: "Salão Joelma",
     rating: 5,
-    text: "Os produtos da Rarity transformaram os tratamentos do meu salão. Minhas clientes notam o brilho logo na primeira aplicação.",
+    text: "Atendimento perfeito em tudo! Conseguem explicar sobre os produtos e, sempre que preciso, estão prontos para me ajudar e tirar dúvidas. Produtos nota 10 em rendimento, cheirinho maravilhoso e as clientes elogiam sempre!",
   },
   {
     name: "Patrícia Souza",
