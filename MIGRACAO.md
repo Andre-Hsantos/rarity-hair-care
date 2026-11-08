@@ -14,14 +14,17 @@ Estado: **em andamento**. O site na Lovable continua no ar e intacto; nada nele 
 - [x] Schema: as 24 migrations de `drizzle/migrations/` aplicadas no Supabase novo. Conferido por hash
       contra a origem: colunas (203), funções (31), policies (58), triggers (16) e grants idênticos.
 - [x] Buckets: `product-images` (público, 5 MB) e `pro-documents` (privado, 10 MB), iguais à origem.
-- [x] Imagens: as 84 imagens de produto em uso copiadas para `product-images` (mesmos caminhos).
+- [x] Imagens: os 134 arquivos de `product-images` copiados (65.368.800 bytes, idêntico à origem).
 - [x] Usuários: 3 contas de `auth.users`/`auth.identities` copiadas **com hash de senha** — o login
       continua com a mesma senha.
 - [x] Código: `wrangler.jsonc` (nome, `nodejs_compat`, vars públicas do Supabase novo). O build
       (`npm run build`, Nitro preset `cloudflare-module`) gera `.output/` e
       `.wrangler/deploy/config.json`, e `npx wrangler deploy` na raiz publica. Testado localmente no
       `workerd` (páginas 200, 404 correto).
-- [ ] Dados das tabelas `public` (produtos, categorias, pedidos, perfis…) — ver “Sincronização final”.
+- [x] Dados das tabelas `public` importados do backup de 07/11 20:22 (`rarity-hair-care_261107.backup`):
+      85 produtos, 16 categorias, 139 vínculos, vitrines, kits, promoções, cupons, descontos, auditoria.
+      URLs das imagens reescritas para o storage novo; sequências ajustadas.
+- [ ] Diferença entre o backup e o banco atual (conta criada em 08/11, 1 pedido) — ver “Sincronização final”.
 - [ ] Configuração no painel do Supabase e do Cloudflare (abaixo).
 
 ## Por que o `.env` não mudou
