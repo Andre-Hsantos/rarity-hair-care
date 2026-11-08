@@ -36,6 +36,18 @@ Lovable durante a transição. No Cloudflare, as variáveis `VITE_*` são defini
 build** e têm prioridade sobre o `.env` (verificado: o bundle sai sem nenhuma referência ao Lovable
 Cloud). Depois da virada definitiva, o `.env` pode ser atualizado.
 
+## Google (Analytics e Search Console)
+
+Código pronto: o site só emite o GA4 e a verificação quando as variáveis abaixo existem no build.
+
+1. **Google Analytics 4:** crie a propriedade em analytics.google.com e copie o ID `G-XXXXXXXXXX`.
+   Build variable no Cloudflare: `VITE_GA_MEASUREMENT_ID` = esse ID.
+2. **Search Console:** em search.google.com/search-console, adicione a propriedade (domínio final ou a URL
+   `workers.dev`, enquanto testa). Escolha o método *Tag HTML* e copie só o valor do `content`.
+   Build variable: `VITE_GOOGLE_SITE_VERIFICATION` = esse valor. Depois do deploy, clique em **Verificar**.
+3. **Sitemap:** no Search Console, em Sitemaps, envie `sitemap.xml`. Só faça isso depois de definir
+   `SITE_URL` com o domínio final; senão o sitemap lista o domínio antigo da Lovable.
+
 ## Passos no painel do Cloudflare (Workers & Pages → Create → Import a repository)
 
 1. Repositório `andre-hsantos/rarity-hair-care`, branch de produção a definir (hoje `main`).

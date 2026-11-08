@@ -67,6 +67,11 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+// Google Analytics (GA4) and Search Console verification. Both come from build-time
+// env vars; when unset, nothing extra is emitted. See MIGRACAO.md ("Google").
+const GA_MEASUREMENT_ID = import.meta.env["VITE_GA_MEASUREMENT_ID"] as string | undefined;
+const GSC_VERIFICATION = import.meta.env["VITE_GOOGLE_SITE_VERIFICATION"] as string | undefined;
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   staticData: { sitemap: false },
   head: () => ({
@@ -77,7 +82,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Rarity Hair Care — produtos de cuidados capilares." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...(GSC_VERIFICATION ? [{ name: "google-site-verification", content: GSC_VERIFICATION }] : []),
     ],
+    scripts: GA_MEASUREMENT_ID
+      ? [
+          { src: `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_MEASUREMENT_ID)}`, async: true },
+          {
+            children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config',${JSON.stringify(GA_MEASUREMENT_ID)});`,
+          },
+        ]
+      : [],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
