@@ -1,0 +1,17 @@
+// Cloudflare Workers config. `npm run build` (Nitro, preset cloudflare-module) merges
+// this into .output/server/wrangler.json; deploy with `npx wrangler deploy`.
+// Secrets (never commit): `npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY`.
+// Build-time VITE_* values must be set as *build variables* in Cloudflare
+// (they override .env, which still points at Lovable Cloud). See MIGRACAO.md.
+// Add "SITE_URL" to vars once the final domain is known (sitemap/robots).
+{
+  "name": "rarity-hair-care",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    "SUPABASE_URL": "https://pqjqqokjnsrydfncpjwy.supabase.co",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_H5ORkXiEs5I4rbLqXdooXg_G-PTTP9v",
+    "SUPABASE_PROJECT_ID": "pqjqqokjnsrydfncpjwy"
+  }
+}

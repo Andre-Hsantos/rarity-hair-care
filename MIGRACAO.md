@@ -1,0 +1,68 @@
+# Migração: Lovable Cloud → Supabase próprio + Cloudflare Workers
+
+Estado: **em andamento**. O site na Lovable continua no ar e intacto; nada nele foi alterado.
+
+## Destinos
+
+| Peça | Antes (Lovable) | Depois |
+|---|---|---|
+| Banco/Auth/Storage | Lovable Cloud `zxxbnzhapfvwcnxwioba` | Supabase `pqjqqokjnsrydfncpjwy` (org André_H, us-west-2) |
+| Hospedagem (SSR) | Lovable | Cloudflare Worker `rarity-hair-care` |
+
+## Feito
+
+- [x] Schema: as 24 migrations de `drizzle/migrations/` aplicadas no Supabase novo. Conferido por hash
+      contra a origem: colunas (203), funções (31), policies (58), triggers (16) e grants idênticos.
+- [x] Buckets: `product-images` (público, 5 MB) e `pro-documents` (privado, 10 MB), iguais à origem.
+- [x] Imagens: as 84 imagens de produto em uso copiadas para `product-images` (mesmos caminhos).
+- [x] Usuários: 3 contas de `auth.users`/`auth.identities` copiadas **com hash de senha** — o login
+      continua com a mesma senha.
+- [x] Código: `wrangler.jsonc` (nome, `nodejs_compat`, vars públicas do Supabase novo). O build
+      (`npm run build`, Nitro preset `cloudflare-module`) gera `.output/` e
+      `.wrangler/deploy/config.json`, e `npx wrangler deploy` na raiz publica. Testado localmente no
+      `workerd` (páginas 200, 404 correto).
+- [ ] Dados das tabelas `public` (produtos, categorias, pedidos, perfis…) — ver “Sincronização final”.
+- [ ] Configuração no painel do Supabase e do Cloudflare (abaixo).
+
+## Por que o `.env` não mudou
+
+O `.env` é gerenciado pela Lovable e ainda aponta para o Lovable Cloud; mudá-lo quebraria o editor da
+Lovable durante a transição. No Cloudflare, as variáveis `VITE_*` são definidas como **variáveis de
+build** e têm prioridade sobre o `.env` (verificado: o bundle sai sem nenhuma referência ao Lovable
+Cloud). Depois da virada definitiva, o `.env` pode ser atualizado.
+
+## Passos no painel do Cloudflare (Workers & Pages → Create → Import a repository)
+
+1. Repositório `andre-hsantos/rarity-hair-care`, branch de produção a definir (hoje `main`).
+2. Build command: `npm run build` · Deploy command: `npx wrangler deploy`.
+3. **Build variables** (Settings → Build → Variables):
+   - `VITE_SUPABASE_URL` = `https://pqjqqokjnsrydfncpjwy.supabase.co`
+   - `VITE_SUPABASE_PUBLISHABLE_KEY` = `sb_publishable_H5ORkXiEs5I4rbLqXdooXg_G-PTTP9v`
+   - `VITE_SUPABASE_PROJECT_ID` = `pqjqqokjnsrydfncpjwy`
+4. **Secret** do Worker (Settings → Variables and Secrets → tipo *Secret*):
+   - `SUPABASE_SERVICE_ROLE_KEY` = chave *secret*/service_role do Supabase novo
+     (Supabase → Project Settings → API Keys). Usada só no servidor: exclusão de contas e envio de
+     certificado no cadastro profissional. **Nunca** colocar no repositório.
+5. Depois de saber o domínio final, adicionar `SITE_URL` em `vars` no `wrangler.jsonc`
+   (sitemap/robots). Sem ele o sitemap aponta para o domínio antigo da Lovable.
+
+## Passos no painel do Supabase (Authentication)
+
+1. URL Configuration → **Site URL** = domínio final (ou a URL `*.workers.dev` durante os testes).
+2. **Redirect URLs**: `https://<dominio>/minha-conta` e `https://<dominio>/redefinir-senha`
+   (usadas na confirmação de cadastro e na recuperação de senha). Para testes, adicionar também as
+   da URL `workers.dev`.
+3. **SMTP próprio** (Authentication → Emails → SMTP): o SMTP padrão do Supabase só envia poucos
+   e-mails por hora — necessário para cadastro e recuperação de senha em produção.
+4. Revisar os templates de e-mail (estão em inglês por padrão).
+
+## Sincronização final (no dia da virada)
+
+O site antigo continua recebendo cadastros e pedidos. Na virada: congelar o admin antigo, recopiar
+`auth` + tabelas `public` (o processo apaga e recopia, então pode ser repetido) e então apontar o
+domínio para o Worker. Rollback: o site da Lovable continua funcionando até ser despublicado.
+
+## Limpeza depois da migração
+
+- Remover a Edge Function temporária `migrate-storage` e a extensão `pg_net` do Supabase novo.
+- O bucket `database_export_07_11_26` da origem (backup feito na tentativa anterior) não é migrado.
