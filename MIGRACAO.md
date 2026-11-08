@@ -36,6 +36,12 @@ Lovable durante a transição. No Cloudflare, as variáveis `VITE_*` são defini
 build** e têm prioridade sobre o `.env` (verificado: o bundle sai sem nenhuma referência ao Lovable
 Cloud). Depois da virada definitiva, o `.env` pode ser atualizado.
 
+## Deploy no Cloudflare
+
+Worker `rarity-hair-care` (mesmo nome do `wrangler.jsonc`), conectado ao GitHub, com a branch de produção
+`claude/serene-archimedes-2omqe5`. Cada push nessa branch publica o site. A variável
+`VITE_SUPABASE_PROJECT_ID` não é usada pelo código; só a URL e a chave publicável são necessárias.
+
 ## Google (Analytics e Search Console)
 
 Código pronto: o site só emite o GA4 e a verificação quando as variáveis abaixo existem no build.
