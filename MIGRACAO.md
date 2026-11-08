@@ -90,3 +90,19 @@ domínio para o Worker. Rollback: o site da Lovable continua funcionando até se
 - Feito: extensão `pg_net` removida; a Edge Function `migrate-storage` foi desativada (responde 410 e
   exige JWT) — pode ser apagada no painel do Supabase (Edge Functions).
 - O bucket `database_export_07_11_26` da origem (backup feito na tentativa anterior) não é migrado.
+
+## Pendências (retomar)
+
+Site no ar e testado em `https://rarity-hair-care.andre-hsantos5513.workers.dev`: catálogo, carrinho,
+login, pedido e recuperação de senha funcionando.
+
+1. **Trocar a chave `service_role` (prioridade):** a chave foi colada no chat. Criar nova em
+   Supabase → Project Settings → API Keys, atualizar o Secret `SUPABASE_SERVICE_ROLE_KEY` no Cloudflare e
+   apagar a antiga.
+2. **Domínio:** definir o domínio final; atualizar `SITE_URL` (sitemap/robots), ligar o domínio no
+   Cloudflare (Domains → Add Domain) e acrescentar o domínio nas URLs do Supabase.
+3. **SMTP próprio** (ex.: Resend) em Authentication → Emails → SMTP, depois do domínio.
+4. **Google:** criar GA4 e Search Console; colocar `VITE_GA_MEASUREMENT_ID` e
+   `VITE_GOOGLE_SITE_VERIFICATION` como Build variables e redeployar; enviar o sitemap só com o domínio final.
+5. **Desligar a Lovable** (por último): última sincronização do banco, depois despublicar o site antigo.
+6. **Arrumação:** apagar a Edge Function `migrate-storage` no Supabase.
