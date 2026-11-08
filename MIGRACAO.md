@@ -1,6 +1,6 @@
 # Migração: Lovable Cloud → Supabase próprio + Cloudflare Workers
 
-Estado: **em andamento**. O site na Lovable continua no ar e intacto; nada nele foi alterado.
+Estado: **dados migrados; falta configurar os painéis e publicar**. O site na Lovable continua no ar e intacto; nada nele foi alterado.
 
 ## Destinos
 
@@ -24,7 +24,9 @@ Estado: **em andamento**. O site na Lovable continua no ar e intacto; nada nele 
 - [x] Dados das tabelas `public` importados do backup de 07/11 20:22 (`rarity-hair-care_261107.backup`):
       85 produtos, 16 categorias, 139 vínculos, vitrines, kits, promoções, cupons, descontos, auditoria.
       URLs das imagens reescritas para o storage novo; sequências ajustadas.
-- [ ] Diferença entre o backup e o banco atual (conta criada em 08/11, 1 pedido) — ver “Sincronização final”.
+- [x] Diferença entre o backup e o banco atual sincronizada em 08/11 ~18:25 UTC (perfil e cargo da conta
+      criada em 08/11, pedido 10 com item e histórico). Impressões digitais de produtos, categorias por
+      produto, vitrines e kits conferidas: idênticas à origem.
 - [ ] Configuração no painel do Supabase e do Cloudflare (abaixo).
 
 ## Por que o `.env` não mudou
@@ -67,5 +69,6 @@ domínio para o Worker. Rollback: o site da Lovable continua funcionando até se
 
 ## Limpeza depois da migração
 
-- Remover a Edge Function temporária `migrate-storage` e a extensão `pg_net` do Supabase novo.
+- Feito: extensão `pg_net` removida; a Edge Function `migrate-storage` foi desativada (responde 410 e
+  exige JWT) — pode ser apagada no painel do Supabase (Edge Functions).
 - O bucket `database_export_07_11_26` da origem (backup feito na tentativa anterior) não é migrado.
