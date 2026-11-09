@@ -96,9 +96,8 @@ domínio para o Worker. Rollback: o site da Lovable continua funcionando até se
 Site no ar e testado em `https://rarity-hair-care.andre-hsantos5513.workers.dev`: catálogo, carrinho,
 login, pedido e recuperação de senha funcionando.
 
-1. **Trocar a chave `service_role` (prioridade):** a chave foi colada no chat. Criar nova em
-   Supabase → Project Settings → API Keys, atualizar o Secret `SUPABASE_SERVICE_ROLE_KEY` no Cloudflare e
-   apagar a antiga.
+1. ~~**Trocar a chave `service_role`**~~ — **concluído em 09/11**: nova chave no Secret
+   `SUPABASE_SERVICE_ROLE_KEY` do Cloudflare, painel admin testado, chave antiga apagada no Supabase.
 2. **Domínio:** definir o domínio final; atualizar `SITE_URL` (sitemap/robots), ligar o domínio no
    Cloudflare (Domains → Add Domain) e acrescentar o domínio nas URLs do Supabase.
 3. **SMTP próprio** (ex.: Resend) em Authentication → Emails → SMTP, depois do domínio.
