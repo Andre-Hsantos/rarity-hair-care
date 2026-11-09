@@ -100,7 +100,11 @@ login, pedido e recuperação de senha funcionando.
    `SUPABASE_SERVICE_ROLE_KEY` do Cloudflare, painel admin testado, chave antiga apagada no Supabase.
 2. **Domínio:** definir o domínio final; atualizar `SITE_URL` (sitemap/robots), ligar o domínio no
    Cloudflare (Domains → Add Domain) e acrescentar o domínio nas URLs do Supabase.
-3. **SMTP próprio** (ex.: Resend) em Authentication → Emails → SMTP, depois do domínio.
+3. **SMTP próprio (Resend), com a conta do cliente:** o cliente cria a conta no Resend com o e-mail dele,
+   verifica o domínio da loja e gera uma API key. Você cola a chave em Supabase → Authentication →
+   Emails → SMTP (host `smtp.resend.com`, porta 465, usuário `resend`, senha = a chave, remetente no
+   domínio verificado). Até lá, o login e a recuperação de senha funcionam pelo e-mail padrão do
+   Supabase, com limite de envios por hora. Nunca enviar a chave pelo chat.
 4. **Google:** criar GA4 e Search Console; colocar `VITE_GA_MEASUREMENT_ID` e
    `VITE_GOOGLE_SITE_VERIFICATION` como Build variables e redeployar; enviar o sitemap só com o domínio final.
 5. **Desligar a Lovable** (por último): última sincronização do banco, depois despublicar o site antigo.
