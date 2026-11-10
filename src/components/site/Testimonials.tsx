@@ -21,8 +21,8 @@ const testimonials = [
     text: "Ótimo rendimento e resultado profissional. Uso diariamente nas escovas e finalizações.",
   },
   {
-    name: "Fernanda Lima",
-    salon: "Salão Raízes",
+    name: "Dabya de Morais",
+    salon: undefined,
     rating: 5,
     text: "Qualidade impecável. Compro há anos e nunca tive problema com nenhum pedido.",
   },
@@ -72,7 +72,7 @@ export function Testimonials() {
               <blockquote className="mt-5 text-lg leading-relaxed text-foreground">“{t.text}”</blockquote>
               <figcaption className="mt-6">
                 <p className="font-medium">{t.name}</p>
-                <p className="text-sm text-muted-foreground">{t.salon}</p>
+                {t.salon && <p className="text-sm text-muted-foreground">{t.salon}</p>}
               </figcaption>
             </figure>
           ))}
