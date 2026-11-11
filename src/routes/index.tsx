@@ -32,7 +32,7 @@ type HeroSlide = {
   highlight: string;
   after: string;
   text: string;
-  primary: { label: string; to: "/produtos" | "/sobre" | "/cadastro" | "/contato" };
+  primary: { label: string; to: "/produtos" | "/sobre" | "/cadastro" | "/contato"; search?: { tipo: "kit" } };
   secondary: { label: string; to: "/produtos" | "/sobre" | "/cadastro" | "/contato" };
 };
 
@@ -66,12 +66,12 @@ const heroSlides: HeroSlide[] = [
     src: hero,
     mobileSrc: hero1Mobile,
     alt: "Linha de produtos Rarity com embalagens brancas e tampas douradas",
-    eyebrow: "coleções rarity",
+    eyebrow: "kits rarity",
     before: "O cuidado que seu cabelo ",
     highlight: "merece",
     after: ".",
     text: "Tratamentos, finalizadores e rotinas completas para fios saudáveis, com brilho e leveza.",
-    primary: { label: "Ver produtos", to: "/produtos" },
+    primary: { label: "Ver kits", to: "/produtos", search: { tipo: "kit" } },
     secondary: { label: "Conheça a Rarity", to: "/sobre" },
   },
 ];
@@ -149,6 +149,7 @@ function HeroCarousel() {
                   <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8 sm:justify-start">
                     <Link
                       to={s.primary.to}
+                      {...(s.primary.search ? { search: s.primary.search } : {})}
                       tabIndex={n === i ? 0 : -1}
                       className={buttonVariants({ variant: "gold", size: "lg" })}
                     >
