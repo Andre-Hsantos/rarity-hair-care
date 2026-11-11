@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import hero2 from "@/assets/hero2.jpg";
+import hero3 from "@/assets/hero3.jpg";
+import hero3Mobile from "@/assets/hero3_mobile.jpg";
 import kit from "@/assets/kit.jpg";
 import hero1Mobile from "@/assets/hero1_mobile.jpg";
 import hero2Mobile from "@/assets/hero2_mobile.jpg";
@@ -33,6 +35,18 @@ type HeroSlide = {
 };
 
 const heroSlides: HeroSlide[] = [
+  {
+    src: hero3,
+    mobileSrc: hero3Mobile,
+    alt: "Mulher com cabelos cacheados longos e volumosos em fundo bege",
+    eyebrow: "linha para cachos",
+    before: "Cachos definidos, cheios de ",
+    highlight: "vida",
+    after: ".",
+    text: "Ativadores, modeladores e máscaras para realçar a curvatura natural e manter a hidratação dos fios.",
+    primary: { label: "Ver produtos", to: "/produtos" },
+    secondary: { label: "Conheça a Rarity", to: "/sobre" },
+  },
   {
     src: hero2,
     mobileSrc: hero2Mobile,
