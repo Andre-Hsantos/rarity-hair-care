@@ -24,6 +24,8 @@ type HeroSlide = {
   src: string;
   /** Imagem vertical opcional só para celular (até 639px). Ideal 1080×1350. */
   mobileSrc?: string;
+  /** Alinhamento opcional da foto no desktop (padrão: à direita, centralizada na vertical). */
+  desktopPosition?: string;
   alt: string;
   eyebrow: string;
   before: string;
@@ -38,6 +40,7 @@ const heroSlides: HeroSlide[] = [
   {
     src: hero3,
     mobileSrc: hero3Mobile,
+    desktopPosition: "sm:object-right-top",
     alt: "Mulher com cabelos cacheados longos e volumosos em fundo bege",
     eyebrow: "linha para cachos",
     before: "Cachos definidos, cheios de ",
@@ -110,7 +113,7 @@ function HeroCarousel() {
               width={1600}
               height={1104}
               aria-hidden={n !== i}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-[55%_center] sm:object-right ${n === i ? "opacity-100" : "opacity-0"}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out object-[55%_center] ${s.desktopPosition ?? "sm:object-right"} ${n === i ? "opacity-100" : "opacity-0"}`}
             />
           </picture>
         ))}
