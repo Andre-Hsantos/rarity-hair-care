@@ -40,7 +40,7 @@ const heroSlides: HeroSlide[] = [
   {
     src: hero3,
     mobileSrc: hero3Mobile,
-    desktopPosition: "sm:object-right-top",
+    desktopPosition: "sm:object-[right_16%]",
     alt: "Mulher com cabelos cacheados longos e volumosos em fundo bege",
     eyebrow: "linha para cachos",
     before: "Cachos definidos, cheios de ",
