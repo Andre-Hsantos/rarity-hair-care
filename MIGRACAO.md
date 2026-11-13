@@ -91,6 +91,21 @@ domínio para o Worker. Rollback: o site da Lovable continua funcionando até se
   exige JWT) — pode ser apagada no painel do Supabase (Edge Functions).
 - O bucket `database_export_07_11_26` da origem (backup feito na tentativa anterior) não é migrado.
 
+## Plano Cloudflare Free (US$ 0) — o que inclui
+
+Informado na tela de escolha de plano do Cloudflare em 13/11/2026 (confira no painel, os limites mudam):
+
+- **Workers:** 100 mil requisições por dia.
+- **D1:** 5 GB de armazenamento. **R2:** 10 GB de armazenamento. (Não usamos nenhum dos dois: o banco e as imagens estão no Supabase.)
+- **Pages:** sites estáticos ilimitados. (Não usamos; o site roda como Worker.)
+- **Universal SSL** (HTTPS grátis), **DNS** rápido e **CDN global**.
+- **Regras:** 70 Cloudflare Rules e 5 regras de WAF (firewall).
+- **Suporte:** só comunidade e documentação.
+
+O que nós usamos deste plano: o Worker do site, o DNS do domínio, o HTTPS e a CDN.
+Pontos de atenção do Free: limite de CPU por requisição no Worker (pode dar erro 1102 em picos) e
+nenhum suporte humano. Se a loja crescer, o Workers Paid (US$ 5 por mês) aumenta esses limites.
+
 ## Pendências (retomar)
 
 Site no ar e testado em `https://rarity-hair-care.andre-hsantos5513.workers.dev`: catálogo, carrinho,
